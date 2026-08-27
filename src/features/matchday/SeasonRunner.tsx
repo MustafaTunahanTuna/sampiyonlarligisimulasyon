@@ -30,17 +30,19 @@ export function SeasonRunner({ favouriteTeam, onGoToKnockout }: SeasonRunnerProp
         onPlayNext={runner.startNext}
         onFinishAll={runner.finishRemaining}
         onGoToKnockout={onGoToKnockout}
+        onReviewMatchday={runner.replayMatchday}
         onReset={runner.restartSeason}
       />
 
-      {runner.activeMatchday !== null && (
+      {runner.activeView !== null && (
         <MatchdayModal
-          key={runner.activeMatchday}
-          matchday={runner.activeMatchday}
+          key={`${runner.activeView.matchday}-${runner.activeView.mode}`}
+          matchday={runner.activeView.matchday}
           predictions={state.predictions}
           favouriteTeam={favouriteTeam}
           favouriteStanding={favouriteStanding}
           completedCount={completed}
+          isReview={runner.activeView.mode === 'review'}
           hasNext={runner.upcomingMatchday !== null}
           onNext={runner.startNext}
           onGoToKnockout={() => {

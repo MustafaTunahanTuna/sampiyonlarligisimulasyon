@@ -16,6 +16,7 @@ interface MatchdayModalProps {
   favouriteTeam: Team | null
   favouriteStanding: StandingRow | null
   completedCount: number
+  isReview: boolean
   hasNext: boolean
   onNext: () => void
   onGoToKnockout: () => void
@@ -29,6 +30,7 @@ export function MatchdayModal({
   favouriteTeam,
   favouriteStanding,
   completedCount,
+  isReview,
   hasNext,
   onNext,
   onGoToKnockout,
@@ -69,9 +71,22 @@ export function MatchdayModal({
             >
               Hafta {matchday}
             </h2>
-            <p className="eyebrow text-muted tabular-nums">
-              {matchday} / {MATCHDAY_NUMBERS.length} · {results.length} maç
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="eyebrow text-muted tabular-nums">
+                {matchday} / {MATCHDAY_NUMBERS.length} · {results.length} maç
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Kapat"
+                title="Kapat"
+                className="rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-fg"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div className="mt-3">
             <MatchdayProgress current={matchday} completed={completedCount} />
@@ -120,14 +135,23 @@ export function MatchdayModal({
             </p>
           )}
           <div className="ml-auto flex flex-wrap items-center gap-3">
-            {hasNext && (
-              <Button variant="ghost" onClick={onFinishAll}>
-                Tümünü tamamla
+            <Button variant="ghost" onClick={onClose}>
+              {isReview ? 'Kapat' : 'Kapat ve incele'}
+            </Button>
+            {isReview ? null : hasNext ? (
+              <>
+                <Button variant="ghost" onClick={onFinishAll}>
+                  Tümünü tamamla
+                </Button>
+                <Button variant="primary" onClick={onNext}>
+                  Sonraki hafta →
+                </Button>
+              </>
+            ) : (
+              <Button variant="primary" onClick={onGoToKnockout}>
+                Nakavt aşamasına geç →
               </Button>
             )}
-            <Button variant="primary" onClick={hasNext ? onNext : onGoToKnockout}>
-              {hasNext ? 'Sonraki hafta →' : 'Nakavt aşamasına geç →'}
-            </Button>
           </div>
         </footer>
       </div>

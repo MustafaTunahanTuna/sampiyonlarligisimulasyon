@@ -1,48 +1,49 @@
 import { useState } from 'react'
-import {
-  MATCHDAY_NUMBERS,
-  isLeaguePhaseComplete,
-  nextMatchday,
-} from '../../domain/matchdays'
+import { MATCHDAY_NUMBERS, isLeaguePhaseComplete, nextMatchday } from '../../domain/matchdays'
 import { usePredictions } from '../../state/usePredictions'
 import type { MatchdayNumber } from '../../domain/matchdays'
 
+type ViewMode = 'play' | 'review'
+
+interface ActiveView {
+  matchday: MatchdayNumber
+  mode: ViewMode
+}
+
 export function useMatchdayRunner() {
   const { state, dispatch } = usePredictions()
-  const [activeMatchday, setActiveMatchday] = useState<MatchdayNumber | null>(null)
-
-  const runMatchday = (matchday: MatchdayNumber) => {
-    dispatch({ type: 'matchday-simulated', matchday })
-    setActiveMatchday(matchday)
-  }
+  const [activeView, setActiveView] = useState<ActiveView | null>(null)
 
   const startNext = () => {
     const upcoming = nextMatchday(state.predictions)
-    if (upcoming !== null) runMatchday(upcoming)
+    if (upcoming === null) return
+    dispatch({ type: 'matchday-simulated', matchday: upcoming })
+    setActiveView({ matchday: upcoming, mode: 'play' })
   }
 
-  const replayMatchday = (matchday: MatchdayNumber) => setActiveMatchday(matchday)
-
-  const restartSeason = () => {
-    dispatch({ type: 'everything-cleared' })
-    setActiveMatchday(null)
-  }
+  const replayMatchday = (matchday: MatchdayNumber) =>
+    setActiveView({ matchday, mode: 'review' })
 
   const finishRemaining = () => {
     for (const matchday of MATCHDAY_NUMBERS) {
       dispatch({ type: 'matchday-simulated', matchday })
     }
-    setActiveMatchday(null)
+    setActiveView(null)
+  }
+
+  const restartSeason = () => {
+    dispatch({ type: 'everything-cleared' })
+    setActiveView(null)
   }
 
   return {
-    activeMatchday,
+    activeView,
     isLeagueComplete: isLeaguePhaseComplete(state.predictions),
     upcomingMatchday: nextMatchday(state.predictions),
     startNext,
-    restartSeason,
     replayMatchday,
+    restartSeason,
     finishRemaining,
-    close: () => setActiveMatchday(null),
+    close: () => setActiveView(null),
   }
 }
