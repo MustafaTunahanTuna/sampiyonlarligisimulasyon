@@ -3,7 +3,7 @@ import { GettingStarted } from './GettingStarted'
 import { HighlightMatches } from './HighlightMatches'
 import { RankingList } from './RankingList'
 import { StatTiles } from './StatTiles'
-import { SimulationControls } from '../simulation/SimulationControls'
+import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
 import { ShareStandingsButton } from '../share/ShareStandingsButton'
 import { PickTeamCallout } from './PickTeamCallout'
@@ -22,12 +22,14 @@ interface LeagueDashboardProps {
   favouriteTeam: Team | null
   onPickTeam: () => void
   onOpenTeamPanel: () => void
+  onGoToKnockout: () => void
 }
 
 export function LeagueDashboard({
   favouriteTeam,
   onPickTeam,
   onOpenTeamPanel,
+  onGoToKnockout,
 }: LeagueDashboardProps) {
   const { state } = usePredictions()
   const matches = playedMatches(state.predictions)
@@ -50,7 +52,7 @@ export function LeagueDashboard({
         />
       )}
 
-      <SimulationControls predictedCount={stats.playedCount} />
+      <SeasonRunner favouriteTeam={favouriteTeam} onGoToKnockout={onGoToKnockout} />
 
       {hasPredictions ? (
         <>

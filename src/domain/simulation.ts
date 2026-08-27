@@ -19,6 +19,20 @@ export function expectedGoals(home: Team, away: Team, unpredictability: number):
   }
 }
 
+export function simulateScore(
+  home: Team,
+  away: Team,
+  seedKey: string,
+  unpredictability: number,
+): Score {
+  const random = createRandom(hashSeed(seedKey))
+  const odds = expectedGoals(home, away, unpredictability)
+  return {
+    home: poisson(odds.expectedHomeGoals, random),
+    away: poisson(odds.expectedAwayGoals, random),
+  }
+}
+
 export function simulateMatch(
   match: Match,
   home: Team,
@@ -26,10 +40,5 @@ export function simulateMatch(
   seed: string,
   unpredictability: number,
 ): Score {
-  const random = createRandom(hashSeed(`${seed}:${match.id}`))
-  const odds = expectedGoals(home, away, unpredictability)
-  return {
-    home: poisson(odds.expectedHomeGoals, random),
-    away: poisson(odds.expectedAwayGoals, random),
-  }
+  return simulateScore(home, away, `${seed}:${match.id}`, unpredictability)
 }

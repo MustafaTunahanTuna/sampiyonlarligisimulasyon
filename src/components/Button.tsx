@@ -4,7 +4,7 @@ type ButtonVariant = 'primary' | 'secondary' | 'ghost'
 
 const VARIANT_STYLE: Record<ButtonVariant, string> = {
   primary:
-    'bg-linear-to-b from-accent to-accent-deep text-base shadow-[0_6px_20px_-8px_var(--accent)] hover:brightness-110',
+    'bg-linear-to-b from-accent to-accent-deep text-canvas shadow-[0_6px_20px_-8px_var(--accent)] hover:brightness-110',
   secondary: 'border border-line-strong text-fg hover:border-accent hover:text-accent',
   ghost: 'text-muted hover:bg-surface hover:text-fg',
 }

@@ -2,6 +2,7 @@ import { DrawIntro } from './components/DrawIntro'
 import { SiteHeader } from './components/SiteHeader'
 import { StarballBackdrop } from './components/StarballBackdrop'
 import { LeagueDashboard } from './features/dashboard/LeagueDashboard'
+import { KnockoutStageView } from './features/knockout/KnockoutStageView'
 import { TeamPicker } from './features/team-picker/TeamPicker'
 import { TeamDashboard } from './features/team-summary/TeamDashboard'
 import { PredictionProvider } from './state/PredictionProvider'
@@ -22,6 +23,7 @@ export default function App() {
   const mustPickTeam = team === null
   const isPicking = mustPickTeam || route === 'picker'
   const isTeamPanel = !isPicking && route === 'team'
+  const isKnockout = !isPicking && route === 'knockout'
 
   const confirmTeam = (next: Team) => {
     selectTeam(next)
@@ -49,17 +51,24 @@ export default function App() {
                 onCancel={() => navigate('team')}
                 onRelease={dropTeam}
               />
+            ) : isKnockout ? (
+              <KnockoutStageView
+                favouriteTeam={team}
+                onBackToLeague={() => navigate('league')}
+              />
             ) : isTeamPanel && team !== null ? (
               <TeamDashboard
                 team={team}
                 onChangeTeam={() => navigate('picker')}
                 onReleaseTeam={dropTeam}
+                onGoToKnockout={() => navigate('knockout')}
               />
             ) : (
               <LeagueDashboard
                 favouriteTeam={team}
                 onPickTeam={() => navigate('picker')}
                 onOpenTeamPanel={() => navigate('team')}
+                onGoToKnockout={() => navigate('knockout')}
               />
             )}
           </main>

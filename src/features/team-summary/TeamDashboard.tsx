@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FixtureList } from '../fixtures/FixtureList'
 import { ShareStandingsButton } from '../share/ShareStandingsButton'
 import { ShareTeamButton } from '../share/ShareTeamButton'
-import { SimulationControls } from '../simulation/SimulationControls'
+import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
 import { SeasonSummary } from './SeasonSummary'
 import { TeamHeader } from './TeamHeader'
@@ -27,9 +27,15 @@ interface TeamDashboardProps {
   team: Team
   onChangeTeam: () => void
   onReleaseTeam: () => void
+  onGoToKnockout: () => void
 }
 
-export function TeamDashboard({ team, onChangeTeam, onReleaseTeam }: TeamDashboardProps) {
+export function TeamDashboard({
+  team,
+  onChangeTeam,
+  onReleaseTeam,
+  onGoToKnockout,
+}: TeamDashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('fixtures')
   const { state } = usePredictions()
 
@@ -44,7 +50,7 @@ export function TeamDashboard({ team, onChangeTeam, onReleaseTeam }: TeamDashboa
     <div key={team.id} className="animate-rise space-y-10">
       <TeamHeader team={team} onChangeTeam={onChangeTeam} onReleaseTeam={onReleaseTeam} />
       <SeasonSummary record={record} totalFixtures={fixtures.length} standing={standing} />
-      <SimulationControls predictedCount={predictedCount} />
+      <SeasonRunner favouriteTeam={team} onGoToKnockout={onGoToKnockout} />
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-strong">
         <nav className="flex gap-6" aria-label="Panel bölümleri">

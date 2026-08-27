@@ -1,9 +1,10 @@
-import type { PredictionMap } from '../domain/types'
+import type { KnockoutScoreMap, PredictionMap } from '../domain/types'
 
 const STORAGE_KEY = 'ucl:predictions'
 
 export interface PersistedPredictions {
   predictions: PredictionMap
+  knockoutScores?: KnockoutScoreMap
   seed: string
   unpredictability: number
 }

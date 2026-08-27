@@ -1,5 +1,6 @@
 import { countryNameTr } from './country-names-tr.mjs'
 import { buildStrengthIndex } from './team-strength.mjs'
+import { buildSchedule } from './build-schedule.mjs'
 
 const LOCALE = 'EN'
 
@@ -89,22 +90,32 @@ export function buildDrawPool({ draw, rawTeams, rawMatches, clubCoefficients, as
   const teams = rankedTeams.map((team) => ({ ...team, ...strengthIndex.get(team.id) }))
 
   const liveMatches = indexLiveMatches(rawMatches)
-  const matches = buildMatches(group.teamSlots)
-    .map(({ homeTeamId, awayTeamId }) => {
-      const key = toMatchKey(homeTeamId, awayTeamId)
-      const live = liveMatches.get(key)
-      return {
-        id: key,
-        homeTeamId,
-        awayTeamId,
-        matchId: live?.matchId ?? null,
-        matchday: live?.matchday ?? null,
-        kickOff: live?.kickOff ?? null,
-        status: live?.status ?? 'SCHEDULED_UNCONFIRMED',
-        score: live?.score ?? null,
-      }
-    })
-    .sort((left, right) => left.id.localeCompare(right.id))
+  const drawnMatches = buildMatches(group.teamSlots).map(({ homeTeamId, awayTeamId }) => {
+    const key = toMatchKey(homeTeamId, awayTeamId)
+    const live = liveMatches.get(key)
+    return {
+      id: key,
+      homeTeamId,
+      awayTeamId,
+      matchId: live?.matchId ?? null,
+      matchday: live?.matchday ?? null,
+      kickOff: live?.kickOff ?? null,
+      status: live?.status ?? 'SCHEDULED_UNCONFIRMED',
+      score: live?.score ?? null,
+    }
+  })
+
+  const needsSchedule = drawnMatches.some((match) => match.matchday === null)
+  const schedule = needsSchedule ? buildSchedule(drawnMatches, teams) : null
+
+  const matches = drawnMatches
+    .map((match) => ({
+      ...match,
+      matchday: match.matchday ?? schedule.matchdayByMatchId.get(match.id) ?? null,
+    }))
+    .sort(
+      (left, right) => (left.matchday ?? 0) - (right.matchday ?? 0) || left.id.localeCompare(right.id),
+    )
 
   return {
     meta: {
@@ -117,6 +128,7 @@ export function buildDrawPool({ draw, rawTeams, rawMatches, clubCoefficients, as
       drawDate: draw.date,
       venue: 'Monaco',
       source: `https://www.uefa.com/uefachampionsleague/draws/${draw.seasonYear}/${round.roundId}/`,
+      matchdaySource: needsSchedule ? 'generated' : 'uefa',
       scrapedAt: new Date().toISOString(),
     },
     pots: round.pots.map((pot) => ({

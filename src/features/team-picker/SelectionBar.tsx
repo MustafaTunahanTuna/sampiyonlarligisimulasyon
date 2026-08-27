@@ -13,7 +13,7 @@ export function SelectionBar({ draftTeam, currentTeam, onConfirm, onCancel }: Se
   const isUnchanged = draftTeam !== null && draftTeam.id === currentTeam?.id
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-base/95 backdrop-blur-md">
+    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-canvas/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-5 gap-y-3 px-5 py-4">
         {draftTeam === null ? (
           <p className="text-sm text-muted">

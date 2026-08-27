@@ -1,6 +1,8 @@
 import { BrandLogo } from './BrandLogo'
 import { ClubCrest } from './ClubCrest'
 import { drawPool } from '../domain/drawPool'
+import { MATCHDAY_NUMBERS, completedMatchdayCount } from '../domain/matchdays'
+import { usePredictions } from '../state/usePredictions'
 import type { Route } from '../hooks/useHashRoute'
 import type { Team } from '../domain/types'
 
@@ -20,8 +22,11 @@ function navStyle(isActive: boolean): string {
 }
 
 export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps) {
+  const { state } = usePredictions()
+  const isLeagueComplete = completedMatchdayCount(state.predictions) === MATCHDAY_NUMBERS.length
+
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-base/90 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-line bg-canvas/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center gap-4 px-5 py-4">
         <button
           type="button"
@@ -46,6 +51,16 @@ export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps
             >
               Lig
             </button>
+            {isLeagueComplete && (
+              <button
+                type="button"
+                onClick={() => onNavigate('knockout')}
+                aria-current={route === 'knockout' ? 'page' : undefined}
+                className={navStyle(route === 'knockout')}
+              >
+                Nakavt
+              </button>
+            )}
             <button
               type="button"
               onClick={() => onNavigate('team')}

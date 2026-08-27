@@ -9,6 +9,8 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 - **Lig (ana sayfa, `#/`)**: sezon KPI'ları (tahmin edilen maç, toplam gol, maç başına ortalama,
   ev sahibi oranı, gol yemeyen maç), en farklı ve en gollü maç, 36 takımlık puan tablosu, gol
   krallığı / en iyi savunma / sürpriz yapanlar sıralamaları ve takım seçici.
+- **Nakavt (`#/nakavt`)**: lig aşaması bitince açılır. Play-off → son 16 → çeyrek → yarı → final,
+  tur tur simüle edilir; şampiyon belirlenince kutlama başlığı çıkar.
 - **Takımım (`#/takimim`)**: seçili takımın sekiz eşleşmesi, skor girişi, sezon özeti ve iki
   paylaşım kartı (takım kartı + puan tablosu).
 - **Takım seçimi (`#/takim-sec`)**: torbalara ayrılmış liste. Seçim önce taslak olur, alttaki
@@ -19,10 +21,13 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 ## Neler var
 
 - **Tahmin**: her maçın skorunu elle gir; elle girilenler simülasyonda korunur.
-- **Simülasyon**: takım gücüne dayalı Poisson modeli, dört sürpriz seviyesi ve tekrar üretilebilir
-  senaryo kodu (aynı kod + aynı ayar = aynı sezon). İlk çalıştırma boş maçları mevcut kodla
-  doldurur; "yeniden simüle et" yeni bir senaryo kodu üretip elle girilen skorlar hariç her şeyi
-  yeniden hesaplar.
+- **Hafta hafta simülasyon**: sezon 8 haftaya bölünmüştür. Her hafta oynandığında 18 maçın sonucu
+  animasyonlu bir modalda sırayla açılır (senin maçın ayrı vurgulanır), "sonraki hafta" ile
+  ilerlenir. "Kalan haftaları tamamla" ile atlanabilir.
+- **Nakavt aşaması**: lig sıralamasından türetilen eşleşmeler — 1–8 doğrudan son 16, 9–24 play-off,
+  25–36 elenir. Çift maçlarda toplam skor eşitse uzatma, sonra penaltı. Final tek maç.
+- **Simülasyon motoru**: takım gücüne dayalı Poisson modeli, dört sürpriz seviyesi ve tekrar
+  üretilebilir senaryo kodu (aynı kod + aynı ayar = aynı sezon).
 - **Puan tablosu**: 36 takım, UEFA eşitlik bozma sırasıyla; son 16 / play-off / eleme bölgeleri.
 - **Paylaşım**: iki adet 1080×1350 PNG kart — takım kartı (sekiz eşleşme + sıra) ve puan tablosu
   kartı (36 takım, nitelik bölgeleri). Canvas 2D ile çizilir, harici kütüphane yoktur; mobilde
@@ -46,7 +51,7 @@ npm run build
 | `meta` | Kura kimliği, tarih, yer, kaynak URL, çekilme zamanı |
 | `pots` | Dört torba ve takım kimlikleri |
 | `teams` | 36 takım: isim, ülke, torba, arma URL'leri, güç puanı |
-| `matches` | 144 benzersiz eşleşme: ev/deplasman, matchday, başlama saati, skor |
+| `matches` | 144 benzersiz eşleşme: ev/deplasman, hafta (matchday), başlama saati, skor |
 
 Kaynak uçlar (`scripts/uefa-api.mjs`):
 
@@ -75,9 +80,17 @@ tekilleştirilerek 144 maça indirgenir. `scripts/validate-draw-pool.mjs` her ç
 kurallarını doğrular: 36 takım, 144 maç, takım başına 4 ev + 4 deplasman, her torbadan 2 rakip,
 aynı ülkeden rakip yok. Kural bozulursa script hata verir ve JSON yazılmaz.
 
-**Not:** Lig aşaması maç takvimi kura günü itibarıyla henüz yayınlanmamıştı; `kickOff`, `matchday`
-ve `score` alanları `null`. UEFA takvimi açıklayınca `npm run scrape` bunları doldurur, uygulama
-skorları ve puan tablosunu otomatik gösterir.
+### Hafta takvimi
+
+UEFA lig aşaması takvimini kura günü itibarıyla yayınlamadığı için 144 maç `scripts/build-schedule.mjs`
+tarafından 8 haftaya bölünür: her hafta 18 maç, her takım haftada tam 1 maç. Bu, 8-regular çizgenin
+1-faktörizasyonu problemidir; her hafta için MRV sezgiseliyle geri izlemeli mükemmel eşleşme
+aranır, ev/deplasman serilerini kısaltan tohum denemeler arasından en dengelisi seçilir.
+`meta.matchdaySource` alanı takvimin kaynağını (`generated` / `uefa`) belirtir — UEFA takvimi
+açıklayıp `npm run scrape` çalıştırıldığında gerçek takvim otomatik olarak devralır.
+
+**Not:** `kickOff` ve `score` alanları hâlâ `null`; UEFA maç sonuçlarını yayınladığında scrape
+bunları doldurur.
 
 ## Yapı
 

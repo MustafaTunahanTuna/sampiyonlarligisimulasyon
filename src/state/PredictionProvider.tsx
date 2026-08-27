@@ -10,6 +10,7 @@ function restoreState(): PredictionState {
   const stored = readPersisted()
   return {
     predictions: stored?.predictions ?? {},
+    knockoutScores: stored?.knockoutScores ?? {},
     seed: stored?.seed ?? createSeed(),
     unpredictability: stored?.unpredictability ?? DEFAULT_UNPREDICTABILITY,
   }

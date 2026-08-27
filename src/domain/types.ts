@@ -46,6 +46,8 @@ export interface Pot {
   teamIds: string[]
 }
 
+export type MatchdaySource = 'uefa' | 'generated'
+
 export interface DrawMeta {
   competition: string
   season: string
@@ -56,6 +58,7 @@ export interface DrawMeta {
   drawDate: string
   venue: string
   source: string
+  matchdaySource: MatchdaySource
   scrapedAt: string
 }
 
@@ -113,3 +116,29 @@ export interface StandingRow {
   awayWins: number
   points: number
 }
+
+export interface KnockoutTie {
+  id: string
+  round: import('./knockoutFormat').KnockoutRoundId
+  order: number
+  seeded: Team | null
+  challenger: Team | null
+  seededLabel: string
+  challengerLabel: string
+  isTwoLegged: boolean
+}
+
+export type TieDecision = 'AGGREGATE' | 'EXTRA_TIME' | 'PENALTIES'
+
+export interface TieOutcome {
+  tieId: string
+  legs: Score[]
+  aggregateSeeded: number
+  aggregateChallenger: number
+  extraTime: Score | null
+  penalties: Score | null
+  winner: Team
+  decidedBy: TieDecision
+}
+
+export type KnockoutScoreMap = Record<string, Score>

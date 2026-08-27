@@ -9,7 +9,8 @@
     "drawDate": "2026-08-27T16:00:00Z",
     "venue": "Monaco",
     "source": "https://www.uefa.com/uefachampionsleague/draws/2027/2002239/",
-    "scrapedAt": "2026-08-27T17:42:54.699Z"
+    "matchdaySource": "generated",
+    "scrapedAt": "2026-08-27T20:06:17.051Z"
   },
   "pots": [
     {
@@ -459,7 +460,7 @@
       "logo": "https://img.uefa.com/imgml/TP/teams/logos/240x240/50129.png",
       "logoLarge": "https://img.uefa.com/imgml/TP/teams/logos/700x700/50129.png",
       "associationLogo": "https://img.uefa.com/imgml/uefacom/elements/logos/ma/GRE.svg",
-      "strength": 24,
+      "strength": 25,
       "strengthSource": "association-estimate"
     },
     {
@@ -577,111 +578,11 @@
   ],
   "matches": [
     {
-      "id": "2603790-50062",
-      "homeTeamId": "2603790",
-      "awayTeamId": "50062",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2603790-52277",
-      "homeTeamId": "2603790",
-      "awayTeamId": "52277",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2603790-52707",
-      "homeTeamId": "2603790",
-      "awayTeamId": "52707",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2603790-52919",
-      "homeTeamId": "2603790",
-      "awayTeamId": "52919",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2609356-50080",
-      "homeTeamId": "2609356",
-      "awayTeamId": "50080",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
       "id": "2609356-50136",
       "homeTeamId": "2609356",
       "awayTeamId": "50136",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2609356-52498",
-      "homeTeamId": "2609356",
-      "awayTeamId": "52498",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "2609356-52758",
-      "homeTeamId": "2609356",
-      "awayTeamId": "52758",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50037-52265",
-      "homeTeamId": "50037",
-      "awayTeamId": "52265",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50037-52280",
-      "homeTeamId": "50037",
-      "awayTeamId": "52280",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50037-52498",
-      "homeTeamId": "50037",
-      "awayTeamId": "52498",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -691,47 +592,7 @@
       "homeTeamId": "50037",
       "awayTeamId": "59333",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50043-52277",
-      "homeTeamId": "50043",
-      "awayTeamId": "52277",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50043-52683",
-      "homeTeamId": "50043",
-      "awayTeamId": "52683",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50043-59333",
-      "homeTeamId": "50043",
-      "awayTeamId": "59333",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50043-7889",
-      "homeTeamId": "50043",
-      "awayTeamId": "7889",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -741,37 +602,7 @@
       "homeTeamId": "50051",
       "awayTeamId": "2603790",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50051-50062",
-      "homeTeamId": "50051",
-      "awayTeamId": "50062",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50051-50138",
-      "homeTeamId": "50051",
-      "awayTeamId": "50138",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50051-63405",
-      "homeTeamId": "50051",
-      "awayTeamId": "63405",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -781,177 +612,7 @@
       "homeTeamId": "50062",
       "awayTeamId": "50043",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50062-50107",
-      "homeTeamId": "50062",
-      "awayTeamId": "50107",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50062-50124",
-      "homeTeamId": "50062",
-      "awayTeamId": "50124",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50062-52707",
-      "homeTeamId": "50062",
-      "awayTeamId": "52707",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50064-50062",
-      "homeTeamId": "50064",
-      "awayTeamId": "50062",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50064-50136",
-      "homeTeamId": "50064",
-      "awayTeamId": "50136",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50064-52498",
-      "homeTeamId": "50064",
-      "awayTeamId": "52498",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50064-52919",
-      "homeTeamId": "50064",
-      "awayTeamId": "52919",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50067-50080",
-      "homeTeamId": "50067",
-      "awayTeamId": "50080",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50067-50107",
-      "homeTeamId": "50067",
-      "awayTeamId": "50107",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50067-52683",
-      "homeTeamId": "50067",
-      "awayTeamId": "52683",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50067-52749",
-      "homeTeamId": "50067",
-      "awayTeamId": "52749",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50080-52683",
-      "homeTeamId": "50080",
-      "awayTeamId": "52683",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50080-52749",
-      "homeTeamId": "50080",
-      "awayTeamId": "52749",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50080-52919",
-      "homeTeamId": "50080",
-      "awayTeamId": "52919",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50080-79946",
-      "homeTeamId": "50080",
-      "awayTeamId": "79946",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50107-50043",
-      "homeTeamId": "50107",
-      "awayTeamId": "50043",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50107-50124",
-      "homeTeamId": "50107",
-      "awayTeamId": "50124",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -961,77 +622,7 @@
       "homeTeamId": "50107",
       "awayTeamId": "52319",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50107-75797",
-      "homeTeamId": "50107",
-      "awayTeamId": "75797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50124-50037",
-      "homeTeamId": "50124",
-      "awayTeamId": "50037",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50124-52319",
-      "homeTeamId": "50124",
-      "awayTeamId": "52319",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50124-52682",
-      "homeTeamId": "50124",
-      "awayTeamId": "52682",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50124-52692",
-      "homeTeamId": "50124",
-      "awayTeamId": "52692",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50129-50051",
-      "homeTeamId": "50129",
-      "awayTeamId": "50051",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50129-50067",
-      "homeTeamId": "50129",
-      "awayTeamId": "50067",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1041,147 +632,7 @@
       "homeTeamId": "50129",
       "awayTeamId": "50137",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50129-63405",
-      "homeTeamId": "50129",
-      "awayTeamId": "63405",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50136-50043",
-      "homeTeamId": "50136",
-      "awayTeamId": "50043",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50136-52280",
-      "homeTeamId": "50136",
-      "awayTeamId": "52280",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50136-52319",
-      "homeTeamId": "50136",
-      "awayTeamId": "52319",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50136-59333",
-      "homeTeamId": "50136",
-      "awayTeamId": "59333",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50137-50051",
-      "homeTeamId": "50137",
-      "awayTeamId": "50051",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50137-50149",
-      "homeTeamId": "50137",
-      "awayTeamId": "50149",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50137-52797",
-      "homeTeamId": "50137",
-      "awayTeamId": "52797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50137-75797",
-      "homeTeamId": "50137",
-      "awayTeamId": "75797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50138-50043",
-      "homeTeamId": "50138",
-      "awayTeamId": "50043",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50138-50107",
-      "homeTeamId": "50138",
-      "awayTeamId": "50107",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50138-52707",
-      "homeTeamId": "50138",
-      "awayTeamId": "52707",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50138-7889",
-      "homeTeamId": "50138",
-      "awayTeamId": "7889",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50149-50067",
-      "homeTeamId": "50149",
-      "awayTeamId": "50067",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1191,47 +642,7 @@
       "homeTeamId": "50149",
       "awayTeamId": "50080",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50149-52682",
-      "homeTeamId": "50149",
-      "awayTeamId": "52682",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "50149-63405",
-      "homeTeamId": "50149",
-      "awayTeamId": "63405",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52265-50064",
-      "homeTeamId": "52265",
-      "awayTeamId": "50064",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52265-52280",
-      "homeTeamId": "52265",
-      "awayTeamId": "52280",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1241,27 +652,7 @@
       "homeTeamId": "52265",
       "awayTeamId": "52749",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52265-79946",
-      "homeTeamId": "52265",
-      "awayTeamId": "79946",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52277-50149",
-      "homeTeamId": "52277",
-      "awayTeamId": "50149",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1271,57 +662,7 @@
       "homeTeamId": "52277",
       "awayTeamId": "52919",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52277-59333",
-      "homeTeamId": "52277",
-      "awayTeamId": "59333",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52277-79946",
-      "homeTeamId": "52277",
-      "awayTeamId": "79946",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52280-2609356",
-      "homeTeamId": "52280",
-      "awayTeamId": "2609356",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52280-50051",
-      "homeTeamId": "52280",
-      "awayTeamId": "50051",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52280-52758",
-      "homeTeamId": "52280",
-      "awayTeamId": "52758",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1331,67 +672,7 @@
       "homeTeamId": "52280",
       "awayTeamId": "75797",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52319-2609356",
-      "homeTeamId": "52319",
-      "awayTeamId": "2609356",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52319-50037",
-      "homeTeamId": "52319",
-      "awayTeamId": "50037",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52319-50062",
-      "homeTeamId": "52319",
-      "awayTeamId": "50062",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52319-52749",
-      "homeTeamId": "52319",
-      "awayTeamId": "52749",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52498-52277",
-      "homeTeamId": "52498",
-      "awayTeamId": "52277",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52498-52280",
-      "homeTeamId": "52498",
-      "awayTeamId": "52280",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1401,167 +682,7 @@
       "homeTeamId": "52498",
       "awayTeamId": "52683",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52498-70691",
-      "homeTeamId": "52498",
-      "awayTeamId": "70691",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52682-2603790",
-      "homeTeamId": "52682",
-      "awayTeamId": "2603790",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52682-2609356",
-      "homeTeamId": "52682",
-      "awayTeamId": "2609356",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52682-50037",
-      "homeTeamId": "52682",
-      "awayTeamId": "50037",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52682-50137",
-      "homeTeamId": "52682",
-      "awayTeamId": "50137",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52683-52319",
-      "homeTeamId": "52683",
-      "awayTeamId": "52319",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52683-52692",
-      "homeTeamId": "52683",
-      "awayTeamId": "52692",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52683-52747",
-      "homeTeamId": "52683",
-      "awayTeamId": "52747",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52683-52758",
-      "homeTeamId": "52683",
-      "awayTeamId": "52758",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52692-50137",
-      "homeTeamId": "52692",
-      "awayTeamId": "50137",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52692-52498",
-      "homeTeamId": "52692",
-      "awayTeamId": "52498",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52692-70691",
-      "homeTeamId": "52692",
-      "awayTeamId": "70691",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52692-7889",
-      "homeTeamId": "52692",
-      "awayTeamId": "7889",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52707-50051",
-      "homeTeamId": "52707",
-      "awayTeamId": "50051",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52707-50129",
-      "homeTeamId": "52707",
-      "awayTeamId": "50129",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52707-50149",
-      "homeTeamId": "52707",
-      "awayTeamId": "50149",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1571,7 +692,7 @@
       "homeTeamId": "52707",
       "awayTeamId": "52692",
       "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1581,107 +702,7 @@
       "homeTeamId": "52747",
       "awayTeamId": "50067",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52747-50080",
-      "homeTeamId": "52747",
-      "awayTeamId": "50080",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52747-50137",
-      "homeTeamId": "52747",
-      "awayTeamId": "50137",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52747-52797",
-      "homeTeamId": "52747",
-      "awayTeamId": "52797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52749-2603790",
-      "homeTeamId": "52749",
-      "awayTeamId": "2603790",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52749-50064",
-      "homeTeamId": "52749",
-      "awayTeamId": "50064",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52749-50138",
-      "homeTeamId": "52749",
-      "awayTeamId": "50138",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52749-79946",
-      "homeTeamId": "52749",
-      "awayTeamId": "79946",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52758-50129",
-      "homeTeamId": "52758",
-      "awayTeamId": "50129",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52758-50138",
-      "homeTeamId": "52758",
-      "awayTeamId": "50138",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52758-52265",
-      "homeTeamId": "52758",
-      "awayTeamId": "52265",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1691,17 +712,7 @@
       "homeTeamId": "52758",
       "awayTeamId": "70691",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52797-50107",
-      "homeTeamId": "52797",
-      "awayTeamId": "50107",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1711,107 +722,7 @@
       "homeTeamId": "52797",
       "awayTeamId": "50138",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52797-52265",
-      "homeTeamId": "52797",
-      "awayTeamId": "52265",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52797-52707",
-      "homeTeamId": "52797",
-      "awayTeamId": "52707",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52919-50129",
-      "homeTeamId": "52919",
-      "awayTeamId": "50129",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52919-50136",
-      "homeTeamId": "52919",
-      "awayTeamId": "50136",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52919-50149",
-      "homeTeamId": "52919",
-      "awayTeamId": "50149",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "52919-52747",
-      "homeTeamId": "52919",
-      "awayTeamId": "52747",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "59333-50124",
-      "homeTeamId": "59333",
-      "awayTeamId": "50124",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "59333-52758",
-      "homeTeamId": "59333",
-      "awayTeamId": "52758",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "59333-63405",
-      "homeTeamId": "59333",
-      "awayTeamId": "63405",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "59333-75797",
-      "homeTeamId": "59333",
-      "awayTeamId": "75797",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1821,127 +732,7 @@
       "homeTeamId": "63405",
       "awayTeamId": "50064",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "63405-52692",
-      "homeTeamId": "63405",
-      "awayTeamId": "52692",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "63405-52797",
-      "homeTeamId": "63405",
-      "awayTeamId": "52797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "63405-7889",
-      "homeTeamId": "63405",
-      "awayTeamId": "7889",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "70691-2609356",
-      "homeTeamId": "70691",
-      "awayTeamId": "2609356",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "70691-50136",
-      "homeTeamId": "70691",
-      "awayTeamId": "50136",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "70691-52682",
-      "homeTeamId": "70691",
-      "awayTeamId": "52682",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "70691-52747",
-      "homeTeamId": "70691",
-      "awayTeamId": "52747",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "75797-50037",
-      "homeTeamId": "75797",
-      "awayTeamId": "50037",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "75797-50067",
-      "homeTeamId": "75797",
-      "awayTeamId": "50067",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "75797-52265",
-      "homeTeamId": "75797",
-      "awayTeamId": "52265",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "75797-52797",
-      "homeTeamId": "75797",
-      "awayTeamId": "52797",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "7889-50064",
-      "homeTeamId": "7889",
-      "awayTeamId": "50064",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -1951,47 +742,7 @@
       "homeTeamId": "7889",
       "awayTeamId": "50124",
       "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "7889-52277",
-      "homeTeamId": "7889",
-      "awayTeamId": "52277",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "7889-70691",
-      "homeTeamId": "7889",
-      "awayTeamId": "70691",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "79946-2603790",
-      "homeTeamId": "79946",
-      "awayTeamId": "2603790",
-      "matchId": null,
-      "matchday": null,
-      "kickOff": null,
-      "status": "SCHEDULED_UNCONFIRMED",
-      "score": null
-    },
-    {
-      "id": "79946-50129",
-      "homeTeamId": "79946",
-      "awayTeamId": "50129",
-      "matchId": null,
-      "matchday": null,
+      "matchday": 1,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -2001,7 +752,357 @@
       "homeTeamId": "79946",
       "awayTeamId": "52682",
       "matchId": null,
-      "matchday": null,
+      "matchday": 1,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2603790-52277",
+      "homeTeamId": "2603790",
+      "awayTeamId": "52277",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2609356-52498",
+      "homeTeamId": "2609356",
+      "awayTeamId": "52498",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50062-50107",
+      "homeTeamId": "50062",
+      "awayTeamId": "50107",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50080-79946",
+      "homeTeamId": "50080",
+      "awayTeamId": "79946",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50124-52682",
+      "homeTeamId": "50124",
+      "awayTeamId": "52682",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50136-59333",
+      "homeTeamId": "50136",
+      "awayTeamId": "59333",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50137-52797",
+      "homeTeamId": "50137",
+      "awayTeamId": "52797",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50138-50043",
+      "homeTeamId": "50138",
+      "awayTeamId": "50043",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52280-50051",
+      "homeTeamId": "52280",
+      "awayTeamId": "50051",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52319-50037",
+      "homeTeamId": "52319",
+      "awayTeamId": "50037",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52683-52692",
+      "homeTeamId": "52683",
+      "awayTeamId": "52692",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52707-50129",
+      "homeTeamId": "52707",
+      "awayTeamId": "50129",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52749-50064",
+      "homeTeamId": "52749",
+      "awayTeamId": "50064",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52758-52265",
+      "homeTeamId": "52758",
+      "awayTeamId": "52265",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52919-50149",
+      "homeTeamId": "52919",
+      "awayTeamId": "50149",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "63405-7889",
+      "homeTeamId": "63405",
+      "awayTeamId": "7889",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "70691-52747",
+      "homeTeamId": "70691",
+      "awayTeamId": "52747",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "75797-50067",
+      "homeTeamId": "75797",
+      "awayTeamId": "50067",
+      "matchId": null,
+      "matchday": 2,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50037-52280",
+      "homeTeamId": "50037",
+      "awayTeamId": "52280",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50043-7889",
+      "homeTeamId": "50043",
+      "awayTeamId": "7889",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50051-50062",
+      "homeTeamId": "50051",
+      "awayTeamId": "50062",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50067-50107",
+      "homeTeamId": "50067",
+      "awayTeamId": "50107",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50080-52683",
+      "homeTeamId": "50080",
+      "awayTeamId": "52683",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50124-52319",
+      "homeTeamId": "50124",
+      "awayTeamId": "52319",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50137-50149",
+      "homeTeamId": "50137",
+      "awayTeamId": "50149",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50138-52707",
+      "homeTeamId": "50138",
+      "awayTeamId": "52707",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52265-50064",
+      "homeTeamId": "52265",
+      "awayTeamId": "50064",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52498-52277",
+      "homeTeamId": "52498",
+      "awayTeamId": "52277",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52682-2609356",
+      "homeTeamId": "52682",
+      "awayTeamId": "2609356",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52692-70691",
+      "homeTeamId": "52692",
+      "awayTeamId": "70691",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52749-2603790",
+      "homeTeamId": "52749",
+      "awayTeamId": "2603790",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52758-50129",
+      "homeTeamId": "52758",
+      "awayTeamId": "50129",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52919-50136",
+      "homeTeamId": "52919",
+      "awayTeamId": "50136",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "59333-63405",
+      "homeTeamId": "59333",
+      "awayTeamId": "63405",
+      "matchId": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "75797-52797",
+      "homeTeamId": "75797",
+      "awayTeamId": "52797",
+      "matchId": null,
+      "matchday": 3,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null
@@ -2011,7 +1112,907 @@
       "homeTeamId": "79946",
       "awayTeamId": "52747",
       "matchId": null,
-      "matchday": null,
+      "matchday": 3,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2603790-52919",
+      "homeTeamId": "2603790",
+      "awayTeamId": "52919",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50037-52498",
+      "homeTeamId": "50037",
+      "awayTeamId": "52498",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50043-59333",
+      "homeTeamId": "50043",
+      "awayTeamId": "59333",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50051-50138",
+      "homeTeamId": "50051",
+      "awayTeamId": "50138",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50062-52707",
+      "homeTeamId": "50062",
+      "awayTeamId": "52707",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50064-50136",
+      "homeTeamId": "50064",
+      "awayTeamId": "50136",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50067-52683",
+      "homeTeamId": "50067",
+      "awayTeamId": "52683",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50107-50124",
+      "homeTeamId": "50107",
+      "awayTeamId": "50124",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50129-63405",
+      "homeTeamId": "50129",
+      "awayTeamId": "63405",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50137-75797",
+      "homeTeamId": "50137",
+      "awayTeamId": "75797",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50149-52682",
+      "homeTeamId": "50149",
+      "awayTeamId": "52682",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52277-79946",
+      "homeTeamId": "52277",
+      "awayTeamId": "79946",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52280-52758",
+      "homeTeamId": "52280",
+      "awayTeamId": "52758",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52319-52749",
+      "homeTeamId": "52319",
+      "awayTeamId": "52749",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52692-7889",
+      "homeTeamId": "52692",
+      "awayTeamId": "7889",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52747-50080",
+      "homeTeamId": "52747",
+      "awayTeamId": "50080",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52797-52265",
+      "homeTeamId": "52797",
+      "awayTeamId": "52265",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "70691-2609356",
+      "homeTeamId": "70691",
+      "awayTeamId": "2609356",
+      "matchId": null,
+      "matchday": 4,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2609356-50080",
+      "homeTeamId": "2609356",
+      "awayTeamId": "50080",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50064-50062",
+      "homeTeamId": "50064",
+      "awayTeamId": "50062",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50067-52749",
+      "homeTeamId": "50067",
+      "awayTeamId": "52749",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50107-50043",
+      "homeTeamId": "50107",
+      "awayTeamId": "50043",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50136-52319",
+      "homeTeamId": "50136",
+      "awayTeamId": "52319",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50138-7889",
+      "homeTeamId": "50138",
+      "awayTeamId": "7889",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52265-52280",
+      "homeTeamId": "52265",
+      "awayTeamId": "52280",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52277-50149",
+      "homeTeamId": "52277",
+      "awayTeamId": "50149",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52498-70691",
+      "homeTeamId": "52498",
+      "awayTeamId": "70691",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52682-50137",
+      "homeTeamId": "52682",
+      "awayTeamId": "50137",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52683-52758",
+      "homeTeamId": "52683",
+      "awayTeamId": "52758",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52707-50051",
+      "homeTeamId": "52707",
+      "awayTeamId": "50051",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52747-52797",
+      "homeTeamId": "52747",
+      "awayTeamId": "52797",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52919-50129",
+      "homeTeamId": "52919",
+      "awayTeamId": "50129",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "59333-50124",
+      "homeTeamId": "59333",
+      "awayTeamId": "50124",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "63405-52692",
+      "homeTeamId": "63405",
+      "awayTeamId": "52692",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "75797-50037",
+      "homeTeamId": "75797",
+      "awayTeamId": "50037",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "79946-2603790",
+      "homeTeamId": "79946",
+      "awayTeamId": "2603790",
+      "matchId": null,
+      "matchday": 5,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50037-52265",
+      "homeTeamId": "50037",
+      "awayTeamId": "52265",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50051-63405",
+      "homeTeamId": "50051",
+      "awayTeamId": "63405",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50062-50124",
+      "homeTeamId": "50062",
+      "awayTeamId": "50124",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50064-52498",
+      "homeTeamId": "50064",
+      "awayTeamId": "52498",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50080-52749",
+      "homeTeamId": "50080",
+      "awayTeamId": "52749",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50107-75797",
+      "homeTeamId": "50107",
+      "awayTeamId": "75797",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50136-50043",
+      "homeTeamId": "50136",
+      "awayTeamId": "50043",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50149-50067",
+      "homeTeamId": "50149",
+      "awayTeamId": "50067",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52277-59333",
+      "homeTeamId": "52277",
+      "awayTeamId": "59333",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52280-2609356",
+      "homeTeamId": "52280",
+      "awayTeamId": "2609356",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52682-2603790",
+      "homeTeamId": "52682",
+      "awayTeamId": "2603790",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52683-52319",
+      "homeTeamId": "52683",
+      "awayTeamId": "52319",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52692-50137",
+      "homeTeamId": "52692",
+      "awayTeamId": "50137",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52758-50138",
+      "homeTeamId": "52758",
+      "awayTeamId": "50138",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52797-52707",
+      "homeTeamId": "52797",
+      "awayTeamId": "52707",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52919-52747",
+      "homeTeamId": "52919",
+      "awayTeamId": "52747",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "7889-70691",
+      "homeTeamId": "7889",
+      "awayTeamId": "70691",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "79946-50129",
+      "homeTeamId": "79946",
+      "awayTeamId": "50129",
+      "matchId": null,
+      "matchday": 6,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2603790-50062",
+      "homeTeamId": "2603790",
+      "awayTeamId": "50062",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50043-52683",
+      "homeTeamId": "50043",
+      "awayTeamId": "52683",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50064-52919",
+      "homeTeamId": "50064",
+      "awayTeamId": "52919",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50067-50080",
+      "homeTeamId": "50067",
+      "awayTeamId": "50080",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50124-50037",
+      "homeTeamId": "50124",
+      "awayTeamId": "50037",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50129-50051",
+      "homeTeamId": "50129",
+      "awayTeamId": "50051",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50136-52280",
+      "homeTeamId": "50136",
+      "awayTeamId": "52280",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50138-50107",
+      "homeTeamId": "50138",
+      "awayTeamId": "50107",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52319-2609356",
+      "homeTeamId": "52319",
+      "awayTeamId": "2609356",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52692-52498",
+      "homeTeamId": "52692",
+      "awayTeamId": "52498",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52707-50149",
+      "homeTeamId": "52707",
+      "awayTeamId": "50149",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52747-50137",
+      "homeTeamId": "52747",
+      "awayTeamId": "50137",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52749-79946",
+      "homeTeamId": "52749",
+      "awayTeamId": "79946",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "59333-52758",
+      "homeTeamId": "59333",
+      "awayTeamId": "52758",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "63405-52797",
+      "homeTeamId": "63405",
+      "awayTeamId": "52797",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "70691-52682",
+      "homeTeamId": "70691",
+      "awayTeamId": "52682",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "75797-52265",
+      "homeTeamId": "75797",
+      "awayTeamId": "52265",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "7889-52277",
+      "homeTeamId": "7889",
+      "awayTeamId": "52277",
+      "matchId": null,
+      "matchday": 7,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2603790-52707",
+      "homeTeamId": "2603790",
+      "awayTeamId": "52707",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "2609356-52758",
+      "homeTeamId": "2609356",
+      "awayTeamId": "52758",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50043-52277",
+      "homeTeamId": "50043",
+      "awayTeamId": "52277",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50080-52919",
+      "homeTeamId": "50080",
+      "awayTeamId": "52919",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50124-52692",
+      "homeTeamId": "50124",
+      "awayTeamId": "52692",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50129-50067",
+      "homeTeamId": "50129",
+      "awayTeamId": "50067",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50137-50051",
+      "homeTeamId": "50137",
+      "awayTeamId": "50051",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "50149-63405",
+      "homeTeamId": "50149",
+      "awayTeamId": "63405",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52265-79946",
+      "homeTeamId": "52265",
+      "awayTeamId": "79946",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52319-50062",
+      "homeTeamId": "52319",
+      "awayTeamId": "50062",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52498-52280",
+      "homeTeamId": "52498",
+      "awayTeamId": "52280",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52682-50037",
+      "homeTeamId": "52682",
+      "awayTeamId": "50037",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52683-52747",
+      "homeTeamId": "52683",
+      "awayTeamId": "52747",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52749-50138",
+      "homeTeamId": "52749",
+      "awayTeamId": "50138",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "52797-50107",
+      "homeTeamId": "52797",
+      "awayTeamId": "50107",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "59333-75797",
+      "homeTeamId": "59333",
+      "awayTeamId": "75797",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "70691-50136",
+      "homeTeamId": "70691",
+      "awayTeamId": "50136",
+      "matchId": null,
+      "matchday": 8,
+      "kickOff": null,
+      "status": "SCHEDULED_UNCONFIRMED",
+      "score": null
+    },
+    {
+      "id": "7889-50064",
+      "homeTeamId": "7889",
+      "awayTeamId": "50064",
+      "matchId": null,
+      "matchday": 8,
       "kickOff": null,
       "status": "SCHEDULED_UNCONFIRMED",
       "score": null

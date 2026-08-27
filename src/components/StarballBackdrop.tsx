@@ -20,7 +20,7 @@ export function StarballBackdrop() {
         fetchPriority="low"
         className="neon-image absolute -left-[26vw] bottom-[-6vh] w-[62vw] max-w-[44rem] opacity-30 sm:-left-[16vw]"
       />
-      <div className="absolute inset-0 bg-linear-to-b from-base/40 via-base/70 to-base/85" />
+      <div className="absolute inset-0 bg-linear-to-b from-canvas/40 via-canvas/70 to-canvas/85" />
     </div>
   )
 }
