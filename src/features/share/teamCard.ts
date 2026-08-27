@@ -7,13 +7,18 @@ import {
   loadImage,
   truncateText,
 } from './canvasPrimitives'
-import { OUTCOME_SHORT, VENUE_LABEL } from '../fixtures/matchPresentation'
-import { QUALIFICATION_LABEL } from '../../domain/standings'
+import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import type { Fixture, StandingRow, Team } from '../../domain/types'
 
-const WIDTH = 1080
-const HEIGHT = 1350
-const MARGIN = 72
+import {
+  CARD_HEIGHT as HEIGHT,
+  CARD_MARGIN as MARGIN,
+  CARD_WIDTH as WIDTH,
+  teamCardLayout,
+} from './teamCardLayout'
+import { drawFixtureRow, drawKnockoutRow, drawSectionHeading } from './teamCardRows'
+import type { KnockoutAppearance } from '../../domain/teamKnockoutRun'
+
 const DISPLAY = '"Archivo", "Manrope", sans-serif'
 const BODY = '"Manrope", sans-serif'
 
@@ -21,6 +26,8 @@ export interface TeamCardInput {
   team: Team
   fixtures: Fixture[]
   standing: StandingRow
+  knockoutRun: KnockoutAppearance[]
+  knockoutSummary: string | null
   seed: string
 }
 
@@ -46,6 +53,7 @@ function drawHero(
   team: Team,
   crest: HTMLImageElement,
   standing: StandingRow,
+  knockoutSummary: string | null,
 ) {
   const top = MARGIN + 70
   drawContainedImage(context, crest, MARGIN, top, 168)
@@ -73,83 +81,49 @@ function drawHero(
   context.fillStyle = palette.muted
   const positionWidth = context.measureText(`${standing.position}. SIRA`).width
   context.fillText(
-    `${standing.points} puan · ${standing.wins}G ${standing.draws}B ${standing.losses}M · ${QUALIFICATION_LABEL[standing.qualification]}`,
+    `${standing.points} puan · ${standing.wins}G ${standing.draws}B ${standing.losses}M · ${standing.goalsFor}-${standing.goalsAgainst}`,
     textLeft + positionWidth + 60,
     badgeTop,
   )
+
+  context.font = `600 24px ${DISPLAY}`
+  context.fillStyle = knockoutSummary === null ? palette.muted : palette.accent
+  context.letterSpacing = '2px'
+  context.fillText(
+    (knockoutSummary ?? QUALIFICATION_OUTCOME_LABEL[standing.qualification]).toLocaleUpperCase('tr'),
+    textLeft,
+    badgeTop + 42,
+  )
+  context.letterSpacing = '0px'
 }
 
-function drawFixtureRow(
-  context: CanvasRenderingContext2D,
-  fixture: Fixture,
-  crest: HTMLImageElement,
-  y: number,
-) {
-  const isHome = fixture.venue === 'HOME'
-  const rowHeight = 96
-
-  context.fillStyle = isHome ? palette.home : palette.away
-  context.fillRect(MARGIN, y, 4, rowHeight - 16)
-
-  drawContainedImage(context, crest, MARGIN + 28, y + 12, 56)
-
-  context.font = `700 34px ${DISPLAY}`
-  context.fillStyle = palette.fg
-  context.fillText(truncateText(context, fixture.opponent.name, 420), MARGIN + 108, y + 44)
-
-  context.font = `500 22px ${BODY}`
-  context.fillStyle = isHome ? palette.home : palette.away
-  context.fillText(VENUE_LABEL[fixture.venue], MARGIN + 108, y + 74)
-
-  context.textAlign = 'right'
-  if (fixture.goalsFor !== null && fixture.goalsAgainst !== null) {
-    context.font = `800 46px ${DISPLAY}`
-    context.fillStyle = palette.fg
-    context.fillText(`${fixture.goalsFor} – ${fixture.goalsAgainst}`, WIDTH - MARGIN - 60, y + 56)
-
-    context.font = `800 30px ${DISPLAY}`
-    context.fillStyle =
-      fixture.outcome === 'WIN' ? palette.home : fixture.outcome === 'LOSS' ? palette.dim : palette.muted
-    context.fillText(OUTCOME_SHORT[fixture.outcome ?? 'DRAW'], WIDTH - MARGIN, y + 56)
-  } else {
-    context.font = `500 26px ${BODY}`
-    context.fillStyle = palette.dim
-    context.fillText('—', WIDTH - MARGIN, y + 56)
-  }
-  context.textAlign = 'left'
-
-  context.strokeStyle = palette.line
-  context.lineWidth = 1
-  context.beginPath()
-  context.moveTo(MARGIN, y + rowHeight - 8)
-  context.lineTo(WIDTH - MARGIN, y + rowHeight - 8)
-  context.stroke()
-}
-
-function drawFooter(context: CanvasRenderingContext2D, standing: StandingRow) {
-  const y = HEIGHT - MARGIN
+function drawFooter(context: CanvasRenderingContext2D, y: number) {
   context.font = `500 22px ${BODY}`
   context.fillStyle = palette.dim
   context.fillText('Kura verisi: uefa.com · Tahmin ve simülasyon', MARGIN, y)
-
-  context.textAlign = 'right'
-  context.font = `800 34px ${DISPLAY}`
-  context.fillStyle = palette.fg
-  context.fillText(`${standing.goalsFor}:${standing.goalsAgainst}`, WIDTH - MARGIN, y)
-  context.textAlign = 'left'
 }
 
-export async function renderTeamCard({ team, fixtures, standing, seed }: TeamCardInput): Promise<Blob> {
+export async function renderTeamCard({
+  team,
+  fixtures,
+  standing,
+  knockoutRun,
+  knockoutSummary,
+  seed,
+}: TeamCardInput): Promise<Blob> {
   const canvas = document.createElement('canvas')
   canvas.width = WIDTH
   canvas.height = HEIGHT
   const context = canvas.getContext('2d')
   if (context === null) throw new Error('Canvas bağlamı oluşturulamadı')
 
-  const [teamCrest, ...opponentCrests] = await Promise.all([
+  const [teamCrest, ...crests] = await Promise.all([
     loadImage(team.logoLarge),
     ...fixtures.map((fixture) => loadImage(fixture.opponent.logo)),
+    ...knockoutRun.map((appearance) => loadImage(appearance.opponent.logo)),
   ])
+  const opponentCrests = crests.slice(0, fixtures.length)
+  const knockoutCrests = crests.slice(fixtures.length)
   await document.fonts.ready
 
   context.fillStyle = palette.base
@@ -158,16 +132,37 @@ export async function renderTeamCard({ team, fixtures, standing, seed }: TeamCar
   await drawNeonStarball(context, WIDTH * 0.34, HEIGHT * 0.52, WIDTH * 0.92, 0.3)
   context.textBaseline = 'alphabetic'
 
-  drawHeader(context, seed)
-  drawHero(context, team, teamCrest, standing)
+  const layout = teamCardLayout(fixtures.length, knockoutRun.length)
 
-  let rowY = MARGIN + 420
+  drawHeader(context, seed)
+  drawHero(context, team, teamCrest, standing, knockoutSummary)
+
+  drawSectionHeading(context, 'Lig aşaması', layout.contentTop + 24)
   fixtures.forEach((fixture, index) => {
-    drawFixtureRow(context, fixture, opponentCrests[index], rowY)
-    rowY += 96
+    drawFixtureRow(
+      context,
+      fixture,
+      opponentCrests[index],
+      layout.fixturesTop + index * layout.rowHeight,
+      layout.rowHeight,
+    )
   })
 
-  drawFooter(context, standing)
+  const knockoutTop = layout.knockoutTop
+  if (knockoutTop !== null) {
+    drawSectionHeading(context, 'Nakavt aşaması', knockoutTop - 16)
+    knockoutRun.forEach((appearance, index) => {
+      drawKnockoutRow(
+        context,
+        appearance,
+        knockoutCrests[index],
+        knockoutTop + index * layout.rowHeight,
+        layout.rowHeight,
+      )
+    })
+  }
+
+  drawFooter(context, layout.footerY)
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

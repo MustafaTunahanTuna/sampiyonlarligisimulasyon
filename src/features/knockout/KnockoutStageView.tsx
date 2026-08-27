@@ -1,7 +1,9 @@
 import { ChampionBanner } from './ChampionBanner'
+import { BracketTree } from './BracketTree'
 import { KnockoutRoundSection } from './KnockoutRoundSection'
 import { useKnockoutRunner } from './useKnockoutRunner'
 import { Button } from '../../components/Button'
+import { DownloadKnockoutButton } from '../share/DownloadKnockoutButton'
 import { completedMatchdayCount, MATCHDAY_NUMBERS } from '../../domain/matchdays'
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
@@ -48,11 +50,20 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
             çeyrek ve yarı final çift maç; final tek maç.
           </p>
         </div>
-        {playableRound !== null && (
-          <Button variant="primary" onClick={playNextRound}>
-            {playableRound.label} oyna
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {playableRound !== null && (
+            <Button variant="primary" onClick={playNextRound}>
+              {playableRound.label} oyna
+            </Button>
+          )}
+          {stage.rounds.some((round) => round.isComplete) && (
+            <DownloadKnockoutButton
+              stage={stage}
+              favouriteTeam={favouriteTeam}
+              seed={state.seed}
+            />
+          )}
+        </div>
       </header>
 
       {stage.champion !== null && (
@@ -62,15 +73,30 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
         />
       )}
 
-      {stage.rounds.map((round) => (
-        <KnockoutRoundSection
-          key={round.id}
-          round={round}
-          favouriteTeamId={favouriteTeam?.id ?? null}
-          isPlayable={round.id === playableRound?.id}
-          onPlay={playNextRound}
-        />
-      ))}
+      <KnockoutRoundSection
+        round={stage.rounds[0]}
+        favouriteTeamId={favouriteTeam?.id ?? null}
+        isPlayable={stage.rounds[0].id === playableRound?.id}
+        onPlay={playNextRound}
+      />
+
+      <section>
+        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
+          <h3 className="font-display text-xl font-extrabold uppercase tracking-tight">
+            Turnuva ağacı
+            <span className="eyebrow pl-3 text-muted">son 16'dan finale</span>
+          </h3>
+          {playableRound !== null && playableRound.id !== 'PLAY_OFF' && (
+            <Button variant="primary" onClick={playNextRound}>
+              {playableRound.label} oyna
+            </Button>
+          )}
+        </header>
+
+        <div className="mt-5">
+          <BracketTree stage={stage} favouriteTeamId={favouriteTeam?.id ?? null} />
+        </div>
+      </section>
     </div>
   )
 }

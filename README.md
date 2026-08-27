@@ -9,8 +9,9 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 - **Lig (ana sayfa, `#/`)**: sezon KPI'ları (tahmin edilen maç, toplam gol, maç başına ortalama,
   ev sahibi oranı, gol yemeyen maç), en farklı ve en gollü maç, 36 takımlık puan tablosu, gol
   krallığı / en iyi savunma / sürpriz yapanlar sıralamaları ve takım seçici.
-- **Nakavt (`#/nakavt`)**: lig aşaması bitince açılır. Play-off → son 16 → çeyrek → yarı → final,
-  tur tur simüle edilir; şampiyon belirlenince kutlama başlığı çıkar.
+- **Nakavt (`#/nakavt`)**: lig aşaması bitince açılır. Play-off ayrı şeritte, son 16'dan finale
+  kadar **simetrik turnuva ağacı** olarak gösterilir (dar ekranda yatay kaydırılır). Turlar sırayla
+  simüle edilir; şampiyon belirlenince kutlama başlığı çıkar.
 - **Takımım (`#/takimim`)**: seçili takımın sekiz eşleşmesi, skor girişi, sezon özeti ve iki
   indirilebilir kart (takım kartı + puan tablosu).
 - **Takım seçimi (`#/takim-sec`)**: torbalara ayrılmış liste. Seçim önce taslak olur, alttaki
@@ -29,9 +30,11 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 - **Simülasyon motoru**: takım gücüne dayalı Poisson modeli, dört sürpriz seviyesi ve tekrar
   üretilebilir senaryo kodu (aynı kod + aynı ayar = aynı sezon).
 - **Puan tablosu**: 36 takım, UEFA eşitlik bozma sırasıyla; son 16 / play-off / eleme bölgeleri.
-- **Görsel kart indirme**: iki adet 1080×1350 PNG — takım kartı (sekiz eşleşme + sıra) ve puan
-  tablosu kartı (36 takım, nitelik bölgeleri). Canvas 2D ile çizilir, harici kütüphane yoktur;
-  butona basınca doğrudan indirilir (`<takım>-<senaryo>.png`).
+- **Görsel kart indirme**: üç adet 1080×1350 PNG — takım kartı (sekiz lig eşleşmesi + oynandıysa
+  nakavt yolculuğu), puan tablosu kartı (36 takım, nitelik bölgeleri) ve nakavt kartı (tüm turlar +
+  şampiyon). Canvas 2D ile çizilir, harici kütüphane yoktur; butona basınca doğrudan indirilir.
+  Kartların dikey yerleşimi satır sayısından hesaplanır (`*CardLayout.ts`), böylece tur/satır sayısı
+  değişse de içerik alt bilgiyle çakışmaz.
 
 ## Kullanım
 

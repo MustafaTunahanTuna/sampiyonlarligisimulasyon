@@ -1,6 +1,6 @@
 import { Button } from '../../components/Button'
 import { ClubCrest } from '../../components/ClubCrest'
-import { QUALIFICATION_LABEL } from '../../domain/standings'
+import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import { QUALIFICATION_TEXT_TONE } from '../standings/qualificationTone'
 import type { StandingRow } from '../../domain/types'
 
@@ -33,7 +33,7 @@ export function FavouriteTeamStrip({
             <span className="pl-2 text-base text-muted">{standing.points} p</span>
           </p>
           <p className={`eyebrow ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}>
-            {QUALIFICATION_LABEL[standing.qualification]}
+            {QUALIFICATION_OUTCOME_LABEL[standing.qualification]}
           </p>
         </div>
       )}

@@ -5,6 +5,12 @@ export type Qualification = 'LAST_16' | 'PLAY_OFF' | 'ELIMINATED'
 const LAST_16_CUTOFF = 8
 const PLAY_OFF_CUTOFF = 24
 
+export const QUALIFICATION_OUTCOME_LABEL: Record<Qualification, string> = {
+  LAST_16: 'Son 16 turuna yükseldi',
+  PLAY_OFF: 'Play-off turuna kaldı',
+  ELIMINATED: 'Lig aşamasında elendi',
+}
+
 export const QUALIFICATION_LABEL: Record<Qualification, string> = {
   LAST_16: 'Son 16 turuna doğrudan',
   PLAY_OFF: 'Play-off turu',

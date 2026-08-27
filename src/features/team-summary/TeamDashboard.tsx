@@ -8,6 +8,8 @@ import { SeasonSummary } from './SeasonSummary'
 import { TeamHeader } from './TeamHeader'
 import { fixturesOf, recordOf } from '../../domain/fixtures'
 import { leagueStats, playedMatches } from '../../domain/leagueStats'
+import { buildKnockoutStage } from '../../domain/knockoutStage'
+import { knockoutRunSummary, teamKnockoutRun } from '../../domain/teamKnockoutRun'
 import {
   predictedMatchCount,
   predictedStandings,
@@ -45,6 +47,9 @@ export function TeamDashboard({
   const standing = standings.find((row) => row.team.id === team.id)!
   const predictedCount = predictedMatchCount(state.predictions)
   const stats = leagueStats(playedMatches(state.predictions))
+  const knockoutStage = buildKnockoutStage(standings, state.knockoutScores)
+  const knockoutRun = teamKnockoutRun(team, knockoutStage)
+  const knockoutSummary = knockoutRunSummary(team, knockoutStage, knockoutRun)
 
   return (
     <div key={team.id} className="animate-rise space-y-10">
@@ -71,7 +76,14 @@ export function TeamDashboard({
           ))}
         </nav>
         <div className="flex flex-wrap items-center gap-3 pb-3">
-          <DownloadTeamButton team={team} fixtures={fixtures} standing={standing} seed={state.seed} />
+          <DownloadTeamButton
+            team={team}
+            fixtures={fixtures}
+            standing={standing}
+            knockoutRun={knockoutRun}
+            knockoutSummary={knockoutSummary}
+            seed={state.seed}
+          />
           <DownloadStandingsButton
             rows={standings}
             stats={stats}

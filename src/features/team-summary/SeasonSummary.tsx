@@ -1,4 +1,4 @@
-import { QUALIFICATION_LABEL } from '../../domain/standings'
+import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import { QUALIFICATION_TEXT_TONE } from '../standings/qualificationTone'
 import type { SeasonRecord, StandingRow } from '../../domain/types'
 
@@ -35,7 +35,7 @@ export function SeasonSummary({ record, totalFixtures, standing }: SeasonSummary
       <Stat label="Averaj" value={`${record.goalsFor}:${record.goalsAgainst}`} />
       <div className="col-span-2 border-l border-line pl-4 sm:col-span-4">
         <p className={`eyebrow ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}>
-          {QUALIFICATION_LABEL[standing.qualification]}
+          {QUALIFICATION_OUTCOME_LABEL[standing.qualification]}
           <span className="pl-3 text-muted">
             {record.played}/{totalFixtures} maç tahmin edildi
           </span>
