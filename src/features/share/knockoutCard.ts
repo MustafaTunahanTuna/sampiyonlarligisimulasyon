@@ -55,15 +55,15 @@ function drawHeader(context: CanvasRenderingContext2D, seed: string, playedRound
   context.letterSpacing = '0px'
   context.textAlign = 'left'
 
-  context.font = `800 62px ${DISPLAY}`
+  context.font = `800 54px ${DISPLAY}`
   context.fillStyle = palette.fg
   context.letterSpacing = '-2px'
-  context.fillText('NAKAVT AŞAMASI', MARGIN, MARGIN + 90)
+  context.fillText('NAKAVT AŞAMASI', MARGIN, MARGIN + 78)
   context.letterSpacing = '0px'
 
-  context.font = `500 21px ${BODY}`
+  context.font = `500 20px ${BODY}`
   context.fillStyle = palette.muted
-  context.fillText(`${playedRounds} tur oynandı · turnuva ağacı`, MARGIN, MARGIN + 126)
+  context.fillText(`${playedRounds} tur oynandı · turnuva ağacı`, MARGIN, MARGIN + 110)
 }
 
 function drawPlayOffStrip(

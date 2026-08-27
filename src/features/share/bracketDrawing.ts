@@ -109,11 +109,17 @@ export function drawTieBox(
 
   const suffix = outcome === undefined ? '' : decisionSuffix(outcome.decidedBy)
   if (suffix !== '') {
-    context.font = `600 12px ${DISPLAY}`
+    context.textAlign = 'right'
+    context.font = `600 11px ${DISPLAY}`
     context.fillStyle = palette.dim
     context.letterSpacing = '1.5px'
-    context.fillText(suffix.toLocaleUpperCase('tr'), box.x + 10, box.y + box.height + 15)
+    context.fillText(
+      suffix.toLocaleUpperCase('tr'),
+      box.x + box.width - 34,
+      box.y + box.height / 2 + 4,
+    )
     context.letterSpacing = '0px'
+    context.textAlign = 'left'
   }
 }
 
