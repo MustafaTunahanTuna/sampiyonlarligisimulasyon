@@ -10,13 +10,17 @@ import {
 import type { LeagueStats } from '../../domain/leagueStats'
 import type { StandingRow, Team } from '../../domain/types'
 
-const WIDTH = 1080
-const HEIGHT = 1350
-const MARGIN = 56
+import {
+  CARD_HEIGHT as HEIGHT,
+  CARD_MARGIN as MARGIN,
+  CARD_WIDTH as WIDTH,
+  rowBandTop,
+  tableLayout,
+} from './standingsCardLayout'
+
 const DISPLAY = '"Archivo", "Manrope", sans-serif'
 const BODY = '"Manrope", sans-serif'
-const TABLE_TOP = 268
-const ROW_HEIGHT = 28.4
+const CREST_SIZE = 21
 const ZONE_COLOUR = { LAST_16: palette.home, PLAY_OFF: palette.away, ELIMINATED: palette.dim }
 
 export interface StandingsCardInput {
@@ -53,21 +57,21 @@ function drawHeader(context: CanvasRenderingContext2D, stats: LeagueStats, seed:
   )
 }
 
-function drawColumnHeaders(context: CanvasRenderingContext2D, columns: number[]) {
+function drawColumnHeaders(context: CanvasRenderingContext2D, columns: number[], tableTop: number) {
   context.font = `600 18px ${DISPLAY}`
   context.fillStyle = palette.dim
   context.letterSpacing = '2px'
   context.textAlign = 'right'
   const labels = ['O', 'G', 'B', 'M', 'AV', 'P']
-  labels.forEach((label, index) => context.fillText(label, columns[index], TABLE_TOP - 14))
+  labels.forEach((label, index) => context.fillText(label, columns[index], tableTop - 14))
   context.textAlign = 'left'
   context.letterSpacing = '0px'
 
   context.strokeStyle = palette.line
   context.lineWidth = 1
   context.beginPath()
-  context.moveTo(MARGIN, TABLE_TOP - 6)
-  context.lineTo(WIDTH - MARGIN, TABLE_TOP - 6)
+  context.moveTo(MARGIN, tableTop - 6)
+  context.lineTo(WIDTH - MARGIN, tableTop - 6)
   context.stroke()
 }
 
@@ -76,16 +80,19 @@ function drawRow(
   row: StandingRow,
   crest: HTMLImageElement,
   y: number,
+  rowHeight: number,
   columns: number[],
   isFavourite: boolean,
 ) {
+  const bandTop = rowBandTop(y, rowHeight)
+
   if (isFavourite) {
     context.fillStyle = 'rgba(127, 216, 245, 0.12)'
-    context.fillRect(MARGIN - 8, y - 19, WIDTH - MARGIN * 2 + 16, ROW_HEIGHT)
+    context.fillRect(MARGIN - 8, bandTop, WIDTH - MARGIN * 2 + 16, rowHeight)
   }
 
   context.fillStyle = ZONE_COLOUR[row.qualification]
-  context.fillRect(MARGIN - 8, y - 19, 3, ROW_HEIGHT)
+  context.fillRect(MARGIN - 8, bandTop, 3, rowHeight)
 
   context.font = `${isFavourite ? 800 : 600} 19px ${DISPLAY}`
   context.fillStyle = isFavourite ? palette.fg : palette.muted
@@ -93,7 +100,7 @@ function drawRow(
   context.fillText(String(row.position), MARGIN + 26, y)
   context.textAlign = 'left'
 
-  drawContainedImage(context, crest, MARGIN + 36, y - 17, 22)
+  drawContainedImage(context, crest, MARGIN + 36, y - CREST_SIZE * 0.78, CREST_SIZE)
 
   context.font = `${isFavourite ? 700 : 500} 20px ${BODY}`
   context.fillStyle = isFavourite ? palette.fg : palette.muted
@@ -118,8 +125,7 @@ function drawRow(
   context.textAlign = 'left'
 }
 
-function drawLegend(context: CanvasRenderingContext2D) {
-  const y = HEIGHT - MARGIN
+function drawLegend(context: CanvasRenderingContext2D, y: number) {
   const entries = [
     { colour: palette.home, label: 'Son 16' },
     { colour: palette.away, label: 'Play-off' },
@@ -163,21 +169,24 @@ export async function renderStandingsCard({
   context.textBaseline = 'alphabetic'
 
   const columns = [640, 700, 760, 820, 910, WIDTH - MARGIN]
+  const layout = tableLayout(rows.length)
+
   drawHeader(context, stats, seed)
-  drawColumnHeaders(context, columns)
+  drawColumnHeaders(context, columns, layout.tableTop)
 
   rows.forEach((row, index) => {
     drawRow(
       context,
       row,
       crests[index],
-      TABLE_TOP + 20 + index * ROW_HEIGHT,
+      layout.firstRowY + index * layout.rowHeight,
+      layout.rowHeight,
       columns,
       row.team.id === favouriteTeam?.id,
     )
   })
 
-  drawLegend(context)
+  drawLegend(context, layout.legendY)
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(

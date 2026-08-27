@@ -5,7 +5,7 @@ import { RankingList } from './RankingList'
 import { StatTiles } from './StatTiles'
 import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
-import { ShareStandingsButton } from '../share/ShareStandingsButton'
+import { DownloadStandingsButton } from '../share/DownloadStandingsButton'
 import { PickTeamCallout } from './PickTeamCallout'
 import {
   bestDefences,
@@ -66,7 +66,7 @@ export function LeagueDashboard({
             favouriteTeam={favouriteTeam}
             hasPredictions={hasPredictions}
             shareAction={
-              <ShareStandingsButton
+              <DownloadStandingsButton
                 rows={standings}
                 stats={stats}
                 favouriteTeam={favouriteTeam}

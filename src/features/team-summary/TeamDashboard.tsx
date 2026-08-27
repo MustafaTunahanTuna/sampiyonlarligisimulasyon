@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FixtureList } from '../fixtures/FixtureList'
-import { ShareStandingsButton } from '../share/ShareStandingsButton'
-import { ShareTeamButton } from '../share/ShareTeamButton'
+import { DownloadStandingsButton } from '../share/DownloadStandingsButton'
+import { DownloadTeamButton } from '../share/DownloadTeamButton'
 import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
 import { SeasonSummary } from './SeasonSummary'
@@ -71,8 +71,8 @@ export function TeamDashboard({
           ))}
         </nav>
         <div className="flex flex-wrap items-center gap-3 pb-3">
-          <ShareTeamButton team={team} fixtures={fixtures} standing={standing} seed={state.seed} />
-          <ShareStandingsButton
+          <DownloadTeamButton team={team} fixtures={fixtures} standing={standing} seed={state.seed} />
+          <DownloadStandingsButton
             rows={standings}
             stats={stats}
             favouriteTeam={team}

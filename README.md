@@ -12,7 +12,7 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 - **Nakavt (`#/nakavt`)**: lig aşaması bitince açılır. Play-off → son 16 → çeyrek → yarı → final,
   tur tur simüle edilir; şampiyon belirlenince kutlama başlığı çıkar.
 - **Takımım (`#/takimim`)**: seçili takımın sekiz eşleşmesi, skor girişi, sezon özeti ve iki
-  paylaşım kartı (takım kartı + puan tablosu).
+  indirilebilir kart (takım kartı + puan tablosu).
 - **Takım seçimi (`#/takim-sec`)**: torbalara ayrılmış liste. Seçim önce taslak olur, alttaki
   onay çubuğundan onaylanana kadar takip edilen takım değişmez. Takım seçmek zorunludur —
   seçilmeden lig ekranına ve simülasyona erişilmez. "Takibi bırak" ile takımsız hâle dönülür
@@ -29,9 +29,9 @@ ve sonucu paylaşılabilir bir görsele dönüştürmeni sağlayan web uygulamas
 - **Simülasyon motoru**: takım gücüne dayalı Poisson modeli, dört sürpriz seviyesi ve tekrar
   üretilebilir senaryo kodu (aynı kod + aynı ayar = aynı sezon).
 - **Puan tablosu**: 36 takım, UEFA eşitlik bozma sırasıyla; son 16 / play-off / eleme bölgeleri.
-- **Paylaşım**: iki adet 1080×1350 PNG kart — takım kartı (sekiz eşleşme + sıra) ve puan tablosu
-  kartı (36 takım, nitelik bölgeleri). Canvas 2D ile çizilir, harici kütüphane yoktur; mobilde
-  Web Share, masaüstünde indirme.
+- **Görsel kart indirme**: iki adet 1080×1350 PNG — takım kartı (sekiz eşleşme + sıra) ve puan
+  tablosu kartı (36 takım, nitelik bölgeleri). Canvas 2D ile çizilir, harici kütüphane yoktur;
+  butona basınca doğrudan indirilir (`<takım>-<senaryo>.png`).
 
 ## Kullanım
 
@@ -98,7 +98,7 @@ bunları doldurur.
 scripts/          veri kazıma, dönüştürme, doğrulama
 src/domain/       tipler, veri erişimi, fikstür, simülasyon, puan tablosu
 src/state/        tahmin reducer'ı, context, kalıcılık
-src/features/     lig dashboard'u, takım seçici, eşleşmeler, simülasyon, tablo, paylaşım kartı
+src/features/     lig dashboard'u, takım seçici, eşleşmeler, hafta akışı, nakavt, tablo, kart indirme
 src/components/   paylaşılan sunum bileşenleri
 ```
 

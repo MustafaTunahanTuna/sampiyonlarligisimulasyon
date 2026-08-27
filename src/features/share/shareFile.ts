@@ -1,3 +1,5 @@
+const REVOKE_DELAY_MS = 1000
+
 export function slugify(text: string): string {
   return text
     .toLocaleLowerCase('tr')
@@ -5,16 +7,14 @@ export function slugify(text: string): string {
     .replace(/^-|-$/g, '')
 }
 
-export async function shareOrDownload(blob: Blob, fileName: string, title: string) {
-  const file = new File([blob], fileName, { type: 'image/png' })
-  if (navigator.canShare?.({ files: [file] })) {
-    await navigator.share({ files: [file], title })
-    return
-  }
+export function downloadBlob(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
   link.download = fileName
+  link.rel = 'noopener'
+  document.body.append(link)
   link.click()
-  URL.revokeObjectURL(url)
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), REVOKE_DELAY_MS)
 }
