@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --night-950: oklch(0.12 0.06 270);
+  --night-900: oklch(0.19 0.07 270);
+  --night-800: oklch(0.25 0.07 270);
+  --night-700: oklch(0.34 0.07 270);
+  --night-400: oklch(0.66 0.05 268);
+  --star-050: oklch(0.98 0.008 250);
+  --cyan-400: oklch(0.78 0.14 220);
+  --pitch-400: oklch(0.76 0.17 155);
+  --amber-400: oklch(0.83 0.15 85);
+}
+
+:root,
+.dark {
+  --bg-base: var(--night-950);
+  --bg-surface: var(--night-900);
+  --bg-raised: var(--night-800);
+  --fg-base: var(--star-050);
+  --fg-muted: var(--night-400);
+  --fg-dim: var(--night-700);
+  --line: color-mix(in oklab, var(--night-700) 60%, transparent);
+  --line-strong: var(--night-700);
+  --accent: var(--cyan-400);
+  --accent-deep: oklch(0.66 0.16 236);
+  --home: var(--pitch-400);
+  --away: var(--cyan-400);
+  --highlight: var(--amber-400);
+}
+
+@theme inline {
+  --color-base: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-raised: var(--bg-raised);
+  --color-fg: var(--fg-base);
+  --color-muted: var(--fg-muted);
+  --color-dim: var(--fg-dim);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-home: var(--home);
+  --color-away: var(--away);
+  --color-highlight: var(--highlight);
+}
+
+@theme {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.18em;
+  --breakpoint-xs: 30rem;
+  --radius-panel: 0.875rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 9999px;
+  --animate-rise: rise 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+@utility starfield {
+  background-image:
+    radial-gradient(circle at 12% 18%, oklch(0.98 0.008 250 / 0.55) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 27% 62%, oklch(0.98 0.008 250 / 0.32) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 44% 24%, oklch(0.98 0.008 250 / 0.45) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 61% 74%, oklch(0.98 0.008 250 / 0.3) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 78% 33%, oklch(0.98 0.008 250 / 0.5) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 91% 68%, oklch(0.98 0.008 250 / 0.35) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 35% 88%, oklch(0.98 0.008 250 / 0.28) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 84% 12%, oklch(0.98 0.008 250 / 0.4) 0 1px, transparent 1.5px);
+  background-size: 100% 100%;
+}
+
+@utility panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background-image: linear-gradient(
+    180deg,
+    oklch(0.27 0.09 268 / 0.5),
+    oklch(0.21 0.1 268 / 0.28)
+  );
+  box-shadow: inset 0 1px 0 oklch(0.98 0.008 250 / 0.06);
+}
+
+@utility floodlight {
+  background-image:
+    conic-gradient(
+      from 200deg at 50% -20%,
+      transparent 0deg,
+      oklch(0.7 0.16 232 / 0.14) 18deg,
+      transparent 34deg,
+      transparent 146deg,
+      oklch(0.62 0.28 328 / 0.12) 162deg,
+      transparent 180deg
+    ),
+    radial-gradient(ellipse 90% 70% at 30% -15%, oklch(0.7 0.16 232 / 0.26), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 82% 10%, oklch(0.62 0.28 328 / 0.16), transparent 72%);
+}
+
+@utility neon-image {
+  mix-blend-mode: screen;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--fg-base);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
