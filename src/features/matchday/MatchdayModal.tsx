@@ -93,7 +93,7 @@ export function MatchdayModal({
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
+        <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
           {favouriteResult !== undefined && (
             <section className="mb-5">
               <h3 className="eyebrow mb-2 text-accent">Senin maçın</h3>

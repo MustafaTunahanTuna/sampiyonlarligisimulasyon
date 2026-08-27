@@ -46,7 +46,7 @@ export function StandingsTable({
         </ul>
       </header>
 
-      <div className="overflow-x-auto">
+      <div className="scroll-area overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="eyebrow text-dim">

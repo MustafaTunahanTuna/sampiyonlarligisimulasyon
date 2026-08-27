@@ -13,7 +13,7 @@ interface BracketSideProps {
 function BracketSide({ team, placeholder, aggregate, isWinner, isFavourite }: BracketSideProps) {
   if (team === null) {
     return (
-      <div className="flex items-center gap-2 py-1">
+      <div className="flex items-center gap-1.5 py-1">
         <span className="size-5 shrink-0 rounded-pill border border-dashed border-line-strong" />
         <span className="truncate text-xs text-dim">{placeholder}</span>
       </div>
@@ -21,7 +21,7 @@ function BracketSide({ team, placeholder, aggregate, isWinner, isFavourite }: Br
   }
 
   return (
-    <div className="flex items-center gap-2 py-1" title={team.name}>
+    <div className="flex items-center gap-1.5 py-1" title={team.name}>
       <ClubCrest team={team} size={20} />
       <span
         className={`min-w-0 flex-1 truncate font-display text-sm font-bold uppercase tracking-tight ${
@@ -56,7 +56,7 @@ export function BracketTie({ tie, outcome, favouriteTeamId, emphasis = false }: 
 
   return (
     <article
-      className={`rounded-control border px-2.5 py-1.5 transition-colors ${
+      className={`rounded-control border px-2 py-1.5 transition-colors ${
         outcome === undefined
           ? 'border-line/70 bg-surface/30'
           : 'border-line bg-surface/70'

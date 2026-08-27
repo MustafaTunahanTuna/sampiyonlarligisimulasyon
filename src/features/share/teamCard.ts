@@ -3,8 +3,10 @@ import {
   drawContainedImage,
   drawStar,
   drawNeonStarball,
+  createCardCanvas,
   drawStarfield,
   loadImage,
+  toCardBlob,
   truncateText,
 } from './canvasPrimitives'
 import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
@@ -111,11 +113,7 @@ export async function renderTeamCard({
   knockoutSummary,
   seed,
 }: TeamCardInput): Promise<Blob> {
-  const canvas = document.createElement('canvas')
-  canvas.width = WIDTH
-  canvas.height = HEIGHT
-  const context = canvas.getContext('2d')
-  if (context === null) throw new Error('Canvas bağlamı oluşturulamadı')
+  const { canvas, context } = createCardCanvas(WIDTH, HEIGHT)
 
   const [teamCrest, ...crests] = await Promise.all([
     loadImage(team.logoLarge),
@@ -130,7 +128,6 @@ export async function renderTeamCard({
   context.fillRect(0, 0, WIDTH, HEIGHT)
   drawStarfield(context, WIDTH, HEIGHT, 20260827)
   await drawNeonStarball(context, WIDTH * 0.34, HEIGHT * 0.52, WIDTH * 0.92, 0.3)
-  context.textBaseline = 'alphabetic'
 
   const layout = teamCardLayout(fixtures.length, knockoutRun.length)
 
@@ -164,10 +161,5 @@ export async function renderTeamCard({
 
   drawFooter(context, layout.footerY)
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob === null ? reject(new Error('Görsel oluşturulamadı')) : resolve(blob)),
-      'image/png',
-    )
-  })
+  return toCardBlob(canvas)
 }

@@ -3,8 +3,10 @@ import {
   drawContainedImage,
   drawNeonStarball,
   drawStar,
+  createCardCanvas,
   drawStarfield,
   loadImage,
+  toCardBlob,
   truncateText,
 } from './canvasPrimitives'
 import {
@@ -128,18 +130,30 @@ function drawTree(
     [1, 'Çeyrek final'],
     [2, 'Yarı final'],
   ]
+  const labelY = layout.treeTop - 18
   for (const [depth, label] of columnLabels) {
     const leftBox = layout.slots.find((slot) => slot.side === 'left' && slot.depth === depth)?.box
     const rightBox = layout.slots.find((slot) => slot.side === 'right' && slot.depth === depth)?.box
-    if (leftBox !== undefined) drawRoundLabel(context, label, leftBox.x, layout.treeTop - 16, 'left')
+    if (leftBox !== undefined) drawRoundLabel(context, label, leftBox.x, labelY, 'left')
     if (rightBox !== undefined) {
-      drawRoundLabel(context, label, rightBox.x + rightBox.width, layout.treeTop - 16, 'right')
+      drawRoundLabel(context, label, rightBox.x + rightBox.width, labelY, 'right')
     }
   }
+  drawRoundLabel(context, 'Final', layout.final.x + layout.final.width / 2, labelY, 'center')
 
   const finalVisual = tieVisual(stage, 'FINAL', 1)
   if (finalVisual !== null) {
-    drawRoundLabel(context, 'Final', WIDTH / 2, layout.final.y - 14, 'center')
+    context.strokeStyle = palette.accent
+    context.lineWidth = 1.5
+    context.beginPath()
+    context.roundRect(
+      layout.final.x - 4,
+      layout.final.y - 4,
+      layout.final.width + 8,
+      layout.final.height + 8,
+      11,
+    )
+    context.stroke()
     drawTieBox(context, finalVisual, crests, favouriteTeamId, layout.final)
   }
 }
@@ -183,11 +197,7 @@ export async function renderKnockoutCard({
   favouriteTeam,
   seed,
 }: KnockoutCardInput): Promise<Blob> {
-  const canvas = document.createElement('canvas')
-  canvas.width = WIDTH
-  canvas.height = HEIGHT
-  const context = canvas.getContext('2d')
-  if (context === null) throw new Error('Canvas bağlamı oluşturulamadı')
+  const { canvas, context } = createCardCanvas(WIDTH, HEIGHT)
 
   const teams = new Map<string, Team>()
   for (const round of stage.rounds) {
@@ -206,7 +216,6 @@ export async function renderKnockoutCard({
   context.fillRect(0, 0, WIDTH, HEIGHT)
   drawStarfield(context, WIDTH, HEIGHT, 20260827)
   await drawNeonStarball(context, WIDTH * 0.32, HEIGHT * 0.54, WIDTH * 0.9, 0.22)
-  context.textBaseline = 'alphabetic'
 
   const layout = bracketLayout()
   const favouriteTeamId = favouriteTeam?.id ?? null
@@ -224,10 +233,5 @@ export async function renderKnockoutCard({
 
   drawFooter(context, layout.footerY)
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob === null ? reject(new Error('Görsel oluşturulamadı')) : resolve(blob)),
-      'image/png',
-    )
-  })
+  return toCardBlob(canvas)
 }

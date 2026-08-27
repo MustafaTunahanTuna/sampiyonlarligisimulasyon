@@ -1,17 +1,18 @@
-export const CARD_WIDTH = 1080
-export const CARD_HEIGHT = 1350
+export const CARD_WIDTH = 1600
+export const CARD_HEIGHT = 900
 export const CARD_MARGIN = 48
+export const CHAMPION_BANNER_WIDTH = 620
 
-const PLAY_OFF_TOP = 214
-const PLAY_OFF_ROW_HEIGHT = 62
+const PLAY_OFF_TOP = 206
+const PLAY_OFF_ROW_HEIGHT = 56
 const PLAY_OFF_COLUMNS = 4
-const PLAY_OFF_GAP = 12
-const TREE_TOP = 428
-const TIE_HEIGHT = 84
-const TIE_GAP = 28
+const PLAY_OFF_GAP = 10
+const TREE_TOP = 396
+const TIE_HEIGHT = 60
+const TIE_GAP = 20
 const COLUMN_GAP = 10
-const CHAMPION_HEIGHT = 104
-const FOOTER_RESERVE = 64
+const CHAMPION_HEIGHT = 76
+const FOOTER_RESERVE = 40
 
 export const LEFT_ROUND_OF_16_ORDER = [1, 8, 4, 5]
 export const RIGHT_ROUND_OF_16_ORDER = [3, 6, 2, 7]
@@ -103,16 +104,15 @@ export function bracketLayout(): BracketLayout {
     })
   }
 
-  const finalWidth = columnWidth + 40
   const final = {
-    x: (CARD_WIDTH - finalWidth) / 2,
-    y: stackY(2, 0) + TIE_HEIGHT + 44,
-    width: finalWidth,
-    height: TIE_HEIGHT + 12,
+    x: columnX(3, 'left', columnWidth),
+    y: stackY(2, 0),
+    width: columnWidth,
+    height: TIE_HEIGHT,
   }
 
   const treeBottom = stackY(0, 3) + TIE_HEIGHT
-  const championTop = Math.max(treeBottom, final.y + final.height) + 34
+  const championTop = treeBottom + 32
 
   return {
     playOff,

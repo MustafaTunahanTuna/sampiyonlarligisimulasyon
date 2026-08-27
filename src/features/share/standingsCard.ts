@@ -3,8 +3,10 @@ import {
   drawContainedImage,
   drawStar,
   drawNeonStarball,
+  createCardCanvas,
   drawStarfield,
   loadImage,
+  toCardBlob,
   truncateText,
 } from './canvasPrimitives'
 import type { LeagueStats } from '../../domain/leagueStats'
@@ -153,11 +155,7 @@ export async function renderStandingsCard({
   favouriteTeam,
   seed,
 }: StandingsCardInput): Promise<Blob> {
-  const canvas = document.createElement('canvas')
-  canvas.width = WIDTH
-  canvas.height = HEIGHT
-  const context = canvas.getContext('2d')
-  if (context === null) throw new Error('Canvas bağlamı oluşturulamadı')
+  const { canvas, context } = createCardCanvas(WIDTH, HEIGHT)
 
   const crests = await Promise.all(rows.map((row) => loadImage(row.team.logo)))
   await document.fonts.ready
@@ -166,7 +164,6 @@ export async function renderStandingsCard({
   context.fillRect(0, 0, WIDTH, HEIGHT)
   drawStarfield(context, WIDTH, HEIGHT, 20260827)
   await drawNeonStarball(context, WIDTH * 0.34, HEIGHT * 0.52, WIDTH * 0.92, 0.3)
-  context.textBaseline = 'alphabetic'
 
   const columns = [640, 700, 760, 820, 910, WIDTH - MARGIN]
   const layout = tableLayout(rows.length)
@@ -188,10 +185,5 @@ export async function renderStandingsCard({
 
   drawLegend(context, layout.legendY)
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob === null ? reject(new Error('Görsel oluşturulamadı')) : resolve(blob)),
-      'image/png',
-    )
-  })
+  return toCardBlob(canvas)
 }

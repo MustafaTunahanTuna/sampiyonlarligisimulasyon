@@ -91,7 +91,7 @@ export function drawTieBox(
     winnerId === tie.seeded?.id,
     tie.seeded?.id === favouriteTeamId,
     box,
-    box.y + 28,
+    box.y + 26,
     useFullName,
   )
   drawSide(
@@ -103,15 +103,17 @@ export function drawTieBox(
     winnerId === tie.challenger?.id,
     tie.challenger?.id === favouriteTeamId,
     box,
-    box.y + 58,
+    box.y + 50,
     useFullName,
   )
 
   const suffix = outcome === undefined ? '' : decisionSuffix(outcome.decidedBy)
   if (suffix !== '') {
-    context.font = `500 12px ${BODY}`
-    context.fillStyle = palette.muted
-    context.fillText(suffix, box.x + 10, box.y + box.height - 8)
+    context.font = `600 12px ${DISPLAY}`
+    context.fillStyle = palette.dim
+    context.letterSpacing = '1.5px'
+    context.fillText(suffix.toLocaleUpperCase('tr'), box.x + 10, box.y + box.height + 15)
+    context.letterSpacing = '0px'
   }
 }
 

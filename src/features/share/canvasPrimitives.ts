@@ -125,3 +125,33 @@ export function truncateText(
   }
   return `${clipped}…`
 }
+
+export const CARD_PIXEL_RATIO = 2
+
+export interface CardCanvas {
+  canvas: HTMLCanvasElement
+  context: CanvasRenderingContext2D
+}
+
+export function createCardCanvas(width: number, height: number): CardCanvas {
+  const canvas = document.createElement('canvas')
+  canvas.width = width * CARD_PIXEL_RATIO
+  canvas.height = height * CARD_PIXEL_RATIO
+  const context = canvas.getContext('2d')
+  if (context === null) throw new Error('Canvas bağlamı oluşturulamadı')
+
+  context.scale(CARD_PIXEL_RATIO, CARD_PIXEL_RATIO)
+  context.imageSmoothingEnabled = true
+  context.imageSmoothingQuality = 'high'
+  context.textBaseline = 'alphabetic'
+  return { canvas, context }
+}
+
+export function toCardBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => (blob === null ? reject(new Error('Görsel oluşturulamadı')) : resolve(blob)),
+      'image/png',
+    )
+  })
+}

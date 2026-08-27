@@ -25,10 +25,10 @@ function Connector({ side }: { side: Side }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-y-1/4 w-3 border-line-strong ${
+      className={`pointer-events-none absolute inset-y-1/4 w-2 border-line-strong ${
         side === 'left'
-          ? '-right-3 rounded-r-sm border-y border-r'
-          : '-left-3 rounded-l-sm border-y border-l'
+          ? '-right-2 rounded-r-sm border-y border-r'
+          : '-left-2 rounded-l-sm border-y border-l'
       }`}
     />
   )
@@ -38,8 +38,8 @@ function Stem({ side }: { side: Side }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute top-1/2 h-px w-3 bg-line-strong ${
-        side === 'left' ? '-right-3' : '-left-3'
+      className={`pointer-events-none absolute top-1/2 h-px w-2 bg-line-strong ${
+        side === 'left' ? '-right-2' : '-left-2'
       }`}
     />
   )
@@ -143,20 +143,20 @@ export function BracketTree({ stage, favouriteTeamId }: BracketTreeProps) {
   const final = entryOf(stage, 'FINAL', 1)
 
   return (
-    <div className="overflow-x-auto pb-2">
-      <div className="min-w-[62rem]">
-        <div className="grid grid-cols-7 gap-x-3">
+    <div className="scroll-area overflow-x-auto pb-2">
+      <div className="min-w-[52rem]">
+        <div className="grid grid-cols-7 gap-x-2">
           {COLUMN_HEADINGS.map((heading, index) => (
             <p
               key={`${heading}-${index}`}
-              className={`eyebrow pb-3 text-dim ${index > 3 ? 'text-right' : ''} ${index === 3 ? 'text-center text-accent' : ''}`}
+              className={`eyebrow truncate pb-3 text-dim ${index > 3 ? 'text-right' : ''} ${index === 3 ? 'text-center text-accent' : ''}`}
             >
               {heading}
             </p>
           ))}
         </div>
 
-        <div className="grid min-h-[30rem] grid-cols-7 gap-x-3">
+        <div className="grid min-h-[30rem] grid-cols-7 gap-x-2">
           <Branch stage={stage} side="left" favouriteTeamId={favouriteTeamId} />
           <div className="flex flex-col justify-center">
             {final !== null && (
