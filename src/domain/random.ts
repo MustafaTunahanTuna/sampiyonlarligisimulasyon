@@ -18,14 +18,3 @@ export function createRandom(seed: number): RandomSource {
     return ((drawn ^ (drawn >>> 14)) >>> 0) / 4294967296
   }
 }
-
-export function poisson(mean: number, random: RandomSource): number {
-  const limit = Math.exp(-mean)
-  let count = 0
-  let product = random()
-  while (product > limit && count < 12) {
-    count += 1
-    product *= random()
-  }
-  return count
-}

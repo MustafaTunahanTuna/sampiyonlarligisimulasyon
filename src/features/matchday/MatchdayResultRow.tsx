@@ -7,6 +7,7 @@ interface MatchdayResultRowProps {
   score: Score
   favouriteTeamId: string | null
   revealDelay: number
+  onWatch: (() => void) | null
 }
 
 function sideTone(isWinner: boolean, isFavourite: boolean): string {
@@ -20,6 +21,7 @@ export function MatchdayResultRow({
   score,
   favouriteTeamId,
   revealDelay,
+  onWatch,
 }: MatchdayResultRowProps) {
   const involvesFavourite = homeTeam.id === favouriteTeamId || awayTeam.id === favouriteTeamId
 
@@ -53,6 +55,19 @@ export function MatchdayResultRow({
         >
           {awayTeam.name}
         </span>
+        {onWatch !== null && (
+          <button
+            type="button"
+            onClick={onWatch}
+            aria-label={`${homeTeam.name} - ${awayTeam.name} maçını izle`}
+            title="Maçı izle"
+            className="ml-auto shrink-0 rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-accent"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4" fill="currentColor">
+              <path d="M8 5.5v13l10-6.5-10-6.5Z" />
+            </svg>
+          </button>
+        )}
       </div>
     </li>
   )

@@ -1,8 +1,9 @@
-import { createRandom, hashSeed, poisson } from './random'
-import { expectedGoals, simulateScore } from './simulation'
+import { simulateMatchReport } from './engine'
+import { createRandom, hashSeed } from './random'
 import type { Score, Team } from './types'
 
-const EXTRA_TIME_SHARE = 1 / 3
+const EXTRA_TIME_MINUTES = 30
+const EXTRA_TIME_HALF_MINUTE = 15
 const PENALTY_ROUNDS = 5
 const BASE_CONVERSION = 0.76
 const STRENGTH_CONVERSION_SWING = 0.08
@@ -13,7 +14,7 @@ export function simulateLeg(
   seedKey: string,
   unpredictability: number,
 ): Score {
-  return simulateScore(home, away, seedKey, unpredictability)
+  return simulateMatchReport(home, away, seedKey, unpredictability).score
 }
 
 export function simulateExtraTime(
@@ -22,12 +23,10 @@ export function simulateExtraTime(
   seedKey: string,
   unpredictability: number,
 ): Score {
-  const random = createRandom(hashSeed(`${seedKey}:et`))
-  const odds = expectedGoals(home, away, unpredictability)
-  return {
-    home: poisson(odds.expectedHomeGoals * EXTRA_TIME_SHARE, random),
-    away: poisson(odds.expectedAwayGoals * EXTRA_TIME_SHARE, random),
-  }
+  return simulateMatchReport(home, away, `${seedKey}:et`, unpredictability, {
+    durationMinutes: EXTRA_TIME_MINUTES,
+    halfTimeMinute: EXTRA_TIME_HALF_MINUTE,
+  }).score
 }
 
 function conversionRate(shooter: Team, opponent: Team): number {

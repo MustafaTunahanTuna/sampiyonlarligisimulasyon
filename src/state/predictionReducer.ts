@@ -1,8 +1,8 @@
 import { drawPool, getTeam } from '../domain/drawPool'
 import { matchdayMatches } from '../domain/matchdays'
 import type { MatchdayNumber } from '../domain/matchdays'
-import { simulateMatch } from '../domain/simulation'
-import type { KnockoutScoreMap, PredictionMap, Score } from '../domain/types'
+import { matchSeedKey, simulateMatchReport } from '../domain/engine'
+import type { KnockoutScoreMap, Match, PredictionMap, Score } from '../domain/types'
 
 export const DEFAULT_UNPREDICTABILITY = 0.25
 
@@ -36,6 +36,15 @@ export function initialState(): PredictionState {
   }
 }
 
+function simulatedScore(state: PredictionState, match: Match): Score {
+  return simulateMatchReport(
+    getTeam(match.homeTeamId),
+    getTeam(match.awayTeamId),
+    matchSeedKey(state.seed, match.id),
+    state.unpredictability,
+  ).score
+}
+
 function simulate(state: PredictionState, scope: 'gaps' | 'resimulate'): PredictionMap {
   const next: PredictionMap = {}
   for (const match of drawPool.matches) {
@@ -44,16 +53,7 @@ function simulate(state: PredictionState, scope: 'gaps' | 'resimulate'): Predict
       next[match.id] = existing
       continue
     }
-    next[match.id] = {
-      score: simulateMatch(
-        match,
-        getTeam(match.homeTeamId),
-        getTeam(match.awayTeamId),
-        state.seed,
-        state.unpredictability,
-      ),
-      source: 'simulated',
-    }
+    next[match.id] = { score: simulatedScore(state, match), source: 'simulated' }
   }
   return next
 }
@@ -62,16 +62,7 @@ function simulateMatchday(state: PredictionState, matchday: MatchdayNumber): Pre
   const simulated: PredictionMap = { ...state.predictions }
   for (const match of matchdayMatches(matchday)) {
     if (simulated[match.id]?.source === 'manual') continue
-    simulated[match.id] = {
-      score: simulateMatch(
-        match,
-        getTeam(match.homeTeamId),
-        getTeam(match.awayTeamId),
-        state.seed,
-        state.unpredictability,
-      ),
-      source: 'simulated',
-    }
+    simulated[match.id] = { score: simulatedScore(state, match), source: 'simulated' }
   }
   return simulated
 }

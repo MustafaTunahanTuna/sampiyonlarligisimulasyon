@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MatchdayProgress } from './MatchdayProgress'
-import { MatchdayResultRow } from './MatchdayResultRow'
+import { MatchdayResults } from './MatchdayResults'
+import { favouriteResultOf, matchdayResults } from './resultList'
 import { Button } from '../../components/Button'
-import { getTeam } from '../../domain/drawPool'
-import { MATCHDAY_NUMBERS, matchdayMatches } from '../../domain/matchdays'
-import { scoreFor } from '../../domain/predictedResults'
+import { MatchLiveView } from '../match-live/MatchLiveView'
+import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
 import type { MatchdayNumber } from '../../domain/matchdays'
 import type { PredictionMap, StandingRow, Team } from '../../domain/types'
 
-const REVEAL_STEP_MS = 28
+type Stage = 'live' | 'results'
 
 interface MatchdayModalProps {
   matchday: MatchdayNumber
@@ -38,31 +38,26 @@ export function MatchdayModal({
   onClose,
 }: MatchdayModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const results = matchdayResults(matchday, predictions)
+  const favouriteResult = favouriteResultOf(results, favouriteTeam)
+  const canWatch = favouriteResult !== null && favouriteResult.isWatchable
+  const [stage, setStage] = useState<Stage>(canWatch && !isReview ? 'live' : 'results')
 
   useEffect(() => {
     const dialog = dialogRef.current
     if (dialog !== null && !dialog.open) dialog.showModal()
   }, [])
 
-  const results = matchdayMatches(matchday).flatMap((match) => {
-    const score = scoreFor(match, predictions)
-    return score === null
-      ? []
-      : [{ id: match.id, home: getTeam(match.homeTeamId), away: getTeam(match.awayTeamId), score }]
-  })
-  const favouriteResult = results.find(
-    (result) => result.home.id === favouriteTeam?.id || result.away.id === favouriteTeam?.id,
-  )
-  const otherResults = results.filter((result) => result.id !== favouriteResult?.id)
+  const isLive = stage === 'live' && favouriteResult !== null
 
   return (
     <dialog
       ref={dialogRef}
       onClose={onClose}
       aria-labelledby="matchday-title"
-      className="animate-modal-in panel m-auto w-[min(46rem,calc(100vw-2rem))] max-w-none bg-surface p-0 text-fg backdrop:bg-transparent"
+      className="animate-modal-in panel m-auto w-[min(58rem,calc(100vw-2rem))] max-w-none bg-surface p-0 text-fg"
     >
-      <div className="flex max-h-[85vh] flex-col">
+      <div className="flex h-[88vh] flex-col">
         <header className="border-b border-line px-5 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2
@@ -73,7 +68,9 @@ export function MatchdayModal({
             </h2>
             <div className="flex items-center gap-4">
               <p className="eyebrow text-muted tabular-nums">
-                {matchday} / {MATCHDAY_NUMBERS.length} · {results.length} maç
+                {isLive
+                  ? 'Senin maçın'
+                  : `${matchday} / ${MATCHDAY_NUMBERS.length} · ${results.length} maç`}
               </p>
               <button
                 type="button"
@@ -93,67 +90,35 @@ export function MatchdayModal({
           </div>
         </header>
 
-        <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
-          {favouriteResult !== undefined && (
-            <section className="mb-5">
-              <h3 className="eyebrow mb-2 text-accent">Senin maçın</h3>
-              <ul>
-                <MatchdayResultRow
-                  homeTeam={favouriteResult.home}
-                  awayTeam={favouriteResult.away}
-                  score={favouriteResult.score}
-                  favouriteTeamId={favouriteTeam?.id ?? null}
-                  revealDelay={0}
-                />
-              </ul>
-            </section>
-          )}
-
-          <section>
-            <h3 className="eyebrow mb-2 text-muted">Diğer maçlar</h3>
-            <ul className="space-y-0.5">
-              {otherResults.map((result, index) => (
-                <MatchdayResultRow
-                  key={result.id}
-                  homeTeam={result.home}
-                  awayTeam={result.away}
-                  score={result.score}
-                  favouriteTeamId={favouriteTeam?.id ?? null}
-                  revealDelay={120 + index * REVEAL_STEP_MS}
-                />
-              ))}
-            </ul>
-          </section>
-        </div>
-
-        <footer className="flex flex-wrap items-center gap-3 border-t border-line px-5 py-4 sm:px-6">
-          {favouriteStanding !== null && (
-            <p className="eyebrow text-muted">
-              <span className="text-fg">{favouriteStanding.position}. sıra</span>
-              <span className="px-2 text-dim">·</span>
-              {favouriteStanding.points} puan
-            </p>
-          )}
-          <div className="ml-auto flex flex-wrap items-center gap-3">
-            <Button variant="ghost" onClick={onClose}>
-              {isReview ? 'Kapat' : 'Kapat ve incele'}
-            </Button>
-            {isReview ? null : hasNext ? (
-              <>
-                <Button variant="ghost" onClick={onFinishAll}>
-                  Tümünü tamamla
-                </Button>
-                <Button variant="primary" onClick={onNext}>
-                  Sonraki hafta →
-                </Button>
-              </>
-            ) : (
-              <Button variant="primary" onClick={onGoToKnockout}>
-                Nakavt aşamasına geç →
+        {isLive ? (
+          <MatchLiveView
+            matchId={favouriteResult.id}
+            homeTeam={favouriteResult.home}
+            awayTeam={favouriteResult.away}
+            footer={(isFinished) => (
+              <Button
+                variant={isFinished ? 'primary' : 'ghost'}
+                onClick={() => setStage('results')}
+              >
+                {isFinished ? 'Diğer sonuçları gör →' : 'Sonuçlara atla →'}
               </Button>
             )}
-          </div>
-        </footer>
+          />
+        ) : (
+          <MatchdayResults
+            results={results}
+            favouriteResult={favouriteResult}
+            favouriteTeam={favouriteTeam}
+            favouriteStanding={favouriteStanding}
+            isReview={isReview}
+            hasNext={hasNext}
+            onRewatch={canWatch ? () => setStage('live') : null}
+            onNext={onNext}
+            onGoToKnockout={onGoToKnockout}
+            onFinishAll={onFinishAll}
+            onClose={onClose}
+          />
+        )}
       </div>
     </dialog>
   )
