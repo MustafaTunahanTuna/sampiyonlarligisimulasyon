@@ -1,6 +1,7 @@
 import { ClubCrest } from '../../components/ClubCrest'
 import { WatchTieButton } from './WatchTieButton'
 import { slotLabel } from './tiePresentation'
+import { tieLegGoals } from '../../domain/knockoutTie'
 import { useTranslation } from '../../i18n/useTranslation'
 import type { KnockoutTie, Team, TieOutcome } from '../../domain/types'
 
@@ -8,11 +9,19 @@ interface BracketSideProps {
   team: Team | null
   placeholder: string
   aggregate: number | null
+  legGoals: number[]
   isWinner: boolean
   isFavourite: boolean
 }
 
-function BracketSide({ team, placeholder, aggregate, isWinner, isFavourite }: BracketSideProps) {
+function BracketSide({
+  team,
+  placeholder,
+  aggregate,
+  legGoals,
+  isWinner,
+  isFavourite,
+}: BracketSideProps) {
   if (team === null) {
     return (
       <div className="flex items-center gap-1.5 py-1">
@@ -23,7 +32,10 @@ function BracketSide({ team, placeholder, aggregate, isWinner, isFavourite }: Br
   }
 
   return (
-    <div className="flex items-center gap-1.5 py-1" title={team.name}>
+    <div
+      className="flex items-center gap-1.5 py-1"
+      title={legGoals.length > 1 ? `${team.name}: ${legGoals.join(' - ')}` : team.name}
+    >
       <ClubCrest team={team} size={20} />
       <span
         className={`min-w-0 flex-1 truncate font-display text-sm font-bold uppercase tracking-tight ${
@@ -32,9 +44,14 @@ function BracketSide({ team, placeholder, aggregate, isWinner, isFavourite }: Br
       >
         {team.code}
       </span>
+      {legGoals.length > 1 && (
+        <span className="shrink-0 font-display text-[0.6rem] tabular-nums text-dim">
+          {legGoals.join(' ')}
+        </span>
+      )}
       {aggregate !== null && (
         <span
-          className={`shrink-0 font-display text-sm font-extrabold tabular-nums ${
+          className={`shrink-0 border-l border-line pl-1.5 font-display text-sm font-extrabold tabular-nums ${
             isWinner ? 'text-fg' : 'text-dim'
           }`}
         >
@@ -63,6 +80,8 @@ export function BracketTie({
   const t = useTranslation()
   const winnerId = outcome?.winner.id ?? null
   const suffix = outcome === undefined ? '' : t.knockout.decisionSuffix[outcome.decidedBy]
+  const legGoals =
+    outcome === undefined ? { seeded: [], challenger: [] } : tieLegGoals(tie, outcome.legs)
 
   return (
     <article
@@ -76,6 +95,7 @@ export function BracketTie({
         team={tie.seeded}
         placeholder={slotLabel(tie.seededSlot, t)}
         aggregate={outcome?.aggregateSeeded ?? null}
+        legGoals={legGoals.seeded}
         isWinner={winnerId === tie.seeded?.id}
         isFavourite={tie.seeded?.id === favouriteTeamId}
       />
@@ -83,6 +103,7 @@ export function BracketTie({
         team={tie.challenger}
         placeholder={slotLabel(tie.challengerSlot, t)}
         aggregate={outcome?.aggregateChallenger ?? null}
+        legGoals={legGoals.challenger}
         isWinner={winnerId === tie.challenger?.id}
         isFavourite={tie.challenger?.id === favouriteTeamId}
       />

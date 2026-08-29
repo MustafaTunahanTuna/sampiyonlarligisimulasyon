@@ -21,18 +21,29 @@ function legSetups(tie: KnockoutTie): LegSetup[] {
   ]
 }
 
-function aggregateOf(tie: KnockoutTie, legs: Score[]): { seeded: number; challenger: number } {
+export interface TieLegGoals {
+  seeded: number[]
+  challenger: number[]
+}
+
+export function tieLegGoals(tie: KnockoutTie, legs: Score[]): TieLegGoals {
   const setups = legSetups(tie)
-  return legs.reduce(
-    (total, score, index) => {
-      const isSeededHome = setups[index].home.id === tie.seeded?.id
-      return {
-        seeded: total.seeded + (isSeededHome ? score.home : score.away),
-        challenger: total.challenger + (isSeededHome ? score.away : score.home),
-      }
-    },
-    { seeded: 0, challenger: 0 },
-  )
+  const goals: TieLegGoals = { seeded: [], challenger: [] }
+  legs.forEach((score, index) => {
+    const isSeededHome = setups[index].home.id === tie.seeded?.id
+    goals.seeded.push(isSeededHome ? score.home : score.away)
+    goals.challenger.push(isSeededHome ? score.away : score.home)
+  })
+  return goals
+}
+
+function sumOf(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0)
+}
+
+function aggregateOf(tie: KnockoutTie, legs: Score[]): { seeded: number; challenger: number } {
+  const goals = tieLegGoals(tie, legs)
+  return { seeded: sumOf(goals.seeded), challenger: sumOf(goals.challenger) }
 }
 
 export function simulateTieScores(
