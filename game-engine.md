@@ -391,14 +391,24 @@ src/domain/engine/
 
 src/features/match-live/
   MatchLiveView.tsx      maçın canlı görünümü (skor, saha, kontroller, anlatım)
-  MatchStage.tsx         iki hızlı saat + rAF döngüsü + canvas + anlatım paneli
-  pitchRenderer.ts       saha, oyuncu, top, iz, gol flaşı (imperatif, saf)
+  MatchStage.tsx         React kabuğu: canvas, klipler arası DOM katmanı, döngü yaşam döngüsü
+  stageLoop.ts           rAF döngüsü, klip giriş/çıkış, ResizeObserver ile ölçüm
+  stageDirector.ts       dramaturji: kamera cue'su, zaman ölçeği, flaş, sarsıntı, banner ömrü
+  pitchCamera.ts         yayın kamerası: ölü bölge, sönümleme, öngörü, zoom, sarsıntı
+  pitchRenderer.ts       katman sırası ve kamera dönüşümü (dünya → ekran uzayı)
+  pitchBackdrop.ts       statik sahanın offscreen önbelleği (yalnız ölçü değişince yeniden çizilir)
+  pitchScene.ts          çim, ışık, FIFA oranlı çizgiler, kale ağı (yalnız backdrop çağırır)
+  pitchActors.ts         oyuncu, top, iz çizimi (yön, gölge, taşıyıcı halkası, dikiş)
+  stageOverlay.ts        ekran uzayı: banner, flaş, taraf etiketleri, mini harita
+  pitchPalette.ts        saha ve banner renk paleti
   pitchFrame.ts          createPlayback → frameOfPhase(index, t)   ← Katman B çekirdeği
+  phasePlan.ts           faz planlarının zincirlenmesi (topun sürekliliği burada garanti edilir)
+  geometry.ts            Point/Size, lerp, clamp, easing, kritik sönümleme
   highlights.ts          MatchReport → HighlightClip[] (pozisyon seçimi)
-  clipTimeline.ts        klip adımları, adım imleci, bilgi açılış saati (saf, test edilebilir)
+  clipTimeline.ts        klip adımları, aksiyon bazlı ritim, adım imleci (saf, test edilebilir)
   squad.ts               forma numaraları, rol/zon kısıtları, alıcı ve koşucu seçimi
   kits.ts                deterministik forma renkleri, ton ayrımı garantisi
-  formations.ts          4-3-3 çapaları, zon → saha ekseni, blok kayması
+  formations.ts          4-3-3 çapaları, zon → saha ekseni, blok kayması, yayılma/daralma
   EventTicker.tsx        anlatım bandı (aria-live)
   MatchStatsPanel.tsx    şut, korner, xG, topa sahip olma
   commentary.ts          olay → Türkçe spiker metni
@@ -426,6 +436,8 @@ scripts/calibrate-engine.mjs   §6 tablosunun yürütülebilir hâli (`npm run c
 |---|---|---|
 | Yeni bağımlılık | **Sıfır** | Proje 2 runtime bağımlılığıyla yaşıyor (react, react-dom). Motor saf TS, render Canvas 2D API. |
 | React 19 | Canvas dışında normal bileşen; `useRef` + rAF yeterli | Mevcut `features/share/*` zaten imperatif canvas kullanıyor, desen tanıdık. |
+| Görsel süreklilik | Faz planları zincirlenir: `ballFrom(N+1) === ballTo(N)`, blok çizgisi `toZone(N) === fromZone(N+1)` üzerinden devam eder | Motor zonu böyle yazıyor (`state.zone = toZone`, top kaybında `mirrorZone`); `ZONE_PROGRESS` ve `ZONE_SPREAD` ayna-simetriktir, bu yüzden faz sınırında top da blok da sıçramaz. |
+| Render maliyeti | Statik saha offscreen canvas'ta önbelleklenir, kare başına yalnızca bir `drawImage`; ölçüm `ResizeObserver` ile | Kare içinde `clientWidth` okumak zorunlu yeniden yerleşim tetikler; gradyanı her karede yeniden kurmak boşa boyamadır. |
 | Tailwind v4 | Yalnızca kabuk ve kontroller; sahanın kendisi canvas | Token'lar `@theme` içinde hazır. |
 | TypeScript | `strict` derleme (`tsc -b`), `MatchEvent` discriminated union | Union olunca `switch` exhaustive olur, yorum gerekmez. |
 | Test | Repo'da test runner yok. **Yeni runner kurmuyoruz**; doğrulama `scripts/calibrate-engine.mjs` (Node, mevcut `scripts/*.mjs` deseni) | Konvansiyona uyum; §6 yürütülebilir sözleşme. |

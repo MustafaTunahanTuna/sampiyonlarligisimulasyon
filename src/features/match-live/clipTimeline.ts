@@ -2,9 +2,16 @@ import type { HighlightClip } from './highlights'
 import type { Playback } from './pitchFrame'
 import type { ChainAction, MatchPhase } from '../../domain/engine'
 
-export const PHASE_REAL_SECONDS = 1.9
-export const SHOT_REAL_SECONDS = 1.6
-export const CELEBRATION_REAL_SECONDS = 2.4
+export const CELEBRATION_REAL_SECONDS = 2.6
+
+const DURATION_BY_ACTION: Record<ChainAction, number> = {
+  PASS: 1.7,
+  HOLD: 1.3,
+  DRIBBLE: 2,
+  LONG_BALL: 2.1,
+  CROSS: 1.9,
+  SHOOT: 1.5,
+}
 
 export const KICK_POWER: Record<ChainAction, number> = {
   PASS: 0.8,
@@ -39,12 +46,7 @@ export function buildTimelines(playback: Playback): ClipTimeline[] {
     const steps: ClipStep[] = []
     for (let index = clip.fromPhase; index <= clip.toPhase; index += 1) {
       const action = playback.report.phases[index].action
-      steps.push({
-        phaseIndex: index,
-        duration: action === 'SHOOT' ? SHOT_REAL_SECONDS : PHASE_REAL_SECONDS,
-        hold: false,
-        action,
-      })
+      steps.push({ phaseIndex: index, duration: DURATION_BY_ACTION[action], hold: false, action })
     }
     if (clip.isGoal) {
       steps.push({

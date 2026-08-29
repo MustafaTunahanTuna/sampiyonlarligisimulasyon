@@ -1,6 +1,6 @@
 import type { MatchEvent } from '../../domain/engine'
 import type { Messages } from '../../i18n/messages/messages'
-import type { BannerTone } from './pitchRenderer'
+import type { BannerTone } from './pitchPalette'
 
 export interface BannerContent {
   title: string
