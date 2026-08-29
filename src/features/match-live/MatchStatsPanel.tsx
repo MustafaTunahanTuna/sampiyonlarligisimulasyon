@@ -1,4 +1,6 @@
+import { useTranslation } from '../../i18n/useTranslation'
 import type { MatchStats } from '../../domain/engine'
+import type { Messages } from '../../i18n/messages/messages'
 
 interface StatRow {
   label: string
@@ -12,40 +14,40 @@ function share(home: number, away: number): number {
   return total === 0 ? 50 : (home / total) * 100
 }
 
-function buildRows(stats: MatchStats): StatRow[] {
+function buildRows(stats: MatchStats, t: Messages): StatRow[] {
   return [
     {
-      label: 'Topa sahip olma',
+      label: t.live.stats.possession,
       home: `%${Math.round(stats.home.possession)}`,
       away: `%${Math.round(stats.away.possession)}`,
       homeShare: stats.home.possession,
     },
     {
-      label: 'Şut',
+      label: t.live.stats.shots,
       home: `${stats.home.shots}`,
       away: `${stats.away.shots}`,
       homeShare: share(stats.home.shots, stats.away.shots),
     },
     {
-      label: 'İsabetli şut',
+      label: t.live.stats.shotsOnTarget,
       home: `${stats.home.shotsOnTarget}`,
       away: `${stats.away.shotsOnTarget}`,
       homeShare: share(stats.home.shotsOnTarget, stats.away.shotsOnTarget),
     },
     {
-      label: 'Beklenen gol',
+      label: t.live.stats.expectedGoals,
       home: stats.home.expectedGoals.toFixed(2),
       away: stats.away.expectedGoals.toFixed(2),
       homeShare: share(stats.home.expectedGoals, stats.away.expectedGoals),
     },
     {
-      label: 'Korner',
+      label: t.live.stats.corners,
       home: `${stats.home.corners}`,
       away: `${stats.away.corners}`,
       homeShare: share(stats.home.corners, stats.away.corners),
     },
     {
-      label: 'Kart',
+      label: t.live.stats.cards,
       home: `${stats.home.yellowCards + stats.home.redCards}`,
       away: `${stats.away.yellowCards + stats.away.redCards}`,
       homeShare: share(
@@ -57,9 +59,11 @@ function buildRows(stats: MatchStats): StatRow[] {
 }
 
 export function MatchStatsPanel({ stats }: { stats: MatchStats }) {
+  const t = useTranslation()
+
   return (
     <dl className="space-y-2.5">
-      {buildRows(stats).map((row) => (
+      {buildRows(stats, t).map((row) => (
         <div key={row.label}>
           <div className="flex items-baseline justify-between gap-3">
             <span className="font-display text-sm tabular-nums text-fg">{row.home}</span>

@@ -1,5 +1,6 @@
 import { BracketTie } from './BracketTie'
 import { isWatchableTie } from './watchableTie'
+import { useTranslation } from '../../i18n/useTranslation'
 import { LEFT_ROUND_OF_16_ORDER, RIGHT_ROUND_OF_16_ORDER } from '../share/bracketLayout'
 import type { KnockoutRoundId } from '../../domain/knockoutFormat'
 import type { KnockoutStage } from '../../domain/knockoutStage'
@@ -149,21 +150,30 @@ interface BracketTreeProps {
   onWatchTie: (tie: KnockoutTie) => void
 }
 
-const COLUMN_HEADINGS = ['Son 16', 'Çeyrek final', 'Yarı final', 'Final', 'Yarı final', 'Çeyrek final', 'Son 16']
+const COLUMN_ROUNDS: KnockoutRoundId[] = [
+  'ROUND_OF_16',
+  'QUARTER_FINAL',
+  'SEMI_FINAL',
+  'FINAL',
+  'SEMI_FINAL',
+  'QUARTER_FINAL',
+  'ROUND_OF_16',
+]
 
 export function BracketTree({ stage, favouriteTeamId, onWatchTie }: BracketTreeProps) {
+  const t = useTranslation()
   const final = entryOf(stage, 'FINAL', 1)
 
   return (
     <div className="scroll-area overflow-x-auto pb-2">
       <div className="min-w-[52rem]">
         <div className="grid grid-cols-7 gap-x-2">
-          {COLUMN_HEADINGS.map((heading, index) => (
+          {COLUMN_ROUNDS.map((round, index) => (
             <p
-              key={`${heading}-${index}`}
+              key={`${round}-${index}`}
               className={`eyebrow truncate pb-3 text-dim ${index > 3 ? 'text-right' : ''} ${index === 3 ? 'text-center text-accent' : ''}`}
             >
-              {heading}
+              {t.knockout.roundLabel[round]}
             </p>
           ))}
         </div>

@@ -1,4 +1,6 @@
 import { ClubCrest } from '../../components/ClubCrest'
+import { countryNameOf } from '../../i18n/countryNames'
+import { useLocale } from '../../i18n/useLocale'
 import type { Team } from '../../domain/types'
 
 interface TeamOptionProps {
@@ -9,6 +11,8 @@ interface TeamOptionProps {
 }
 
 export function TeamOption({ team, isDraft, isCurrent, onDraft }: TeamOptionProps) {
+  const { locale, messages: t } = useLocale()
+
   return (
     <button
       type="button"
@@ -23,9 +27,9 @@ export function TeamOption({ team, isDraft, isCurrent, onDraft }: TeamOptionProp
       <ClubCrest team={team} size={30} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold">{team.name}</span>
-        <span className="block truncate text-xs text-muted">{team.countryName}</span>
+        <span className="block truncate text-xs text-muted">{countryNameOf(team, locale)}</span>
       </span>
-      {isCurrent && <span className="eyebrow shrink-0 text-accent">Mevcut</span>}
+      {isCurrent && <span className="eyebrow shrink-0 text-accent">{t.team.current}</span>}
     </button>
   )
 }

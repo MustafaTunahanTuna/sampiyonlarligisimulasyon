@@ -1,5 +1,6 @@
 import { ClubCrest } from '../../components/ClubCrest'
 import { QUALIFICATION_TEXT_TONE } from '../standings/qualificationTone'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { Score, StandingRow, Team } from '../../domain/types'
 
 interface MatchdayResultRowProps {
@@ -19,10 +20,11 @@ function sideTone(isWinner: boolean, isFavourite: boolean): string {
 }
 
 function PositionBadge({ standing }: { standing: StandingRow | null }) {
+  const t = useTranslation()
   if (standing === null) return <span aria-hidden="true" />
   return (
     <span
-      title={`${standing.team.name} · puan tablosunda ${standing.position}. sıra`}
+      title={t.matchday.standingHint(standing.team.name, standing.position)}
       className={`text-center font-display text-xs font-bold tabular-nums ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}
     >
       {standing.position}
@@ -40,6 +42,7 @@ export function MatchdayResultRow({
   revealDelay,
   onWatch,
 }: MatchdayResultRowProps) {
+  const t = useTranslation()
   const involvesFavourite = homeTeam.id === favouriteTeamId || awayTeam.id === favouriteTeamId
 
   return (
@@ -78,8 +81,8 @@ export function MatchdayResultRow({
           <button
             type="button"
             onClick={onWatch}
-            aria-label={`${homeTeam.name} - ${awayTeam.name} maçını izle`}
-            title="Maçı izle"
+            aria-label={t.matchday.watchMatchOf(homeTeam.name, awayTeam.name)}
+            title={t.matchday.watchMatch}
             className="ml-auto shrink-0 rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-accent"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4" fill="currentColor">

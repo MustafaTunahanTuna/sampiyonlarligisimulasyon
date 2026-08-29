@@ -1,0 +1,52 @@
+import type { MatchEventKind } from '../../../domain/engine'
+import type { Messages } from '../messages'
+
+export const live: Messages['live'] = {
+  playbackSpeed: 'Playback speed',
+  unmute: 'Unmute',
+  mute: 'Mute',
+  attackingRight: 'attacking →',
+  attackingLeft: '← attacking',
+  reducedMotion:
+    'The pitch animation is off because you prefer reduced motion; the full match is listed as text alongside.',
+  pause: 'Pause',
+  resume: 'Resume',
+  showResult: 'Show the result',
+  matchStats: 'Match stats',
+  commentaryTitle: 'Commentary',
+  noEvents: 'Nothing worth reporting yet.',
+  pitchLabel: 'Animation of the move on the pitch',
+  idleHeadline: 'The match is on, waiting for the next move.',
+  scoreLabel: (home, away) => `Score ${home} ${away}`,
+  stats: {
+    possession: 'Possession',
+    shots: 'Shots',
+    shotsOnTarget: 'Shots on target',
+    expectedGoals: 'Expected goals',
+    corners: 'Corners',
+    cards: 'Cards',
+  },
+  zonePhrase: {
+    0: 'in their own half',
+    1: 'in the build-up zone',
+    2: 'in midfield',
+    3: 'in the final third',
+    4: 'in the box',
+  } as Record<number, string>,
+  commentary: {
+    KICK_OFF: () => 'Kick-off.',
+    HALF_TIME: () => 'Half time.',
+    FULL_TIME: () => 'Full time.',
+    GOAL: (team: string) => `GOAL! ${team} find the net.`,
+    PENALTY_AWARDED: (team: string) => `${team} win a penalty.`,
+    PENALTY_GOAL: (team: string) => `GOAL! ${team} convert the penalty.`,
+    PENALTY_MISSED: (team: string) => `${team} waste the penalty.`,
+    SHOT_SAVED: (team: string) => `${team} shoot, the keeper saves.`,
+    SHOT_OFF: (team: string, zone: string) => `${team} try one ${zone}, it goes wide.`,
+    SHOT_BLOCKED: (team: string) => `${team} see the shot blocked.`,
+    POST: (team: string) => `${team} hit the post!`,
+    CORNER: (team: string) => `${team} take a corner.`,
+    YELLOW_CARD: (team: string) => `${team} pick up a yellow card.`,
+    RED_CARD: (team: string) => `${team} are shown a red card!`,
+  } as Record<MatchEventKind, (team: string, zone: string) => string>,
+}

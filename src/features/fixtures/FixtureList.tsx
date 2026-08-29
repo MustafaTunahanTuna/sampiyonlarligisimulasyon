@@ -1,4 +1,5 @@
 import { FixtureRow } from './FixtureRow'
+import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
 import type { Fixture, Score, Team } from '../../domain/types'
 
@@ -9,6 +10,7 @@ interface FixtureListProps {
 
 export function FixtureList({ team, fixtures }: FixtureListProps) {
   const { state, dispatch } = usePredictions()
+  const t = useTranslation()
   const homeCount = fixtures.filter((fixture) => fixture.venue === 'HOME').length
   const decided = fixtures.filter((fixture) => fixture.outcome !== null)
   const goalsFor = decided.reduce((total, fixture) => total + (fixture.goalsFor ?? 0), 0)
@@ -25,11 +27,13 @@ export function FixtureList({ team, fixtures }: FixtureListProps) {
   return (
     <section>
       <header className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-line-strong pb-3">
-        <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">Eşleşmeler</h2>
+        <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">
+          {t.fixtures.title}
+        </h2>
         <p className="eyebrow flex items-center gap-x-3 text-muted">
-          <span className="text-home">{homeCount} ev</span>
+          <span className="text-home">{t.fixtures.homeCount(homeCount)}</span>
           <span className="text-dim">·</span>
-          <span className="text-away">{fixtures.length - homeCount} deplasman</span>
+          <span className="text-away">{t.fixtures.awayCount(fixtures.length - homeCount)}</span>
           {decided.length > 0 && (
             <>
               <span className="text-dim">·</span>
@@ -55,8 +59,9 @@ export function FixtureList({ team, fixtures }: FixtureListProps) {
       </div>
 
       <p className="mt-5 text-xs text-muted">
-        Skorları elle gir ya da simülasyonla doldur. Elle girdiklerin
-        <span className="text-accent"> vurgulu</span> görünür ve yeniden simüle edilince korunur.
+        {t.fixtures.hint}
+        <span className="text-accent">{t.fixtures.hintHighlight}</span>
+        {t.fixtures.hintSuffix}
       </p>
     </section>
   )

@@ -8,14 +8,6 @@ export const KNOCKOUT_ROUNDS = [
 
 export type KnockoutRoundId = (typeof KNOCKOUT_ROUNDS)[number]
 
-export const ROUND_LABEL: Record<KnockoutRoundId, string> = {
-  PLAY_OFF: 'Play-off turu',
-  ROUND_OF_16: 'Son 16',
-  QUARTER_FINAL: 'Çeyrek final',
-  SEMI_FINAL: 'Yarı final',
-  FINAL: 'Final',
-}
-
 export const ROUND_SHORT: Record<KnockoutRoundId, string> = {
   PLAY_OFF: 'PO',
   ROUND_OF_16: 'R16',

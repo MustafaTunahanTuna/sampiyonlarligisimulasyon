@@ -1,10 +1,9 @@
 import { ClubCrest } from '../../components/ClubCrest'
 import { QUALIFICATION_TEXT_TONE } from './qualificationTone'
-import { OUTCOME_LABEL, OUTCOME_SHORT } from '../fixtures/matchPresentation'
-import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import { fixturesOf } from '../../domain/fixtures'
 import { withPredictedScores } from '../../domain/predictedResults'
 import { useModalDialog } from '../../hooks/useModalDialog'
+import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
 import type { Outcome, StandingRow } from '../../domain/types'
 
@@ -22,6 +21,7 @@ interface TeamFixturesModalProps {
 export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps) {
   const dialogRef = useModalDialog()
   const { state } = usePredictions()
+  const t = useTranslation()
   const team = standing.team
   const fixtures = withPredictedScores(fixturesOf(team), state.predictions)
 
@@ -45,10 +45,10 @@ export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps)
               </h2>
               <p className="eyebrow mt-1 text-muted">
                 <span className={QUALIFICATION_TEXT_TONE[standing.qualification]}>
-                  {standing.position}. sıra
+                  {t.standings.position(standing.position)}
                 </span>
                 <span className="px-2 text-dim">·</span>
-                {standing.points} puan
+                {t.standings.pointsSuffix(standing.points)}
                 <span className="px-2 text-dim">·</span>
                 {standing.wins}-{standing.draws}-{standing.losses}
                 <span className="px-2 text-dim">·</span>
@@ -60,8 +60,8 @@ export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps)
             <button
               type="button"
               onClick={onClose}
-              aria-label="Kapat"
-              title="Kapat"
+              aria-label={t.common.close}
+              title={t.common.close}
               className="shrink-0 rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-fg"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -70,7 +70,7 @@ export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps)
             </button>
           </div>
           <p className={`eyebrow mt-3 ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}>
-            {QUALIFICATION_OUTCOME_LABEL[standing.qualification]}
+            {t.standings.qualificationOutcome[standing.qualification]}
           </p>
         </header>
 
@@ -91,7 +91,7 @@ export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps)
                   <span
                     className={`eyebrow ${fixture.venue === 'HOME' ? 'text-home' : 'text-away'}`}
                   >
-                    {fixture.venue === 'HOME' ? 'Ev sahibi' : 'Deplasman'}
+                    {fixture.venue === 'HOME' ? t.standings.homeVenue : t.standings.awayVenue}
                   </span>
                 </span>
               </div>
@@ -106,10 +106,10 @@ export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps)
                 <span aria-hidden="true" />
               ) : (
                 <span
-                  title={OUTCOME_LABEL[fixture.outcome]}
+                  title={t.fixtures.outcome[fixture.outcome]}
                   className={`inline-flex size-7 items-center justify-center rounded-pill font-display text-xs font-extrabold ring-1 ${OUTCOME_TONE[fixture.outcome]}`}
                 >
-                  {OUTCOME_SHORT[fixture.outcome]}
+                  {t.fixtures.outcomeShort[fixture.outcome]}
                 </span>
               )}
             </li>

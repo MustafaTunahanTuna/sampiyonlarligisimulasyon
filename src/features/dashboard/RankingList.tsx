@@ -1,5 +1,13 @@
 import { ClubCrest } from '../../components/ClubCrest'
-import type { TeamRanking } from '../../domain/leagueStats'
+import { useTranslation } from '../../i18n/useTranslation'
+import type { RankingDetail, TeamRanking } from '../../domain/leagueStats'
+import type { Messages } from '../../i18n/messages/messages'
+
+function detailText(detail: RankingDetail, t: Messages): string {
+  return detail.kind === 'PLAYED'
+    ? t.dashboard.rankingPlayed(detail.played)
+    : t.dashboard.rankingExpected(detail.position)
+}
 
 interface RankingListProps {
   title: string
@@ -9,6 +17,8 @@ interface RankingListProps {
 }
 
 export function RankingList({ title, rankings, formatValue, favouriteTeamId }: RankingListProps) {
+  const t = useTranslation()
+
   return (
     <section className="panel min-w-0 p-4">
       <h3 className="eyebrow border-b border-line pb-2.5 text-muted">{title}</h3>
@@ -25,7 +35,7 @@ export function RankingList({ title, rankings, formatValue, favouriteTeamId }: R
             </span>
             <ClubCrest team={ranking.team} size={24} />
             <span className="min-w-0 flex-1 truncate text-sm font-semibold">{ranking.team.name}</span>
-            <span className="shrink-0 text-xs text-dim">{ranking.detail}</span>
+            <span className="shrink-0 text-xs text-dim">{detailText(ranking.detail, t)}</span>
             <span className="w-10 shrink-0 text-right font-display text-lg font-extrabold tabular-nums text-fg">
               {formatValue(ranking.value)}
             </span>

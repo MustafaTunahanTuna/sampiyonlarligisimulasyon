@@ -4,6 +4,7 @@ import { BracketTree } from './BracketTree'
 import { KnockoutMatchModal } from './KnockoutMatchModal'
 import { KnockoutRoundSection } from './KnockoutRoundSection'
 import { useKnockoutRunner } from './useKnockoutRunner'
+import { useTranslation } from '../../i18n/useTranslation'
 import { Button } from '../../components/Button'
 import { DownloadKnockoutButton } from '../share/DownloadKnockoutButton'
 import { completedMatchdayCount, MATCHDAY_NUMBERS } from '../../domain/matchdays'
@@ -20,6 +21,7 @@ interface KnockoutStageViewProps {
 export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutStageViewProps) {
   const { state } = usePredictions()
   const { stage, playableRound, playNextRound } = useKnockoutRunner()
+  const t = useTranslation()
   const completed = completedMatchdayCount(state.predictions)
   const [watchedTieId, setWatchedTieId] = useState<string | null>(null)
   const isBracketRound = playableRound !== null && playableRound.id !== 'PLAY_OFF'
@@ -60,15 +62,14 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
     return (
       <section className="panel p-6">
         <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">
-          Nakavt aşaması kilitli
+          {t.knockout.lockedTitle}
         </h2>
         <p className="mt-2 max-w-lg text-sm text-muted">
-          Eşleşmeler lig aşaması sıralamasından belirlenir. {MATCHDAY_NUMBERS.length} haftanın{' '}
-          {completed} tanesi tamamlandı — kalan haftaları oynadığında play-off eşleşmeleri açılır.
+          {t.knockout.lockedBody(MATCHDAY_NUMBERS.length, completed)}
         </p>
         <div className="mt-5">
           <Button variant="primary" onClick={onBackToLeague}>
-            Lig aşamasına dön
+            {t.knockout.backToLeague}
           </Button>
         </div>
       </section>
@@ -79,19 +80,16 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
     <div className="space-y-12">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow text-accent">Eleme turları</p>
+          <p className="eyebrow text-accent">{t.knockout.eyebrow}</p>
           <h1 className="mt-2 font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
-            Nakavt aşaması
+            {t.knockout.title}
           </h1>
-          <p className="mt-2 max-w-lg text-sm text-muted">
-            İlk 8 doğrudan son 16'da. 9–24. sıralar play-off oynar, 25–36 elenir. Play-off, son 16,
-            çeyrek ve yarı final çift maç; final tek maç.
-          </p>
+          <p className="mt-2 max-w-lg text-sm text-muted">{t.knockout.intro}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {playableRound !== null && (
             <Button variant="primary" onClick={playRound}>
-              {playableRound.label} oyna
+              {t.knockout.playRound(t.knockout.roundLabel[playableRound.id])}
             </Button>
           )}
           {stage.rounds.some((round) => round.isComplete) && (
@@ -120,12 +118,12 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
       <section id={BRACKET_ANCHOR_ID} className="scroll-mt-6">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
           <h3 className="font-display text-xl font-extrabold uppercase tracking-tight">
-            Turnuva ağacı
-            <span className="eyebrow pl-3 text-muted">son 16'dan finale</span>
+            {t.knockout.bracketTitle}
+            <span className="eyebrow pl-3 text-muted">{t.knockout.bracketSubtitle}</span>
           </h3>
           {isBracketRound && (
             <Button variant="primary" onClick={playRound}>
-              {playableRound.label} oyna
+              {t.knockout.playRound(t.knockout.roundLabel[playableRound.id])}
             </Button>
           )}
         </header>

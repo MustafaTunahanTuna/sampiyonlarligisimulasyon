@@ -1,15 +1,9 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { downloadBlob } from './shareFile'
+import { useTranslation } from '../../i18n/useTranslation'
 
 type DownloadState = 'idle' | 'working' | 'done' | 'failed'
-
-const STATE_LABEL: Record<DownloadState, string | null> = {
-  idle: null,
-  working: 'Hazırlanıyor…',
-  done: 'İndirildi',
-  failed: null,
-}
 
 const DONE_RESET_MS = 2400
 
@@ -45,7 +39,15 @@ export function DownloadCardButton({
   variant = 'secondary',
   renderCard,
 }: DownloadCardButtonProps) {
+  const t = useTranslation()
   const [downloadState, setDownloadState] = useState<DownloadState>('idle')
+
+  const stateLabel: Record<DownloadState, string | null> = {
+    idle: null,
+    working: t.share.preparing,
+    done: t.share.downloaded,
+    failed: null,
+  }
 
   const produceCard = async () => {
     setDownloadState('working')
@@ -62,11 +64,11 @@ export function DownloadCardButton({
     <span className="inline-flex items-center gap-2">
       <Button variant={variant} onClick={produceCard} disabled={downloadState === 'working'}>
         <DownloadIcon />
-        {STATE_LABEL[downloadState] ?? label}
+        {stateLabel[downloadState] ?? label}
       </Button>
       {downloadState === 'failed' && (
         <span role="alert" className="text-xs text-highlight">
-          Oluşturulamadı
+          {t.share.failed}
         </span>
       )}
     </span>

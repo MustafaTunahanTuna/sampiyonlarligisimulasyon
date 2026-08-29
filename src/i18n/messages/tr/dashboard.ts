@@ -1,0 +1,40 @@
+export const dashboard = {
+  yourTeam: 'Takımın',
+  points: (points: number) => `${points} p`,
+  changeTeam: 'Değiştir',
+  openPanel: 'Panel',
+  pickTeamTitle: 'Takımını seç',
+  pickTeamBody: 'Bir kulüp seç; sekiz eşleşmesi, sıralaması ve paylaşılabilir kartı senin olsun.',
+  pickTeamAction: 'Takım seç',
+  biggestWin: 'En farklı skor',
+  highestScoring: 'En gollü maç',
+  steps: [
+    {
+      title: 'Sezonu simüle et',
+      detail: 'Takım gücüne dayalı model 144 maçın tamamına skor üretir; sürpriz seviyesi sende.',
+    },
+    {
+      title: 'Skorları kendin yaz',
+      detail: 'Beğenmediğin maçın skorunu elle gir; yeniden simüle ettiğinde o skorlar korunur.',
+    },
+    {
+      title: 'Tabloyu paylaş',
+      detail: '36 takımlık puan tablosu anında hesaplanır, sonucu görsel karta çevirip paylaş.',
+    },
+  ],
+  statPredicted: 'Tahmin edilen',
+  statPredictedDetail: (total: number) => `${total} maçın`,
+  statTotalGoals: 'Toplam gol',
+  statPerMatch: 'Maç başına',
+  statPerMatchDetail: 'gol ortalaması',
+  statHomeWins: 'Ev sahibi kazandı',
+  statHomeWinsDetail: (draws: number, awayWins: number) =>
+    `${draws} beraberlik · ${awayWins} deplasman galibiyeti`,
+  statCleanSheets: 'Gol yemeyen',
+  statCleanSheetsDetail: 'maçta bir takım',
+  topScorers: 'En çok gol atan',
+  bestDefences: 'En az gol yiyen',
+  overperformers: 'Sürpriz yapanlar',
+  rankingPlayed: (played: number) => `${played} maç`,
+  rankingExpected: (position: number) => `beklenen ${position}.`,
+}

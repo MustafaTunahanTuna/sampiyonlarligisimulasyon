@@ -1,4 +1,4 @@
-import { KNOCKOUT_ROUNDS, ROUND_LABEL } from './knockoutFormat'
+import { KNOCKOUT_ROUNDS } from './knockoutFormat'
 import {
   finalTie,
   isTieReady,
@@ -14,7 +14,6 @@ import type { KnockoutScoreMap, KnockoutTie, StandingRow, Team, TieOutcome } fro
 
 export interface KnockoutRound {
   id: KnockoutRoundId
-  label: string
   ties: KnockoutTie[]
   outcomes: Map<string, TieOutcome>
   isReady: boolean
@@ -34,7 +33,6 @@ function buildRound(id: KnockoutRoundId, ties: KnockoutTie[], scores: KnockoutSc
   }
   return {
     id,
-    label: ROUND_LABEL[id],
     ties,
     outcomes,
     isReady: ties.every(isTieReady),

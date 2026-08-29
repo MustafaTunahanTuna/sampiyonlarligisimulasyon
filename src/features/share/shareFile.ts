@@ -1,8 +1,10 @@
+import type { Locale } from '../../i18n/locale'
+
 const REVOKE_DELAY_MS = 1000
 
-export function slugify(text: string): string {
+export function slugify(text: string, locale: Locale): string {
   return text
-    .toLocaleLowerCase('tr')
+    .toLocaleLowerCase(locale)
     .replace(/[^a-zçğıöşü0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 }

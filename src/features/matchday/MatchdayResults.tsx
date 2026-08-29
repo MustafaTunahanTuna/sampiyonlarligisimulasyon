@@ -1,6 +1,7 @@
 import { MatchdayResultRow } from './MatchdayResultRow'
 import type { MatchdayResult } from './resultList'
 import { Button } from '../../components/Button'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { StandingRow, Team } from '../../domain/types'
 
 const REVEAL_STEP_MS = 28
@@ -34,6 +35,7 @@ export function MatchdayResults({
   onFinishAll,
   onClose,
 }: MatchdayResultsProps) {
+  const t = useTranslation()
   const otherResults = results.filter((result) => result.id !== favouriteResult?.id)
 
   return (
@@ -41,7 +43,7 @@ export function MatchdayResults({
       <div className="scroll-area min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
         {favouriteResult !== null && (
           <section className="mb-5">
-            <h3 className="eyebrow mb-2 text-accent">Senin maçın</h3>
+            <h3 className="eyebrow mb-2 text-accent">{t.matchday.yourMatch}</h3>
             <ul>
               <MatchdayResultRow
                 homeTeam={favouriteResult.home}
@@ -58,7 +60,7 @@ export function MatchdayResults({
         )}
 
         <section>
-          <h3 className="eyebrow mb-2 text-muted">Diğer maçlar</h3>
+          <h3 className="eyebrow mb-2 text-muted">{t.matchday.otherMatches}</h3>
           <ul className="space-y-0.5">
             {otherResults.map((result, index) => (
               <MatchdayResultRow
@@ -80,29 +82,29 @@ export function MatchdayResults({
       <footer className="flex flex-wrap items-center gap-3 border-t border-line px-5 py-4 sm:px-6">
         {favouriteStanding !== null && (
           <p className="eyebrow text-muted">
-            <span className="text-fg">{favouriteStanding.position}. sıra</span>
+            <span className="text-fg">{t.standings.position(favouriteStanding.position)}</span>
             <span className="px-2 text-dim">·</span>
-            {favouriteStanding.points} puan
+            {t.standings.pointsSuffix(favouriteStanding.points)}
           </p>
         )}
         <div className="ml-auto flex flex-wrap items-center gap-3">
           {isReview || hasNext ? (
             <Button variant="ghost" onClick={onClose}>
-              {isReview ? 'Kapat' : 'Kapat ve incele'}
+              {isReview ? t.common.close : t.matchday.closeAndReview}
             </Button>
           ) : null}
           {isReview ? null : hasNext ? (
             <>
               <Button variant="ghost" onClick={onFinishAll}>
-                Tümünü tamamla
+                {t.matchday.finishAll}
               </Button>
               <Button variant="primary" onClick={onNext}>
-                Sonraki hafta →
+                {t.matchday.nextWeek}
               </Button>
             </>
           ) : (
             <Button variant="primary" onClick={onViewStandings}>
-              Lig tablosuna göz at →
+              {t.matchday.viewStandings}
             </Button>
           )}
         </div>

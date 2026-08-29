@@ -7,16 +7,14 @@ import { TeamPicker } from './features/team-picker/TeamPicker'
 import { TeamDashboard } from './features/team-summary/TeamDashboard'
 import { PredictionProvider } from './state/PredictionProvider'
 import { drawPool } from './domain/drawPool'
+import { formatDateTime } from './i18n/formatters'
+import { useLocale } from './i18n/useLocale'
 import { useFavouriteTeam } from './hooks/useFavouriteTeam'
 import { useHashRoute } from './hooks/useHashRoute'
 import type { Team } from './domain/types'
 
-const SCRAPED_AT_FORMAT = new Intl.DateTimeFormat('tr-TR', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-})
-
 export default function App() {
+  const { locale, messages: t } = useLocale()
   const { team, selectTeam, releaseTeam } = useFavouriteTeam()
   const { route, navigate } = useHashRoute()
 
@@ -75,16 +73,13 @@ export default function App() {
 
           <footer className="mx-auto max-w-5xl border-t border-line px-5 py-8 text-xs text-muted">
             <p>
-              Veri kaynağı:{' '}
+              {t.layout.footerSourcePrefix}{' '}
               <a href={drawPool.meta.source} className="text-accent underline-offset-4 hover:underline">
-                uefa.com kura merkezi
+                {t.layout.footerSourceLink}
               </a>{' '}
-              — {SCRAPED_AT_FORMAT.format(new Date(drawPool.meta.scrapedAt))} tarihinde çekildi.
-              Puan tablosu ve istatistikler senin tahminlerinden hesaplanır.
+              {t.layout.footerSourceSuffix(formatDateTime(drawPool.meta.scrapedAt, locale))}
             </p>
-            <p className="mt-2">
-              Resmî olmayan, hayran yapımı bir uygulama. Kulüp armaları ilgili kulüplere aittir.
-            </p>
+            <p className="mt-2">{t.layout.footerDisclaimer}</p>
           </footer>
         </div>
       </div>

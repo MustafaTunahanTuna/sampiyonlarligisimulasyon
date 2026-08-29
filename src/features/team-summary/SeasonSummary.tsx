@@ -1,5 +1,5 @@
-import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import { QUALIFICATION_TEXT_TONE } from '../standings/qualificationTone'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { SeasonRecord, StandingRow } from '../../domain/types'
 
 interface SeasonSummaryProps {
@@ -18,26 +18,31 @@ function Stat({ label, value, tone = 'text-fg' }: { label: string; value: string
 }
 
 export function SeasonSummary({ record, totalFixtures, standing }: SeasonSummaryProps) {
+  const t = useTranslation()
+
   if (record.played === 0) {
     return (
       <p className="border-l border-line py-1 pl-4 text-sm text-muted">
-        Bu takımın {totalFixtures} eşleşmesi belli. Skorları elle gir ya da sezonu simüle et —
-        puan tablosu ve paylaşılabilir görsel anında oluşur.
+        {t.team.emptySeason(totalFixtures)}
       </p>
     )
   }
 
   return (
     <dl className="grid grid-cols-2 gap-y-6 sm:grid-cols-4">
-      <Stat label="Sıra" value={`${standing.position}.`} tone={QUALIFICATION_TEXT_TONE[standing.qualification]} />
-      <Stat label="Puan" value={String(record.points)} />
-      <Stat label="G / B / M" value={`${record.wins}-${record.draws}-${record.losses}`} />
-      <Stat label="Averaj" value={`${record.goalsFor}:${record.goalsAgainst}`} />
+      <Stat
+        label={t.team.statPosition}
+        value={t.team.positionValue(standing.position)}
+        tone={QUALIFICATION_TEXT_TONE[standing.qualification]}
+      />
+      <Stat label={t.team.statPoints} value={String(record.points)} />
+      <Stat label={t.team.statRecord} value={`${record.wins}-${record.draws}-${record.losses}`} />
+      <Stat label={t.team.statGoals} value={`${record.goalsFor}:${record.goalsAgainst}`} />
       <div className="col-span-2 border-l border-line pl-4 sm:col-span-4">
         <p className={`eyebrow ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}>
-          {QUALIFICATION_OUTCOME_LABEL[standing.qualification]}
+          {t.standings.qualificationOutcome[standing.qualification]}
           <span className="pl-3 text-muted">
-            {record.played}/{totalFixtures} maç tahmin edildi
+            {t.team.predictedCount(record.played, totalFixtures)}
           </span>
         </p>
       </div>

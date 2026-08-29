@@ -15,13 +15,18 @@ export function findTeam(teamId: string | null): Team | null {
   return teamId === null ? null : (teamsById.get(teamId) ?? null)
 }
 
-export function searchTeams(query: string): Team[] {
-  const needle = query.trim().toLocaleLowerCase('tr')
+export interface TeamSearchOptions {
+  localeTag: string
+  countryNameOf: (team: Team) => string
+}
+
+export function searchTeams(query: string, { localeTag, countryNameOf }: TeamSearchOptions): Team[] {
+  const needle = query.trim().toLocaleLowerCase(localeTag)
   if (needle === '') return drawPool.teams
   return drawPool.teams.filter((team) =>
-    [team.name, team.officialName, team.code, team.countryName]
+    [team.name, team.officialName, team.code, countryNameOf(team)]
       .join(' ')
-      .toLocaleLowerCase('tr')
+      .toLocaleLowerCase(localeTag)
       .includes(needle),
   )
 }

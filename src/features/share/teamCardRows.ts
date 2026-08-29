@@ -4,19 +4,24 @@ import {
   truncateText,
 } from './canvasPrimitives'
 import { CARD_MARGIN as MARGIN, CARD_WIDTH as WIDTH } from './teamCardLayout'
-import { OUTCOME_SHORT, VENUE_LABEL } from '../fixtures/matchPresentation'
-import { decisionSuffix } from '../../domain/teamKnockoutRun'
+import { toUpperCase } from '../../i18n/formatters'
 import type { KnockoutAppearance } from '../../domain/teamKnockoutRun'
 import type { Fixture } from '../../domain/types'
+import type { ShareText } from './shareText'
 
 const DISPLAY = '"Archivo", "Manrope", sans-serif'
 const BODY = '"Manrope", sans-serif'
 
-export function drawSectionHeading(context: CanvasRenderingContext2D, text: string, y: number) {
+export function drawSectionHeading(
+  context: CanvasRenderingContext2D,
+  heading: string,
+  locale: ShareText['locale'],
+  y: number,
+) {
   context.font = `600 22px ${DISPLAY}`
   context.fillStyle = palette.muted
   context.letterSpacing = '4px'
-  context.fillText(text.toLocaleUpperCase('tr'), MARGIN, y)
+  context.fillText(toUpperCase(heading, locale), MARGIN, y)
   context.letterSpacing = '0px'
 }
 
@@ -33,6 +38,7 @@ export function drawFixtureRow(
   context: CanvasRenderingContext2D,
   fixture: Fixture,
   crest: HTMLImageElement,
+  text: ShareText,
   y: number,
   rowHeight: number,
 ) {
@@ -52,7 +58,7 @@ export function drawFixtureRow(
 
   context.font = `500 20px ${BODY}`
   context.fillStyle = isHome ? palette.home : palette.away
-  context.fillText(VENUE_LABEL[fixture.venue], MARGIN + 108, centre + 22)
+  context.fillText(text.t.fixtures.venue[fixture.venue], MARGIN + 108, centre + 22)
 
   context.textAlign = 'right'
   if (fixture.goalsFor !== null && fixture.goalsAgainst !== null) {
@@ -67,7 +73,11 @@ export function drawFixtureRow(
     context.font = `800 28px ${DISPLAY}`
     context.fillStyle =
       fixture.outcome === 'WIN' ? palette.home : fixture.outcome === 'LOSS' ? palette.dim : palette.muted
-    context.fillText(OUTCOME_SHORT[fixture.outcome ?? 'DRAW'], WIDTH - MARGIN, centre + 10)
+    context.fillText(
+      text.t.fixtures.outcomeShort[fixture.outcome ?? 'DRAW'],
+      WIDTH - MARGIN,
+      centre + 10,
+    )
   } else {
     context.font = `500 24px ${BODY}`
     context.fillStyle = palette.dim
@@ -82,6 +92,7 @@ export function drawKnockoutRow(
   context: CanvasRenderingContext2D,
   appearance: KnockoutAppearance,
   crest: HTMLImageElement,
+  text: ShareText,
   y: number,
   rowHeight: number,
 ) {
@@ -94,7 +105,11 @@ export function drawKnockoutRow(
   context.font = `600 19px ${DISPLAY}`
   context.fillStyle = palette.accent
   context.letterSpacing = '2px'
-  context.fillText(appearance.roundLabel.toLocaleUpperCase('tr'), MARGIN + 28, centre - 10)
+  context.fillText(
+    toUpperCase(text.t.knockout.roundLabel[appearance.round], text.locale),
+    MARGIN + 28,
+    centre - 10,
+  )
   context.letterSpacing = '0px'
 
   drawContainedImage(context, crest, MARGIN + 28, centre + 2, crestSize)
@@ -116,7 +131,7 @@ export function drawKnockoutRow(
     centre + 8,
   )
 
-  const suffix = decisionSuffix(appearance.decidedBy)
+  const suffix = text.t.knockout.decisionSuffix[appearance.decidedBy]
   if (suffix !== '') {
     context.font = `500 17px ${BODY}`
     context.fillStyle = palette.muted

@@ -4,6 +4,7 @@ import { MatchdayResults } from './MatchdayResults'
 import { favouriteResultOf, matchdayResults } from './resultList'
 import { Button } from '../../components/Button'
 import { useModalDialog } from '../../hooks/useModalDialog'
+import { useTranslation } from '../../i18n/useTranslation'
 import { MatchLiveView } from '../match-live/MatchLiveView'
 import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
 import { predictedStandings } from '../../domain/predictedResults'
@@ -38,6 +39,7 @@ export function MatchdayModal({
   onClose,
 }: MatchdayModalProps) {
   const dialogRef = useModalDialog()
+  const t = useTranslation()
   const results = matchdayResults(matchday, predictions)
   const favouriteResult = favouriteResultOf(results, favouriteTeam)
   const canWatch = favouriteResult !== null && favouriteResult.isWatchable
@@ -64,19 +66,19 @@ export function MatchdayModal({
               id="matchday-title"
               className="font-display text-2xl font-extrabold uppercase tracking-tight"
             >
-              Hafta {matchday}
+              {t.matchday.title(matchday)}
             </h2>
             <div className="flex items-center gap-4">
               <p className="eyebrow text-muted tabular-nums">
                 {isLive
-                  ? 'Senin maçın'
-                  : `${matchday} / ${MATCHDAY_NUMBERS.length} · ${results.length} maç`}
+                  ? t.matchday.yourMatch
+                  : t.matchday.progress(matchday, MATCHDAY_NUMBERS.length, results.length)}
               </p>
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Kapat"
-                title="Kapat"
+                aria-label={t.common.close}
+                title={t.common.close}
                 className="rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-fg"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -100,7 +102,7 @@ export function MatchdayModal({
                 variant={isFinished ? 'primary' : 'ghost'}
                 onClick={() => setStage('results')}
               >
-                {isFinished ? 'Diğer sonuçları gör →' : 'Sonuçlara atla →'}
+                {isFinished ? t.matchday.seeOtherResults : t.common.skipToResults}
               </Button>
             )}
           />

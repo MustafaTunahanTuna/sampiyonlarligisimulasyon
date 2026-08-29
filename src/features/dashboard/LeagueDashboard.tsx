@@ -16,6 +16,7 @@ import {
   topScorers,
 } from '../../domain/leagueStats'
 import { predictedStandings } from '../../domain/predictedResults'
+import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
 
@@ -33,6 +34,7 @@ export function LeagueDashboard({
   onGoToKnockout,
 }: LeagueDashboardProps) {
   const { state } = usePredictions()
+  const t = useTranslation()
   const matches = playedMatches(state.predictions)
   const stats = leagueStats(matches)
   const standings = predictedStandings(state.predictions)
@@ -81,19 +83,19 @@ export function LeagueDashboard({
           />
           <div className="grid gap-x-10 gap-y-10 lg:grid-cols-3">
             <RankingList
-              title="En çok gol atan"
+              title={t.dashboard.topScorers}
               rankings={topScorers(standings)}
               formatValue={(value) => String(value)}
               favouriteTeamId={favouriteTeam?.id ?? null}
             />
             <RankingList
-              title="En az gol yiyen"
+              title={t.dashboard.bestDefences}
               rankings={bestDefences(standings)}
               formatValue={(value) => String(value)}
               favouriteTeamId={favouriteTeam?.id ?? null}
             />
             <RankingList
-              title="Sürpriz yapanlar"
+              title={t.dashboard.overperformers}
               rankings={biggestOverperformers(standings)}
               formatValue={(value) => (value > 0 ? `+${value}` : String(value))}
               favouriteTeamId={favouriteTeam?.id ?? null}

@@ -117,14 +117,18 @@ export interface StandingRow {
   points: number
 }
 
+export type TieSlot =
+  | { kind: 'POSITION'; position: number }
+  | { kind: 'WINNER'; round: import('./knockoutFormat').KnockoutRoundId; order: number }
+
 export interface KnockoutTie {
   id: string
   round: import('./knockoutFormat').KnockoutRoundId
   order: number
   seeded: Team | null
   challenger: Team | null
-  seededLabel: string
-  challengerLabel: string
+  seededSlot: TieSlot
+  challengerSlot: TieSlot
   isTwoLegged: boolean
 }
 

@@ -1,4 +1,5 @@
 import { ClubCrest } from '../../components/ClubCrest'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { PlayedMatchSummary } from '../../domain/leagueStats'
 
 interface HighlightMatchesProps {
@@ -27,10 +28,12 @@ function Highlight({ label, match }: { label: string; match: PlayedMatchSummary 
 }
 
 export function HighlightMatches({ biggestWin, highestScoring }: HighlightMatchesProps) {
+  const t = useTranslation()
+
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Highlight label="En farklı skor" match={biggestWin} />
-      <Highlight label="En gollü maç" match={highestScoring} />
+      <Highlight label={t.dashboard.biggestWin} match={biggestWin} />
+      <Highlight label={t.dashboard.highestScoring} match={highestScoring} />
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import { useTranslation } from '../i18n/useTranslation'
+
 const ORBIT_STAR_COUNT = 6
 const ORBIT_RADIUS = 33
 const ORBIT_STAR_RADIUS = 7.5
@@ -31,6 +33,8 @@ interface BrandLogoProps {
 }
 
 export function BrandLogo({ season }: BrandLogoProps) {
+  const t = useTranslation()
+
   return (
     <span className="flex items-center gap-3">
       <svg viewBox="0 0 100 100" aria-hidden="true" className="size-9 shrink-0">
@@ -59,10 +63,10 @@ export function BrandLogo({ season }: BrandLogoProps) {
 
       <span className="flex flex-col leading-none">
         <span className="font-display text-[0.9rem] font-extrabold uppercase tracking-[0.06em] text-fg">
-          Şampiyonlar Ligi
+          {t.layout.brandName}
         </span>
         <span className="eyebrow mt-1 text-accent">
-          {season} <span className="text-muted">Lig aşaması</span>
+          {season} <span className="text-muted">{t.layout.brandStage}</span>
         </span>
       </span>
     </span>

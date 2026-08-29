@@ -1,7 +1,9 @@
 import { SHARE_PALETTE as palette, drawContainedImage, truncateText } from './canvasPrimitives'
-import { decisionSuffix } from '../../domain/teamKnockoutRun'
+import { slotLabel } from '../knockout/tiePresentation'
+import { toUpperCase } from '../../i18n/formatters'
 import type { Box, BracketSide } from './bracketLayout'
 import type { KnockoutTie, Team, TieOutcome } from '../../domain/types'
+import type { ShareText } from './shareText'
 
 const DISPLAY = '"Archivo", "Manrope", sans-serif'
 const BODY = '"Manrope", sans-serif'
@@ -65,6 +67,7 @@ export function drawTieBox(
   visual: TieVisual,
   crests: Map<string, HTMLImageElement>,
   favouriteTeamId: string | null,
+  text: ShareText,
   box: Box,
   useFullName = false,
 ) {
@@ -85,7 +88,7 @@ export function drawTieBox(
   drawSide(
     context,
     tie.seeded,
-    tie.seededLabel,
+    slotLabel(tie.seededSlot, text.t),
     crestFor(tie.seeded),
     outcome?.aggregateSeeded ?? null,
     winnerId === tie.seeded?.id,
@@ -97,7 +100,7 @@ export function drawTieBox(
   drawSide(
     context,
     tie.challenger,
-    tie.challengerLabel,
+    slotLabel(tie.challengerSlot, text.t),
     crestFor(tie.challenger),
     outcome?.aggregateChallenger ?? null,
     winnerId === tie.challenger?.id,
@@ -107,14 +110,14 @@ export function drawTieBox(
     useFullName,
   )
 
-  const suffix = outcome === undefined ? '' : decisionSuffix(outcome.decidedBy)
+  const suffix = outcome === undefined ? '' : text.t.knockout.decisionSuffix[outcome.decidedBy]
   if (suffix !== '') {
     context.textAlign = 'right'
     context.font = `600 11px ${DISPLAY}`
     context.fillStyle = palette.dim
     context.letterSpacing = '1.5px'
     context.fillText(
-      suffix.toLocaleUpperCase('tr'),
+      toUpperCase(suffix, text.locale),
       box.x + box.width - 34,
       box.y + box.height / 2 + 4,
     )
@@ -169,7 +172,8 @@ export function drawFinalConnector(
 
 export function drawRoundLabel(
   context: CanvasRenderingContext2D,
-  text: string,
+  label: string,
+  locale: ShareText['locale'],
   x: number,
   y: number,
   align: CanvasTextAlign,
@@ -178,7 +182,7 @@ export function drawRoundLabel(
   context.font = `600 15px ${DISPLAY}`
   context.fillStyle = palette.dim
   context.letterSpacing = '2.5px'
-  context.fillText(text.toLocaleUpperCase('tr'), x, y)
+  context.fillText(toUpperCase(label, locale), x, y)
   context.letterSpacing = '0px'
   context.textAlign = 'left'
 }

@@ -1,16 +1,17 @@
 import { MatchdayDots } from './MatchdayDots'
 import { Button } from '../../components/Button'
 import { Starball } from '../../components/Starball'
+import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
 import { createSeed } from '../../state/predictionReducer'
 import type { MatchdayNumber } from '../../domain/matchdays'
 
 const UNPREDICTABILITY_STEPS = [
-  { value: 0, label: 'Forma göre' },
-  { value: 0.25, label: 'Dengeli' },
-  { value: 0.6, label: 'Sürprizli' },
-  { value: 0.9, label: 'Kaos' },
-]
+  { value: 0, key: 'form' },
+  { value: 0.25, key: 'balanced' },
+  { value: 0.6, key: 'surprising' },
+  { value: 0.9, key: 'chaos' },
+] as const
 
 interface SimulationControlsProps {
   upcomingMatchday: MatchdayNumber | null
@@ -32,6 +33,7 @@ export function SimulationControls({
   onReset,
 }: SimulationControlsProps) {
   const { state, dispatch } = usePredictions()
+  const t = useTranslation()
   const isComplete = upcomingMatchday === null
   const hasStarted = completedMatchdays > 0
 
@@ -41,24 +43,24 @@ export function SimulationControls({
         {isComplete ? (
           <Button variant="primary" onClick={onGoToKnockout}>
             <Starball className="size-4" />
-            Nakavt aşamasına geç
+            {t.matchday.goToKnockout}
           </Button>
         ) : (
           <Button variant="primary" onClick={onPlayNext}>
             <Starball className="size-4" />
-            {hasStarted ? `Hafta ${upcomingMatchday} oyna` : 'Sezonu başlat'}
+            {hasStarted ? t.matchday.playMatchday(upcomingMatchday) : t.matchday.startSeason}
           </Button>
         )}
 
         {!isComplete && hasStarted && (
           <Button variant="ghost" onClick={onFinishAll} className="px-3">
-            Tümünü tamamla
+            {t.matchday.finishAll}
           </Button>
         )}
 
         {hasStarted && (
           <Button variant="ghost" onClick={onReset} className="px-3 hover:text-highlight">
-            Sıfırla
+            {t.matchday.reset}
           </Button>
         )}
       </div>
@@ -72,12 +74,12 @@ export function SimulationControls({
               unpredictability: Number(event.target.value),
             })
           }
-          aria-label="Sürpriz seviyesi"
+          aria-label={t.matchday.unpredictability}
           className="rounded-control border border-line-strong bg-surface/60 px-3 py-1.5 text-sm text-fg focus:border-accent focus:outline-none"
         >
           {UNPREDICTABILITY_STEPS.map((step) => (
             <option key={step.value} value={step.value} className="bg-surface">
-              {step.label}
+              {t.matchday.unpredictabilitySteps[step.key]}
             </option>
           ))}
         </select>
@@ -88,15 +90,15 @@ export function SimulationControls({
             onChange={(event) =>
               dispatch({ type: 'seed-changed', seed: event.target.value.toUpperCase() })
             }
-            aria-label="Senaryo kodu"
-            title="Senaryo kodu — aynı kod aynı sezonu üretir"
+            aria-label={t.matchday.seed}
+            title={t.matchday.seedHint}
             className="w-24 rounded-control border border-line-strong bg-surface/60 px-3 py-1.5 font-display text-sm font-bold uppercase tracking-widest text-fg focus:border-accent focus:outline-none"
           />
           <button
             type="button"
             onClick={() => dispatch({ type: 'seed-changed', seed: createSeed() })}
-            aria-label="Yeni senaryo kodu üret"
-            title="Yeni senaryo kodu üret"
+            aria-label={t.matchday.newSeed}
+            title={t.matchday.newSeed}
             className="rounded-pill px-2 py-1.5 text-muted transition-colors hover:bg-surface hover:text-accent"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">

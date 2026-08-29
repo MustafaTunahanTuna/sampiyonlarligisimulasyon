@@ -16,11 +16,13 @@ import {
   bracketLayout,
 } from './bracketLayout'
 import { drawConnector, drawFinalConnector, drawRoundLabel, drawTieBox } from './bracketDrawing'
+import { toUpperCase } from '../../i18n/formatters'
 import type { BracketLayout, BracketSide, Box } from './bracketLayout'
 import type { TieVisual } from './bracketDrawing'
 import type { KnockoutRoundId } from '../../domain/knockoutFormat'
 import type { KnockoutStage } from '../../domain/knockoutStage'
 import type { Team } from '../../domain/types'
+import type { ShareText } from './shareText'
 
 const DISPLAY = '"Archivo", "Manrope", sans-serif'
 const BODY = '"Manrope", sans-serif'
@@ -34,6 +36,7 @@ export interface KnockoutCardInput {
   stage: KnockoutStage
   favouriteTeam: Team | null
   seed: string
+  text: ShareText
 }
 
 function tieVisual(stage: KnockoutStage, round: KnockoutRoundId, order: number): TieVisual | null {
@@ -43,27 +46,32 @@ function tieVisual(stage: KnockoutStage, round: KnockoutRoundId, order: number):
   return { tie, outcome: target.outcomes.get(tie.id) }
 }
 
-function drawHeader(context: CanvasRenderingContext2D, seed: string, playedRounds: number) {
+function drawHeader(
+  context: CanvasRenderingContext2D,
+  seed: string,
+  playedRounds: number,
+  text: ShareText,
+) {
   drawStar(context, MARGIN + 12, MARGIN + 6, 13, palette.accent)
   context.font = `600 20px ${DISPLAY}`
   context.letterSpacing = '4px'
   context.fillStyle = palette.muted
-  context.fillText('ŞAMPİYONLAR LİGİ 2026/27', MARGIN + 38, MARGIN + 13)
+  context.fillText(toUpperCase(text.t.share.brand, text.locale), MARGIN + 38, MARGIN + 13)
   context.textAlign = 'right'
   context.fillStyle = palette.dim
-  context.fillText(`SENARYO ${seed}`, WIDTH - MARGIN, MARGIN + 13)
+  context.fillText(toUpperCase(text.t.share.scenario(seed), text.locale), WIDTH - MARGIN, MARGIN + 13)
   context.letterSpacing = '0px'
   context.textAlign = 'left'
 
   context.font = `800 54px ${DISPLAY}`
   context.fillStyle = palette.fg
   context.letterSpacing = '-2px'
-  context.fillText('NAKAVT AŞAMASI', MARGIN, MARGIN + 78)
+  context.fillText(toUpperCase(text.t.share.knockoutTitle, text.locale), MARGIN, MARGIN + 78)
   context.letterSpacing = '0px'
 
   context.font = `500 20px ${BODY}`
   context.fillStyle = palette.muted
-  context.fillText(`${playedRounds} tur oynandı · turnuva ağacı`, MARGIN, MARGIN + 110)
+  context.fillText(text.t.share.knockoutSubtitle(playedRounds), MARGIN, MARGIN + 110)
 }
 
 function drawPlayOffStrip(
@@ -72,17 +80,25 @@ function drawPlayOffStrip(
   stage: KnockoutStage,
   crests: Map<string, HTMLImageElement>,
   favouriteTeamId: string | null,
+  text: ShareText,
 ) {
-  drawRoundLabel(context, 'Play-off turu', MARGIN, layout.playOffLabelY, 'left')
+  drawRoundLabel(
+    context,
+    text.t.knockout.roundLabel.PLAY_OFF,
+    text.locale,
+    MARGIN,
+    layout.playOffLabelY,
+    'left',
+  )
   context.font = `500 14px ${BODY}`
   context.fillStyle = palette.dim
   context.textAlign = 'right'
-  context.fillText('kazananlar son 16 turuna yükselir', WIDTH - MARGIN, layout.playOffLabelY)
+  context.fillText(text.t.share.playOffNote, WIDTH - MARGIN, layout.playOffLabelY)
   context.textAlign = 'left'
 
   layout.playOff.forEach((box, index) => {
     const visual = tieVisual(stage, 'PLAY_OFF', index + 1)
-    if (visual !== null) drawTieBox(context, visual, crests, favouriteTeamId, box, true)
+    if (visual !== null) drawTieBox(context, visual, crests, favouriteTeamId, text, box, true)
   })
 }
 
@@ -92,6 +108,7 @@ function drawTree(
   stage: KnockoutStage,
   crests: Map<string, HTMLImageElement>,
   favouriteTeamId: string | null,
+  text: ShareText,
 ) {
   const boxOf = (side: BracketSide, depth: number, tieOrder: number): Box | null =>
     layout.slots.find(
@@ -101,7 +118,7 @@ function drawTree(
   for (const side of ['left', 'right'] as BracketSide[]) {
     for (const slot of layout.slots.filter((entry) => entry.side === side)) {
       const visual = tieVisual(stage, DEPTH_ROUND[slot.depth], slot.tieOrder)
-      if (visual !== null) drawTieBox(context, visual, crests, favouriteTeamId, slot.box)
+      if (visual !== null) drawTieBox(context, visual, crests, favouriteTeamId, text, slot.box)
     }
 
     const quarterOrders = side === 'left' ? [1, 2] : [3, 4]
@@ -125,21 +142,31 @@ function drawTree(
     }
   }
 
-  const columnLabels: [number, string][] = [
-    [0, 'Son 16'],
-    [1, 'Çeyrek final'],
-    [2, 'Yarı final'],
-  ]
   const labelY = layout.treeTop - 18
-  for (const [depth, label] of columnLabels) {
-    const leftBox = layout.slots.find((slot) => slot.side === 'left' && slot.depth === depth)?.box
-    const rightBox = layout.slots.find((slot) => slot.side === 'right' && slot.depth === depth)?.box
-    if (leftBox !== undefined) drawRoundLabel(context, label, leftBox.x, labelY, 'left')
+  for (const [depth, round] of Object.entries(DEPTH_ROUND)) {
+    const label = text.t.knockout.roundLabel[round]
+    const depthIndex = Number(depth)
+    const leftBox = layout.slots.find(
+      (slot) => slot.side === 'left' && slot.depth === depthIndex,
+    )?.box
+    const rightBox = layout.slots.find(
+      (slot) => slot.side === 'right' && slot.depth === depthIndex,
+    )?.box
+    if (leftBox !== undefined) {
+      drawRoundLabel(context, label, text.locale, leftBox.x, labelY, 'left')
+    }
     if (rightBox !== undefined) {
-      drawRoundLabel(context, label, rightBox.x + rightBox.width, labelY, 'right')
+      drawRoundLabel(context, label, text.locale, rightBox.x + rightBox.width, labelY, 'right')
     }
   }
-  drawRoundLabel(context, 'Final', layout.final.x + layout.final.width / 2, labelY, 'center')
+  drawRoundLabel(
+    context,
+    text.t.knockout.roundLabel.FINAL,
+    text.locale,
+    layout.final.x + layout.final.width / 2,
+    labelY,
+    'center',
+  )
 
   const finalVisual = tieVisual(stage, 'FINAL', 1)
   if (finalVisual !== null) {
@@ -154,7 +181,7 @@ function drawTree(
       11,
     )
     context.stroke()
-    drawTieBox(context, finalVisual, crests, favouriteTeamId, layout.final)
+    drawTieBox(context, finalVisual, crests, favouriteTeamId, text, layout.final)
   }
 }
 
@@ -162,6 +189,7 @@ function drawChampion(
   context: CanvasRenderingContext2D,
   champion: Team,
   crest: HTMLImageElement,
+  text: ShareText,
   y: number,
 ) {
   const width = WIDTH - MARGIN * 2
@@ -178,7 +206,7 @@ function drawChampion(
   context.font = `600 19px ${DISPLAY}`
   context.fillStyle = palette.accent
   context.letterSpacing = '4px'
-  context.fillText('ŞAMPİYON', MARGIN + 110, y + 42)
+  context.fillText(toUpperCase(text.t.share.champion, text.locale), MARGIN + 110, y + 42)
   context.letterSpacing = '0px'
 
   context.font = `800 42px ${DISPLAY}`
@@ -186,16 +214,17 @@ function drawChampion(
   context.fillText(truncateText(context, champion.name, width - 170), MARGIN + 110, y + 80)
 }
 
-function drawFooter(context: CanvasRenderingContext2D, y: number) {
+function drawFooter(context: CanvasRenderingContext2D, text: ShareText, y: number) {
   context.font = `500 19px ${BODY}`
   context.fillStyle = palette.dim
-  context.fillText('Kura verisi: uefa.com · Tahmin ve simülasyon', MARGIN, y)
+  context.fillText(text.t.share.footer, MARGIN, y)
 }
 
 export async function renderKnockoutCard({
   stage,
   favouriteTeam,
   seed,
+  text,
 }: KnockoutCardInput): Promise<Blob> {
   const { canvas, context } = createCardCanvas(WIDTH, HEIGHT)
 
@@ -220,18 +249,18 @@ export async function renderKnockoutCard({
   const layout = bracketLayout()
   const favouriteTeamId = favouriteTeam?.id ?? null
 
-  drawHeader(context, seed, stage.rounds.filter((round) => round.isComplete).length)
-  drawPlayOffStrip(context, layout, stage, crests, favouriteTeamId)
-  drawTree(context, layout, stage, crests, favouriteTeamId)
+  drawHeader(context, seed, stage.rounds.filter((round) => round.isComplete).length, text)
+  drawPlayOffStrip(context, layout, stage, crests, favouriteTeamId, text)
+  drawTree(context, layout, stage, crests, favouriteTeamId, text)
 
   if (stage.champion !== null) {
     const championCrest = crests.get(stage.champion.id)
     if (championCrest !== undefined) {
-      drawChampion(context, stage.champion, championCrest, layout.championTop)
+      drawChampion(context, stage.champion, championCrest, text, layout.championTop)
     }
   }
 
-  drawFooter(context, layout.footerY)
+  drawFooter(context, text, layout.footerY)
 
   return toCardBlob(canvas)
 }

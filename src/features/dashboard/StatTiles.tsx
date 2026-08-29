@@ -1,3 +1,4 @@
+import { useTranslation } from '../../i18n/useTranslation'
 import type { LeagueStats } from '../../domain/leagueStats'
 
 interface StatTilesProps {
@@ -15,31 +16,32 @@ function Tile({ label, value, detail }: { label: string; value: string; detail?:
 }
 
 export function StatTiles({ stats }: StatTilesProps) {
+  const t = useTranslation()
   const homeShare =
     stats.playedCount === 0 ? 0 : Math.round((stats.homeWins / stats.playedCount) * 100)
 
   return (
     <dl className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
       <Tile
-        label="Tahmin edilen"
+        label={t.dashboard.statPredicted}
         value={`${stats.playedCount}`}
-        detail={`${stats.totalCount} maçın`}
+        detail={t.dashboard.statPredictedDetail(stats.totalCount)}
       />
-      <Tile label="Toplam gol" value={`${stats.totalGoals}`} />
+      <Tile label={t.dashboard.statTotalGoals} value={`${stats.totalGoals}`} />
       <Tile
-        label="Maç başına"
+        label={t.dashboard.statPerMatch}
         value={stats.goalsPerMatch.toFixed(2)}
-        detail="gol ortalaması"
+        detail={t.dashboard.statPerMatchDetail}
       />
       <Tile
-        label="Ev sahibi kazandı"
+        label={t.dashboard.statHomeWins}
         value={`%${homeShare}`}
-        detail={`${stats.draws} beraberlik · ${stats.awayWins} deplasman galibiyeti`}
+        detail={t.dashboard.statHomeWinsDetail(stats.draws, stats.awayWins)}
       />
       <Tile
-        label="Gol yemeyen"
+        label={t.dashboard.statCleanSheets}
         value={`${stats.cleanSheets}`}
-        detail="maçta bir takım"
+        detail={t.dashboard.statCleanSheetsDetail}
       />
     </dl>
   )

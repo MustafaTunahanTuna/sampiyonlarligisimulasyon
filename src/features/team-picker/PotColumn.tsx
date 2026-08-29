@@ -1,4 +1,5 @@
 import { TeamOption } from './TeamOption'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { PotNumber, Team } from '../../domain/types'
 
 interface PotColumnProps {
@@ -10,11 +11,13 @@ interface PotColumnProps {
 }
 
 export function PotColumn({ pot, teams, draftTeamId, currentTeamId, onDraft }: PotColumnProps) {
+  const t = useTranslation()
+
   return (
     <section className="min-w-0">
       <h3 className="eyebrow flex items-baseline gap-2 border-b border-line pb-2 text-muted">
         <span className="text-accent tabular-nums">{String(pot).padStart(2, '0')}</span>
-        <span>Torba</span>
+        <span>{t.team.pot}</span>
         <span className="ml-auto tabular-nums normal-case tracking-normal">{teams.length}</span>
       </h3>
       <ul className="mt-2 space-y-0.5">

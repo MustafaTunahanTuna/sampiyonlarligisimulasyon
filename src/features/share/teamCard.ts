@@ -9,8 +9,12 @@ import {
   toCardBlob,
   truncateText,
 } from './canvasPrimitives'
-import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
+import { runSummaryLabel } from '../knockout/tiePresentation'
+import { toUpperCase } from '../../i18n/formatters'
+import { countryNameOf } from '../../i18n/countryNames'
 import type { Fixture, StandingRow, Team } from '../../domain/types'
+import type { KnockoutSummary } from '../../domain/teamKnockoutRun'
+import type { ShareText } from './shareText'
 
 import {
   CARD_HEIGHT as HEIGHT,
@@ -29,24 +33,39 @@ export interface TeamCardInput {
   fixtures: Fixture[]
   standing: StandingRow
   knockoutRun: KnockoutAppearance[]
-  knockoutSummary: string | null
+  knockoutSummary: KnockoutSummary | null
   seed: string
+  text: ShareText
 }
 
-function drawEyebrow(context: CanvasRenderingContext2D, text: string, x: number, y: number, color: string) {
+function drawEyebrow(
+  context: CanvasRenderingContext2D,
+  label: string,
+  locale: ShareText['locale'],
+  x: number,
+  y: number,
+  color: string,
+) {
   context.font = `600 22px ${DISPLAY}`
   context.fillStyle = color
   context.letterSpacing = '4px'
-  context.fillText(text.toLocaleUpperCase('tr'), x, y)
+  context.fillText(toUpperCase(label, locale), x, y)
   context.letterSpacing = '0px'
 }
 
-function drawHeader(context: CanvasRenderingContext2D, seed: string) {
+function drawHeader(context: CanvasRenderingContext2D, seed: string, text: ShareText) {
   drawStar(context, MARGIN + 12, MARGIN + 6, 14, palette.accent)
-  drawEyebrow(context, 'Şampiyonlar Ligi 2026/27 · Lig aşaması', MARGIN + 40, MARGIN + 14, palette.muted)
+  drawEyebrow(
+    context,
+    text.t.share.brandWithStage,
+    text.locale,
+    MARGIN + 40,
+    MARGIN + 14,
+    palette.muted,
+  )
 
   context.textAlign = 'right'
-  drawEyebrow(context, `Senaryo ${seed}`, WIDTH - MARGIN, MARGIN + 14, palette.dim)
+  drawEyebrow(context, text.t.share.scenario(seed), text.locale, WIDTH - MARGIN, MARGIN + 14, palette.dim)
   context.textAlign = 'left'
 }
 
@@ -55,7 +74,8 @@ function drawHero(
   team: Team,
   crest: HTMLImageElement,
   standing: StandingRow,
-  knockoutSummary: string | null,
+  knockoutSummary: KnockoutSummary | null,
+  text: ShareText,
 ) {
   const top = MARGIN + 70
   drawContainedImage(context, crest, MARGIN, top, 168)
@@ -65,7 +85,7 @@ function drawHero(
   context.fillStyle = palette.fg
   context.letterSpacing = '-2px'
   context.fillText(
-    truncateText(context, team.name.toLocaleUpperCase('tr'), WIDTH - textLeft - MARGIN),
+    truncateText(context, toUpperCase(team.name, text.locale), WIDTH - textLeft - MARGIN),
     textLeft,
     top + 78,
   )
@@ -73,17 +93,29 @@ function drawHero(
 
   context.font = `500 26px ${BODY}`
   context.fillStyle = palette.muted
-  context.fillText(`${team.countryName} · Torba ${standing.team.pot}`, textLeft, top + 122)
+  context.fillText(
+    text.t.share.teamMeta(countryNameOf(team, text.locale), standing.team.pot),
+    textLeft,
+    top + 122,
+  )
 
   const badgeTop = top + 152
   context.font = `800 30px ${DISPLAY}`
   context.fillStyle = palette.accent
-  context.fillText(`${standing.position}. SIRA`, textLeft, badgeTop)
+  const positionBadge = text.t.share.positionBadge(standing.position)
+  context.fillText(positionBadge, textLeft, badgeTop)
   context.font = `500 26px ${BODY}`
   context.fillStyle = palette.muted
-  const positionWidth = context.measureText(`${standing.position}. SIRA`).width
+  const positionWidth = context.measureText(positionBadge).width
   context.fillText(
-    `${standing.points} puan · ${standing.wins}G ${standing.draws}B ${standing.losses}M · ${standing.goalsFor}-${standing.goalsAgainst}`,
+    text.t.share.teamRecord(
+      standing.points,
+      standing.wins,
+      standing.draws,
+      standing.losses,
+      standing.goalsFor,
+      standing.goalsAgainst,
+    ),
     textLeft + positionWidth + 60,
     badgeTop,
   )
@@ -91,18 +123,18 @@ function drawHero(
   context.font = `600 24px ${DISPLAY}`
   context.fillStyle = knockoutSummary === null ? palette.muted : palette.accent
   context.letterSpacing = '2px'
-  context.fillText(
-    (knockoutSummary ?? QUALIFICATION_OUTCOME_LABEL[standing.qualification]).toLocaleUpperCase('tr'),
-    textLeft,
-    badgeTop + 42,
-  )
+  const outcomeLabel =
+    knockoutSummary === null
+      ? text.t.standings.qualificationOutcome[standing.qualification]
+      : runSummaryLabel(knockoutSummary, text.t)
+  context.fillText(toUpperCase(outcomeLabel, text.locale), textLeft, badgeTop + 42)
   context.letterSpacing = '0px'
 }
 
-function drawFooter(context: CanvasRenderingContext2D, y: number) {
+function drawFooter(context: CanvasRenderingContext2D, text: ShareText, y: number) {
   context.font = `500 22px ${BODY}`
   context.fillStyle = palette.dim
-  context.fillText('Kura verisi: uefa.com · Tahmin ve simülasyon', MARGIN, y)
+  context.fillText(text.t.share.footer, MARGIN, y)
 }
 
 export async function renderTeamCard({
@@ -112,6 +144,7 @@ export async function renderTeamCard({
   knockoutRun,
   knockoutSummary,
   seed,
+  text,
 }: TeamCardInput): Promise<Blob> {
   const { canvas, context } = createCardCanvas(WIDTH, HEIGHT)
 
@@ -131,15 +164,16 @@ export async function renderTeamCard({
 
   const layout = teamCardLayout(fixtures.length, knockoutRun.length)
 
-  drawHeader(context, seed)
-  drawHero(context, team, teamCrest, standing, knockoutSummary)
+  drawHeader(context, seed, text)
+  drawHero(context, team, teamCrest, standing, knockoutSummary, text)
 
-  drawSectionHeading(context, 'Lig aşaması', layout.contentTop + 24)
+  drawSectionHeading(context, text.t.share.leagueSection, text.locale, layout.contentTop + 24)
   fixtures.forEach((fixture, index) => {
     drawFixtureRow(
       context,
       fixture,
       opponentCrests[index],
+      text,
       layout.fixturesTop + index * layout.rowHeight,
       layout.rowHeight,
     )
@@ -147,19 +181,20 @@ export async function renderTeamCard({
 
   const knockoutTop = layout.knockoutTop
   if (knockoutTop !== null) {
-    drawSectionHeading(context, 'Nakavt aşaması', knockoutTop - 16)
+    drawSectionHeading(context, text.t.share.knockoutSection, text.locale, knockoutTop - 16)
     knockoutRun.forEach((appearance, index) => {
       drawKnockoutRow(
         context,
         appearance,
         knockoutCrests[index],
+        text,
         knockoutTop + index * layout.rowHeight,
         layout.rowHeight,
       )
     })
   }
 
-  drawFooter(context, layout.footerY)
+  drawFooter(context, text, layout.footerY)
 
   return toCardBlob(canvas)
 }

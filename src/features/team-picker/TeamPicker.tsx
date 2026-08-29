@@ -3,6 +3,9 @@ import { Button } from '../../components/Button'
 import { PotColumn } from './PotColumn'
 import { SelectionBar } from './SelectionBar'
 import { drawPool, searchTeams } from '../../domain/drawPool'
+import { countryNameOf } from '../../i18n/countryNames'
+import { LOCALE_TAG } from '../../i18n/locale'
+import { useLocale } from '../../i18n/useLocale'
 import type { PotNumber, Team } from '../../domain/types'
 
 const POTS: PotNumber[] = [1, 2, 3, 4]
@@ -15,39 +18,41 @@ interface TeamPickerProps {
 }
 
 export function TeamPicker({ currentTeam, onConfirm, onCancel, onRelease }: TeamPickerProps) {
+  const { locale, messages: t } = useLocale()
   const [query, setQuery] = useState('')
   const [draftTeam, setDraftTeam] = useState<Team | null>(null)
-  const matches = searchTeams(query)
+  const matches = searchTeams(query, {
+    localeTag: LOCALE_TAG[locale],
+    countryNameOf: (team) => countryNameOf(team, locale),
+  })
 
   return (
     <div className="space-y-8 pb-28">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line-strong pb-4">
         <div>
           <p className="eyebrow text-accent">
-            {currentTeam === null ? 'İlk adım' : 'Takım değişikliği'}
+            {currentTeam === null ? t.team.firstStep : t.team.changingTeam}
           </p>
           <h1 className="mt-2 font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
-            {currentTeam === null ? 'Takımını seç' : 'Takımını değiştir'}
+            {currentTeam === null ? t.team.pickTitle : t.team.changeTitle}
           </h1>
           <p className="mt-2 max-w-md text-sm text-muted">
-            {currentTeam === null
-              ? 'Seçtiğin kulübün sekiz eşleşmesi ve tablodaki kaderi takip edilir.'
-              : `Şu an ${currentTeam.name} takip ediliyor. Yeni bir kulüp seçip onaylarsan takip ona geçer; tahminlerin korunur.`}
+            {currentTeam === null ? t.team.pickBody : t.team.changeBody(currentTeam.name)}
           </p>
         </div>
         <div className="flex flex-col items-end gap-3">
           {currentTeam !== null && (
             <Button variant="ghost" onClick={onRelease} className="px-3">
-              Takibi bırak
+              {t.team.release}
             </Button>
           )}
           <label className="flex items-center gap-2 text-sm">
-            <span className="eyebrow text-muted">Ara</span>
+            <span className="eyebrow text-muted">{t.team.searchLabel}</span>
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Kulüp veya ülke"
+              placeholder={t.team.searchPlaceholder}
               className="w-48 rounded-control border border-line-strong bg-surface/60 px-3 py-2 text-fg placeholder:text-dim focus:border-accent focus:outline-none"
             />
           </label>
@@ -69,7 +74,7 @@ export function TeamPicker({ currentTeam, onConfirm, onCancel, onRelease }: Team
         </div>
       ) : (
         <p className="text-sm text-muted">
-          “{query}” için {drawPool.teams.length} takım arasında eşleşme yok.
+          {t.team.noMatches(query, drawPool.teams.length)}
         </p>
       )}
 

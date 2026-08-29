@@ -1,0 +1,32 @@
+import type { Messages } from '../messages'
+
+export const matchday: Messages['matchday'] = {
+  title: (matchday) => `Matchday ${matchday}`,
+  progress: (matchday, total, matches) => `${matchday} / ${total} · ${matches} matches`,
+  yourMatch: 'Your match',
+  otherMatches: 'Other matches',
+  seeOtherResults: 'See other results →',
+  standingHint: (team, position) => `${team} · ${position} in the table`,
+  watchMatch: 'Watch the match',
+  watchMatchOf: (home, away) => `Watch ${home} - ${away}`,
+  closeAndReview: 'Close and review',
+  finishAll: 'Finish all',
+  nextWeek: 'Next matchday →',
+  viewStandings: 'Check the table →',
+  playMatchday: (matchday) => `Play matchday ${matchday}`,
+  startSeason: 'Start the season',
+  goToKnockout: 'Go to the knockout stage',
+  reset: 'Reset',
+  unpredictability: 'Surprise level',
+  unpredictabilitySteps: {
+    form: 'By form',
+    balanced: 'Balanced',
+    surprising: 'Surprising',
+    chaos: 'Chaos',
+  },
+  seed: 'Scenario code',
+  seedHint: 'Scenario code — the same code recreates the same season',
+  newSeed: 'Generate a new scenario code',
+  dotPlayed: (matchday) => `See matchday ${matchday} results`,
+  dotUnplayed: (matchday) => `Matchday ${matchday} not played`,
+}

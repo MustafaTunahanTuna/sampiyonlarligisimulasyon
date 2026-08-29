@@ -25,10 +25,14 @@ export interface LeagueStats {
   highestScoring: PlayedMatchSummary | null
 }
 
+export type RankingDetail =
+  | { kind: 'PLAYED'; played: number }
+  | { kind: 'EXPECTED'; position: number }
+
 export interface TeamRanking {
   team: Team
   value: number
-  detail: string
+  detail: RankingDetail
 }
 
 export function playedMatches(predictions: PredictionMap): PlayedMatchSummary[] {
@@ -81,14 +85,22 @@ export function topScorers(rows: StandingRow[]): TeamRanking[] {
   return [...rows]
     .sort((left, right) => right.goalsFor - left.goalsFor || right.goalDifference - left.goalDifference)
     .slice(0, RANKING_SIZE)
-    .map((row) => ({ team: row.team, value: row.goalsFor, detail: `${row.played} maç` }))
+    .map((row) => ({
+      team: row.team,
+      value: row.goalsFor,
+      detail: { kind: 'PLAYED' as const, played: row.played },
+    }))
 }
 
 export function bestDefences(rows: StandingRow[]): TeamRanking[] {
   return [...rows]
     .sort((left, right) => left.goalsAgainst - right.goalsAgainst || right.goalDifference - left.goalDifference)
     .slice(0, RANKING_SIZE)
-    .map((row) => ({ team: row.team, value: row.goalsAgainst, detail: `${row.played} maç` }))
+    .map((row) => ({
+      team: row.team,
+      value: row.goalsAgainst,
+      detail: { kind: 'PLAYED' as const, played: row.played },
+    }))
 }
 
 export function biggestOverperformers(rows: StandingRow[]): TeamRanking[] {
@@ -98,7 +110,10 @@ export function biggestOverperformers(rows: StandingRow[]): TeamRanking[] {
     .map((row) => ({
       team: row.team,
       value: (expectedPosition.get(row.team.id) ?? row.position) - row.position,
-      detail: `beklenen ${expectedPosition.get(row.team.id)}.`,
+      detail: {
+        kind: 'EXPECTED' as const,
+        position: expectedPosition.get(row.team.id) ?? row.position,
+      },
     }))
     .sort((left, right) => right.value - left.value)
     .slice(0, RANKING_SIZE)

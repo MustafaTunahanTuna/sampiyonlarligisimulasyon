@@ -1,4 +1,5 @@
 import { clockLabel, commentaryFor } from './commentary'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { MatchEvent, Side } from '../../domain/engine'
 import type { Team } from '../../domain/types'
 
@@ -16,10 +17,11 @@ interface EventTickerProps {
 }
 
 export function EventTicker({ events, teams, minImportance }: EventTickerProps) {
+  const t = useTranslation()
   const visible = events.filter((event) => event.importance >= minImportance).slice(-40).reverse()
 
   if (visible.length === 0) {
-    return <p className="px-1 py-2 text-sm text-muted">Henüz kayda değer bir an yok.</p>
+    return <p className="px-1 py-2 text-sm text-muted">{t.live.noEvents}</p>
   }
 
   return (
@@ -33,7 +35,7 @@ export function EventTicker({ events, teams, minImportance }: EventTickerProps) 
             {clockLabel(event)}
           </span>
           <span className={`text-sm ${TONE_BY_IMPORTANCE[event.importance]}`}>
-            {commentaryFor(event, teams)}
+            {commentaryFor(event, teams, t)}
           </span>
         </li>
       ))}

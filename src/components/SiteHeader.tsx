@@ -1,5 +1,7 @@
 import { BrandLogo } from './BrandLogo'
 import { ClubCrest } from './ClubCrest'
+import { LocaleSwitch } from './LocaleSwitch'
+import { useTranslation } from '../i18n/useTranslation'
 import { drawPool } from '../domain/drawPool'
 import { MATCHDAY_NUMBERS, completedMatchdayCount } from '../domain/matchdays'
 import { usePredictions } from '../state/usePredictions'
@@ -23,6 +25,7 @@ function navStyle(isActive: boolean): string {
 
 export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps) {
   const { state } = usePredictions()
+  const t = useTranslation()
   const isLeagueComplete = completedMatchdayCount(state.predictions) === MATCHDAY_NUMBERS.length
 
   return (
@@ -32,24 +35,24 @@ export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps
           type="button"
           onClick={() => onNavigate(favouriteTeam === null ? 'picker' : 'league')}
           className="shrink-0 rounded-control transition-opacity hover:opacity-85"
-          aria-label="Ana sayfa"
+          aria-label={t.layout.home}
         >
           <BrandLogo season={drawPool.meta.season} />
         </button>
 
         {favouriteTeam === null ? (
           <p className="ml-auto font-display text-sm font-bold uppercase tracking-wide text-accent">
-            Takım seçimi
+            {t.layout.teamSelection}
           </p>
         ) : (
-          <nav className="ml-auto flex items-center gap-2" aria-label="Ana gezinme">
+          <nav className="ml-auto flex items-center gap-2" aria-label={t.layout.mainNavigation}>
             <button
               type="button"
               onClick={() => onNavigate('league')}
               aria-current={route === 'league' ? 'page' : undefined}
               className={navStyle(route === 'league')}
             >
-              Lig
+              {t.layout.navLeague}
             </button>
             {isLeagueComplete && (
               <button
@@ -58,7 +61,7 @@ export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps
                 aria-current={route === 'knockout' ? 'page' : undefined}
                 className={navStyle(route === 'knockout')}
               >
-                Nakavt
+                {t.layout.navKnockout}
               </button>
             )}
             <button
@@ -68,10 +71,14 @@ export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps
               className={`${navStyle(route === 'team')} pl-2.5`}
             >
               <ClubCrest team={favouriteTeam} size={24} />
-              <span className="hidden xs:inline">Takımım</span>
+              <span className="hidden xs:inline">{t.layout.navTeam}</span>
             </button>
           </nav>
         )}
+
+        <div className={`shrink-0 ${favouriteTeam === null ? '' : 'ml-1'}`}>
+          <LocaleSwitch />
+        </div>
       </div>
     </header>
   )

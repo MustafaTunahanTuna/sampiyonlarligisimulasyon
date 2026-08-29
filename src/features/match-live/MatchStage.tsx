@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { renderFrame } from './pitchRenderer'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { Point } from './formations'
 import { KICK_POWER, buildTimelines, revealSecondFor, stepAt } from './clipTimeline'
 import type { StepCursor } from './clipTimeline'
@@ -51,6 +52,7 @@ export function MatchStage({
   onKick,
   onFinished,
 }: MatchStageProps) {
+  const t = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const timelines = useMemo(() => buildTimelines(playback), [playback])
   const [minute, setMinute] = useState(0)
@@ -209,7 +211,7 @@ export function MatchStage({
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label="Pozisyonun saha üzerinde canlandırması"
+        aria-label={t.live.pitchLabel}
         className="block w-full"
       />
       <div
@@ -222,7 +224,7 @@ export function MatchStage({
           {minute}'
         </span>
         <p className="max-w-md text-sm text-muted">
-          {idleHeadline ?? 'Maç sürüyor, pozisyon bekleniyor.'}
+          {idleHeadline ?? t.live.idleHeadline}
         </p>
       </div>
     </div>

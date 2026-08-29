@@ -1,6 +1,7 @@
 import { ClubCrest } from '../../components/ClubCrest'
 import { WatchTieButton } from './WatchTieButton'
-import { decisionSuffix } from '../../domain/teamKnockoutRun'
+import { slotLabel } from './tiePresentation'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { KnockoutTie, Team, TieOutcome } from '../../domain/types'
 
 interface BracketSideProps {
@@ -59,8 +60,9 @@ export function BracketTie({
   onWatch = null,
   emphasis = false,
 }: BracketTieProps) {
+  const t = useTranslation()
   const winnerId = outcome?.winner.id ?? null
-  const suffix = outcome === undefined ? '' : decisionSuffix(outcome.decidedBy)
+  const suffix = outcome === undefined ? '' : t.knockout.decisionSuffix[outcome.decidedBy]
 
   return (
     <article
@@ -72,14 +74,14 @@ export function BracketTie({
     >
       <BracketSide
         team={tie.seeded}
-        placeholder={tie.seededLabel}
+        placeholder={slotLabel(tie.seededSlot, t)}
         aggregate={outcome?.aggregateSeeded ?? null}
         isWinner={winnerId === tie.seeded?.id}
         isFavourite={tie.seeded?.id === favouriteTeamId}
       />
       <BracketSide
         team={tie.challenger}
-        placeholder={tie.challengerLabel}
+        placeholder={slotLabel(tie.challengerSlot, t)}
         aggregate={outcome?.aggregateChallenger ?? null}
         isWinner={winnerId === tie.challenger?.id}
         isFavourite={tie.challenger?.id === favouriteTeamId}
@@ -90,7 +92,7 @@ export function BracketTie({
             {suffix}
           </p>
           {onWatch !== null && (
-            <WatchTieButton label="Eşleşmeyi izle" onWatch={onWatch} compact />
+            <WatchTieButton label={t.knockout.watchTie} onWatch={onWatch} compact />
           )}
         </div>
       )}

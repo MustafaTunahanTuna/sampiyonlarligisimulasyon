@@ -6,10 +6,18 @@ import {
   tieId,
 } from './knockoutFormat'
 import type { KnockoutRoundId } from './knockoutFormat'
-import type { KnockoutTie, StandingRow, Team, TieOutcome } from './types'
+import type { KnockoutTie, StandingRow, Team, TieOutcome, TieSlot } from './types'
 
 function teamAtPosition(standings: StandingRow[], position: number): Team | null {
   return standings.find((row) => row.position === position)?.team ?? null
+}
+
+function positionSlot(position: number): TieSlot {
+  return { kind: 'POSITION', position }
+}
+
+function winnerSlot(round: KnockoutRoundId, order: number): TieSlot {
+  return { kind: 'WINNER', round, order }
 }
 
 function createTie(
@@ -17,8 +25,8 @@ function createTie(
   order: number,
   seeded: Team | null,
   challenger: Team | null,
-  seededLabel: string,
-  challengerLabel: string,
+  seededSlot: TieSlot,
+  challengerSlot: TieSlot,
 ): KnockoutTie {
   return {
     id: tieId(round, order),
@@ -26,8 +34,8 @@ function createTie(
     order,
     seeded,
     challenger,
-    seededLabel,
-    challengerLabel,
+    seededSlot,
+    challengerSlot,
     isTwoLegged: isTwoLegged(round),
   }
 }
@@ -39,8 +47,8 @@ export function playOffTies(standings: StandingRow[]): KnockoutTie[] {
       index + 1,
       teamAtPosition(standings, seededPosition),
       teamAtPosition(standings, challengerPosition),
-      `${seededPosition}. sıra`,
-      `${challengerPosition}. sıra`,
+      positionSlot(seededPosition),
+      positionSlot(challengerPosition),
     ),
   )
 }
@@ -55,8 +63,8 @@ export function roundOf16Ties(
       index + 1,
       teamAtPosition(standings, seededPosition),
       playOffWinners[playOffOrder - 1] ?? null,
-      `${seededPosition}. sıra`,
-      `PO${playOffOrder} galibi`,
+      positionSlot(seededPosition),
+      winnerSlot('PLAY_OFF', playOffOrder),
     ),
   )
 }
@@ -64,7 +72,7 @@ export function roundOf16Ties(
 function pairWinners(
   round: KnockoutRoundId,
   winners: (Team | null)[],
-  labels: string[],
+  slots: TieSlot[],
   order: number[],
 ): KnockoutTie[] {
   const ties: KnockoutTie[] = []
@@ -77,8 +85,8 @@ function pairWinners(
         ties.length + 1,
         winners[first] ?? null,
         winners[second] ?? null,
-        labels[first],
-        labels[second],
+        slots[first],
+        slots[second],
       ),
     )
   }
@@ -86,18 +94,18 @@ function pairWinners(
 }
 
 export function quarterFinalTies(roundOf16Winners: (Team | null)[]): KnockoutTie[] {
-  const labels = roundOf16Winners.map((_, index) => `R16-${index + 1} galibi`)
-  return pairWinners('QUARTER_FINAL', roundOf16Winners, labels, BRACKET_ORDER)
+  const slots = roundOf16Winners.map((_, index) => winnerSlot('ROUND_OF_16', index + 1))
+  return pairWinners('QUARTER_FINAL', roundOf16Winners, slots, BRACKET_ORDER)
 }
 
 export function semiFinalTies(quarterFinalWinners: (Team | null)[]): KnockoutTie[] {
-  const labels = quarterFinalWinners.map((_, index) => `QF-${index + 1} galibi`)
-  return pairWinners('SEMI_FINAL', quarterFinalWinners, labels, [1, 2, 3, 4])
+  const slots = quarterFinalWinners.map((_, index) => winnerSlot('QUARTER_FINAL', index + 1))
+  return pairWinners('SEMI_FINAL', quarterFinalWinners, slots, [1, 2, 3, 4])
 }
 
 export function finalTie(semiFinalWinners: (Team | null)[]): KnockoutTie[] {
-  const labels = semiFinalWinners.map((_, index) => `SF-${index + 1} galibi`)
-  return pairWinners('FINAL', semiFinalWinners, labels, [1, 2])
+  const slots = semiFinalWinners.map((_, index) => winnerSlot('SEMI_FINAL', index + 1))
+  return pairWinners('FINAL', semiFinalWinners, slots, [1, 2])
 }
 
 export function isTieReady(tie: KnockoutTie): boolean {

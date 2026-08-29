@@ -1,5 +1,6 @@
 import { ClubCrest } from '../../components/ClubCrest'
 import { QUALIFICATION_TONE } from './qualificationTone'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { StandingRow } from '../../domain/types'
 
 interface StandingsRowProps {
@@ -9,6 +10,8 @@ interface StandingsRowProps {
 }
 
 export function StandingsRow({ row, isFavourite, onOpen }: StandingsRowProps) {
+  const t = useTranslation()
+
   return (
     <tr
       onClick={onOpen}
@@ -23,7 +26,7 @@ export function StandingsRow({ row, isFavourite, onOpen }: StandingsRowProps) {
         <button
           type="button"
           onClick={onOpen}
-          title={`${row.team.name} maçlarını gör`}
+          title={t.standings.openTeam(row.team.name)}
           className="flex w-full items-center gap-2.5 text-left transition-colors hover:text-accent"
         >
           <ClubCrest team={row.team} size={22} />

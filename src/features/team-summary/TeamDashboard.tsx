@@ -16,15 +16,13 @@ import {
   predictedStandings,
   withPredictedScores,
 } from '../../domain/predictedResults'
+import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
 
 type DashboardTab = 'fixtures' | 'standings'
 
-const TABS: { id: DashboardTab; label: string }[] = [
-  { id: 'fixtures', label: 'Eşleşmelerim' },
-  { id: 'standings', label: 'Puan tablosu' },
-]
+const TABS: DashboardTab[] = ['fixtures', 'standings']
 
 interface TeamDashboardProps {
   team: Team
@@ -41,6 +39,7 @@ export function TeamDashboard({
 }: TeamDashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('fixtures')
   const { state } = usePredictions()
+  const t = useTranslation()
 
   const fixtures = withPredictedScores(fixturesOf(team), state.predictions)
   const record = recordOf(fixtures)
@@ -66,20 +65,20 @@ export function TeamDashboard({
       />
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-strong">
-        <nav className="flex gap-6" aria-label="Panel bölümleri">
+        <nav className="flex gap-6" aria-label={t.team.panelSections}>
           {TABS.map((tab) => (
             <button
-              key={tab.id}
+              key={tab}
               type="button"
-              onClick={() => setActiveTab(tab.id)}
-              aria-current={activeTab === tab.id ? 'page' : undefined}
+              onClick={() => setActiveTab(tab)}
+              aria-current={activeTab === tab ? 'page' : undefined}
               className={`border-b-2 pb-3 font-display text-sm font-bold uppercase tracking-wide transition-colors ${
-                activeTab === tab.id
+                activeTab === tab
                   ? 'border-accent text-fg'
                   : 'border-transparent text-muted hover:text-fg'
               }`}
             >
-              {tab.label}
+              {tab === 'fixtures' ? t.team.tabFixtures : t.team.tabStandings}
             </button>
           ))}
         </nav>

@@ -1,0 +1,36 @@
+import type { Messages } from '../messages'
+
+export const team: Messages['team'] = {
+  firstStep: 'First step',
+  changingTeam: 'Changing club',
+  pickTitle: 'Pick your club',
+  changeTitle: 'Change your club',
+  pickBody: 'The eight fixtures and the table run of the club you pick are tracked for you.',
+  changeBody: (current) =>
+    `You are following ${current}. Pick and confirm another club to switch — your predictions are kept.`,
+  release: 'Stop following',
+  changeTeam: 'Change club',
+  searchLabel: 'Search',
+  searchPlaceholder: 'Club or country',
+  noMatches: (query, total) => `No match for “${query}” among the ${total} clubs.`,
+  pickFromList: 'Pick a club from the list — your choice shows up here for confirmation.',
+  pot: 'Pot',
+  current: 'Current',
+  selected: 'Selected',
+  cancel: 'Cancel',
+  alreadyFollowed: 'Already followed',
+  confirm: 'Confirm as my club',
+  emptySeason: (totalFixtures) =>
+    `This club has ${totalFixtures} fixtures. Enter the scores yourself or simulate the season — the table and the shareable card are built instantly.`,
+  statPosition: 'Position',
+  statPoints: 'Points',
+  statRecord: 'W / D / L',
+  statGoals: 'Goals',
+  positionValue: (position) => `${position}`,
+  predictedCount: (played, total) => `${played}/${total} matches predicted`,
+  tabFixtures: 'My fixtures',
+  tabStandings: 'Standings',
+  panelSections: 'Panel sections',
+  yourTeamIsChampion: 'Your club are champions',
+  championOrigin: (country, pot) => `${country} · came through from pot ${pot}`,
+}

@@ -1,5 +1,6 @@
 import { TieCard } from './TieCard'
 import { isWatchableTie } from './watchableTie'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { KnockoutRound } from '../../domain/knockoutStage'
 import type { KnockoutTie } from '../../domain/types'
 
@@ -16,16 +17,19 @@ export function KnockoutRoundSection({
   favouriteTeamId,
   onWatchTie,
 }: KnockoutRoundSectionProps) {
+  const t = useTranslation()
+
   return (
     <section>
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
         <h3 className="font-display text-xl font-extrabold uppercase tracking-tight">
-          {round.label}
+          {t.knockout.roundLabel[round.id]}
           <span className="eyebrow pl-3 text-muted">
-            {round.ties.length} eşleşme{round.ties[0]?.isTwoLegged === false && ' · tek maç'}
+            {t.knockout.tieCount(round.ties.length)}
+            {round.ties[0]?.isTwoLegged === false && t.knockout.singleLeg}
           </span>
         </h3>
-        {round.isComplete && <span className="eyebrow text-home">Tamamlandı</span>}
+        {round.isComplete && <span className="eyebrow text-home">{t.knockout.completed}</span>}
       </header>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

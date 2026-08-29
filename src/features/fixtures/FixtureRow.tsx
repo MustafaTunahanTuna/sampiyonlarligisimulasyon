@@ -1,6 +1,8 @@
 import { ScoreInput } from './ScoreInput'
 import { TeamSide } from './TeamSide'
-import { OUTCOME_LABEL, OUTCOME_SHORT, formatKickOff } from './matchPresentation'
+import { countryNameOf } from '../../i18n/countryNames'
+import { formatKickOff } from '../../i18n/formatters'
+import { useLocale } from '../../i18n/useLocale'
 import type { Fixture, Score, Team } from '../../domain/types'
 
 const OUTCOME_TONE: Record<string, string> = {
@@ -18,12 +20,16 @@ interface FixtureRowProps {
 }
 
 export function FixtureRow({ fixture, team, order, isManual, onScoreChange }: FixtureRowProps) {
+  const { locale, messages: t } = useLocale()
   const isHome = fixture.venue === 'HOME'
   const homeTeam = isHome ? team : fixture.opponent
   const awayTeam = isHome ? fixture.opponent : team
   const homeGoals = isHome ? fixture.goalsFor : fixture.goalsAgainst
   const awayGoals = isHome ? fixture.goalsAgainst : fixture.goalsFor
-  const opponentMeta = `${fixture.opponent.countryName} · ${fixture.opponent.pot}. torba`
+  const opponentMeta = t.fixtures.opponentMeta(
+    countryNameOf(fixture.opponent, locale),
+    fixture.opponent.pot,
+  )
 
   const changeSide = (side: 'home' | 'away', next: number | null) => {
     const home = side === 'home' ? next : homeGoals
@@ -42,7 +48,7 @@ export function FixtureRow({ fixture, team, order, isManual, onScoreChange }: Fi
           {String(order).padStart(2, '0')}
         </span>
         <span className={`eyebrow ${isHome ? 'text-home' : 'text-away'}`}>
-          {isHome ? 'Ev' : 'Dep'}
+          {isHome ? t.fixtures.venue.HOME : t.fixtures.venue.AWAY}
         </span>
       </div>
 
@@ -57,14 +63,14 @@ export function FixtureRow({ fixture, team, order, isManual, onScoreChange }: Fi
         <div className="flex shrink-0 items-center gap-1.5">
           <ScoreInput
             value={homeGoals}
-            label={`${homeTeam.name} golü`}
+            label={t.fixtures.goalsOf(homeTeam.name)}
             isManual={isManual}
             onChange={(next) => changeSide('home', next)}
           />
           <span className="text-dim">–</span>
           <ScoreInput
             value={awayGoals}
-            label={`${awayTeam.name} golü`}
+            label={t.fixtures.goalsOf(awayTeam.name)}
             isManual={isManual}
             onChange={(next) => changeSide('away', next)}
           />
@@ -80,14 +86,16 @@ export function FixtureRow({ fixture, team, order, isManual, onScoreChange }: Fi
 
       <div className="col-span-2 flex items-center justify-end gap-2 sm:col-span-1 sm:col-start-3">
         {fixture.match.kickOff !== null && (
-          <span className="truncate text-xs text-dim">{formatKickOff(fixture.match.kickOff)}</span>
+          <span className="truncate text-xs text-dim">
+            {formatKickOff(fixture.match.kickOff, locale)}
+          </span>
         )}
         {fixture.outcome !== null && (
           <span
-            title={OUTCOME_LABEL[fixture.outcome]}
+            title={t.fixtures.outcome[fixture.outcome]}
             className={`inline-flex size-8 items-center justify-center rounded-pill font-display text-sm font-extrabold ring-1 ${OUTCOME_TONE[fixture.outcome]}`}
           >
-            {OUTCOME_SHORT[fixture.outcome]}
+            {t.fixtures.outcomeShort[fixture.outcome]}
           </span>
         )}
       </div>

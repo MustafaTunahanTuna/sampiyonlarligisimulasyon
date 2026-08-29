@@ -2,15 +2,9 @@ import { useState } from 'react'
 import { MatchLiveView } from '../match-live/MatchLiveView'
 import { Button } from '../../components/Button'
 import { useModalDialog } from '../../hooks/useModalDialog'
-import { ROUND_LABEL } from '../../domain/knockoutFormat'
+import { useTranslation } from '../../i18n/useTranslation'
 import { tieLegSetups } from '../../domain/knockoutTie'
-import type { KnockoutTie, TieDecision, TieOutcome } from '../../domain/types'
-
-const DECISION_NOTE: Record<TieDecision, string> = {
-  AGGREGATE: 'toplam skorla',
-  EXTRA_TIME: 'uzatmada',
-  PENALTIES: 'penaltılarda',
-}
+import type { KnockoutTie, TieOutcome } from '../../domain/types'
 
 interface KnockoutMatchModalProps {
   tie: KnockoutTie
@@ -20,6 +14,7 @@ interface KnockoutMatchModalProps {
 
 export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModalProps) {
   const dialogRef = useModalDialog()
+  const t = useTranslation()
   const [legIndex, setLegIndex] = useState(0)
   const setups = tieLegSetups(tie)
 
@@ -27,7 +22,8 @@ export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModal
   if (setup === undefined) return null
 
   const isLastLeg = legIndex === setups.length - 1
-  const legLabel = setups.length > 1 ? `${legIndex + 1}. maç` : 'Tek maç'
+  const legLabel =
+    setups.length > 1 ? t.knockout.legLabel(legIndex + 1) : t.knockout.singleLegLabel
 
   return (
     <dialog
@@ -42,15 +38,15 @@ export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModal
             id="knockout-tie-title"
             className="font-display text-2xl font-extrabold uppercase tracking-tight"
           >
-            {ROUND_LABEL[tie.round]}
+            {t.knockout.roundLabel[tie.round]}
           </h2>
           <div className="flex items-center gap-4">
             <p className="eyebrow text-muted">{legLabel}</p>
             <button
               type="button"
               onClick={onClose}
-              aria-label="Kapat"
-              title="Kapat"
+              aria-label={t.common.close}
+              title={t.common.close}
               className="rounded-pill p-1.5 text-muted transition-colors hover:bg-raised hover:text-fg"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -70,13 +66,14 @@ export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModal
               <>
                 {isFinished && outcome !== undefined && (
                   <p className="eyebrow mr-auto text-muted">
-                    <span className="text-fg">{outcome.winner.name}</span>
-                    <span className="px-2 text-dim">·</span>
-                    {DECISION_NOTE[outcome.decidedBy]} turu geçti
+                    {t.knockout.tieResult(
+                      outcome.winner.name,
+                      t.knockout.decisionNote[outcome.decidedBy],
+                    )}
                   </p>
                 )}
                 <Button variant={isFinished ? 'primary' : 'ghost'} onClick={onClose}>
-                  {isFinished ? 'Eşleşme özetine dön →' : 'Sonuçlara atla →'}
+                  {isFinished ? t.knockout.backToTie : t.common.skipToResults}
                 </Button>
               </>
             ) : (
@@ -84,7 +81,7 @@ export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModal
                 variant={isFinished ? 'primary' : 'ghost'}
                 onClick={() => setLegIndex(legIndex + 1)}
               >
-                {isFinished ? 'Rövanşı izle →' : 'Rövanşa atla →'}
+                {isFinished ? t.knockout.watchSecondLeg : t.knockout.skipToSecondLeg}
               </Button>
             )
           }

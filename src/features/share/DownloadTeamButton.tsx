@@ -1,15 +1,20 @@
 import { DownloadCardButton } from './DownloadCardButton'
 import { renderTeamCard } from './teamCard'
 import { slugify } from './shareFile'
+import { useLocale } from '../../i18n/useLocale'
 import type { TeamCardInput } from './teamCard'
 
-export function DownloadTeamButton(input: TeamCardInput) {
+type DownloadTeamButtonProps = Omit<TeamCardInput, 'text'>
+
+export function DownloadTeamButton(input: DownloadTeamButtonProps) {
+  const { locale, messages: t } = useLocale()
+
   return (
     <DownloadCardButton
-      label="Takım kartını indir"
+      label={t.share.downloadTeam}
       variant="primary"
-      fileName={`${slugify(input.team.name)}-${slugify(input.seed)}.png`}
-      renderCard={() => renderTeamCard(input)}
+      fileName={`${slugify(input.team.name, locale)}-${slugify(input.seed, locale)}.png`}
+      renderCard={() => renderTeamCard({ ...input, text: { locale, t } })}
     />
   )
 }

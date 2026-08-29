@@ -1,0 +1,32 @@
+export const matchday = {
+  title: (matchday: number) => `Hafta ${matchday}`,
+  progress: (matchday: number, total: number, matches: number) =>
+    `${matchday} / ${total} · ${matches} maç`,
+  yourMatch: 'Senin maçın',
+  otherMatches: 'Diğer maçlar',
+  seeOtherResults: 'Diğer sonuçları gör →',
+  standingHint: (team: string, position: number) =>
+    `${team} · puan tablosunda ${position}. sıra`,
+  watchMatch: 'Maçı izle',
+  watchMatchOf: (home: string, away: string) => `${home} - ${away} maçını izle`,
+  closeAndReview: 'Kapat ve incele',
+  finishAll: 'Tümünü tamamla',
+  nextWeek: 'Sonraki hafta →',
+  viewStandings: 'Lig tablosuna göz at →',
+  playMatchday: (matchday: number) => `Hafta ${matchday} oyna`,
+  startSeason: 'Sezonu başlat',
+  goToKnockout: 'Nakavt aşamasına geç',
+  reset: 'Sıfırla',
+  unpredictability: 'Sürpriz seviyesi',
+  unpredictabilitySteps: {
+    form: 'Forma göre',
+    balanced: 'Dengeli',
+    surprising: 'Sürprizli',
+    chaos: 'Kaos',
+  },
+  seed: 'Senaryo kodu',
+  seedHint: 'Senaryo kodu — aynı kod aynı sezonu üretir',
+  newSeed: 'Yeni senaryo kodu üret',
+  dotPlayed: (matchday: number) => `Hafta ${matchday} sonuçlarını gör`,
+  dotUnplayed: (matchday: number) => `Hafta ${matchday} oynanmadı`,
+}

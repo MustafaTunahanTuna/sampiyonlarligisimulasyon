@@ -1,12 +1,9 @@
 import { TieTeamRow } from './TieTeamRow'
 import { WatchTieButton } from './WatchTieButton'
+import { slotLabel } from './tiePresentation'
 import { tieLegSetups } from '../../domain/knockoutTie'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { KnockoutTie, TieOutcome } from '../../domain/types'
-
-const DECISION_NOTE: Record<string, string> = {
-  EXTRA_TIME: 'uzatmada',
-  PENALTIES: 'penaltılarda',
-}
 
 interface TieCardProps {
   tie: KnockoutTie
@@ -17,9 +14,10 @@ interface TieCardProps {
 }
 
 export function TieCard({ tie, outcome, favouriteTeamId, revealDelay, onWatch }: TieCardProps) {
+  const t = useTranslation()
   const setups = tieLegSetups(tie)
   const winnerId = outcome?.winner.id ?? null
-  const note = outcome === undefined ? null : DECISION_NOTE[outcome.decidedBy]
+  const note = outcome === undefined ? '' : t.knockout.tieNote[outcome.decidedBy]
 
   return (
     <article
@@ -28,14 +26,14 @@ export function TieCard({ tie, outcome, favouriteTeamId, revealDelay, onWatch }:
     >
       <TieTeamRow
         team={tie.seeded}
-        placeholder={tie.seededLabel}
+        placeholder={slotLabel(tie.seededSlot, t)}
         aggregate={outcome?.aggregateSeeded ?? null}
         isWinner={winnerId === tie.seeded?.id}
         isFavourite={tie.seeded?.id === favouriteTeamId}
       />
       <TieTeamRow
         team={tie.challenger}
-        placeholder={tie.challengerLabel}
+        placeholder={slotLabel(tie.challengerSlot, t)}
         aggregate={outcome?.aggregateChallenger ?? null}
         isWinner={winnerId === tie.challenger?.id}
         isFavourite={tie.challenger?.id === favouriteTeamId}
@@ -50,10 +48,10 @@ export function TieCard({ tie, outcome, favouriteTeamId, revealDelay, onWatch }:
                 {leg.home}-{leg.away}
               </span>
             ))}
-            {note !== null && <span className="pl-2 text-highlight">{note}</span>}
+            {note !== '' && <span className="pl-2 text-highlight">{note}</span>}
           </p>
           {onWatch !== null && (
-            <WatchTieButton label="Eşleşmeyi izle" onWatch={onWatch} compact />
+            <WatchTieButton label={t.knockout.watchTie} onWatch={onWatch} compact />
           )}
         </div>
       )}
