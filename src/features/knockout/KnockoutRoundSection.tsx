@@ -1,5 +1,4 @@
 import { TieCard } from './TieCard'
-import { Button } from '../../components/Button'
 import type { KnockoutRound } from '../../domain/knockoutStage'
 
 const REVEAL_STEP_MS = 60
@@ -7,16 +6,9 @@ const REVEAL_STEP_MS = 60
 interface KnockoutRoundSectionProps {
   round: KnockoutRound
   favouriteTeamId: string | null
-  isPlayable: boolean
-  onPlay: () => void
 }
 
-export function KnockoutRoundSection({
-  round,
-  favouriteTeamId,
-  isPlayable,
-  onPlay,
-}: KnockoutRoundSectionProps) {
+export function KnockoutRoundSection({ round, favouriteTeamId }: KnockoutRoundSectionProps) {
   return (
     <section>
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
@@ -26,11 +18,6 @@ export function KnockoutRoundSection({
             {round.ties.length} eşleşme{round.ties[0]?.isTwoLegged === false && ' · tek maç'}
           </span>
         </h3>
-        {isPlayable && (
-          <Button variant="primary" onClick={onPlay}>
-            {round.label} oyna
-          </Button>
-        )}
         {round.isComplete && <span className="eyebrow text-home">Tamamlandı</span>}
       </header>
 

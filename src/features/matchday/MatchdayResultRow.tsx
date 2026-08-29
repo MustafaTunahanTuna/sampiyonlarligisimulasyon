@@ -1,10 +1,13 @@
 import { ClubCrest } from '../../components/ClubCrest'
-import type { Score, Team } from '../../domain/types'
+import { QUALIFICATION_TEXT_TONE } from '../standings/qualificationTone'
+import type { Score, StandingRow, Team } from '../../domain/types'
 
 interface MatchdayResultRowProps {
   homeTeam: Team
   awayTeam: Team
   score: Score
+  homeStanding: StandingRow | null
+  awayStanding: StandingRow | null
   favouriteTeamId: string | null
   revealDelay: number
   onWatch: (() => void) | null
@@ -15,10 +18,24 @@ function sideTone(isWinner: boolean, isFavourite: boolean): string {
   return isWinner ? 'text-fg' : 'text-muted'
 }
 
+function PositionBadge({ standing }: { standing: StandingRow | null }) {
+  if (standing === null) return <span aria-hidden="true" />
+  return (
+    <span
+      title={`${standing.team.name} · puan tablosunda ${standing.position}. sıra`}
+      className={`text-center font-display text-xs font-bold tabular-nums ${QUALIFICATION_TEXT_TONE[standing.qualification]}`}
+    >
+      {standing.position}
+    </span>
+  )
+}
+
 export function MatchdayResultRow({
   homeTeam,
   awayTeam,
   score,
+  homeStanding,
+  awayStanding,
   favouriteTeamId,
   revealDelay,
   onWatch,
@@ -28,10 +45,12 @@ export function MatchdayResultRow({
   return (
     <li
       style={{ animationDelay: `${revealDelay}ms` }}
-      className={`animate-result-in grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-control px-3 py-2.5 ${
+      className={`animate-result-in grid grid-cols-[1.25rem_1fr_auto_1fr_1.25rem] items-center gap-3 rounded-control px-3 py-2.5 ${
         involvesFavourite ? 'bg-accent/10 ring-1 ring-accent/30' : 'odd:bg-surface/40'
       }`}
     >
+      <PositionBadge standing={homeStanding} />
+
       <div className="flex min-w-0 flex-row-reverse items-center justify-start gap-2.5 text-right">
         <ClubCrest team={homeTeam} size={26} />
         <span
@@ -69,6 +88,8 @@ export function MatchdayResultRow({
           </button>
         )}
       </div>
+
+      <PositionBadge standing={awayStanding} />
     </li>
   )
 }

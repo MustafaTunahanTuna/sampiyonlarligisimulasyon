@@ -8,6 +8,8 @@ import { completedMatchdayCount, MATCHDAY_NUMBERS } from '../../domain/matchdays
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
 
+const BRACKET_ANCHOR_ID = 'turnuva-agaci'
+
 interface KnockoutStageViewProps {
   favouriteTeam: Team | null
   onBackToLeague: () => void
@@ -17,6 +19,18 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
   const { state } = usePredictions()
   const { stage, playableRound, playNextRound } = useKnockoutRunner()
   const completed = completedMatchdayCount(state.predictions)
+  const isBracketRound = playableRound !== null && playableRound.id !== 'PLAY_OFF'
+
+  const playRound = () => {
+    playNextRound()
+    if (isBracketRound) {
+      requestAnimationFrame(() => {
+        document
+          .getElementById(BRACKET_ANCHOR_ID)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+  }
 
   if (completed < MATCHDAY_NUMBERS.length) {
     return (
@@ -52,7 +66,7 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {playableRound !== null && (
-            <Button variant="primary" onClick={playNextRound}>
+            <Button variant="primary" onClick={playRound}>
               {playableRound.label} oyna
             </Button>
           )}
@@ -73,21 +87,16 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
         />
       )}
 
-      <KnockoutRoundSection
-        round={stage.rounds[0]}
-        favouriteTeamId={favouriteTeam?.id ?? null}
-        isPlayable={stage.rounds[0].id === playableRound?.id}
-        onPlay={playNextRound}
-      />
+      <KnockoutRoundSection round={stage.rounds[0]} favouriteTeamId={favouriteTeam?.id ?? null} />
 
-      <section>
+      <section id={BRACKET_ANCHOR_ID} className="scroll-mt-6">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
           <h3 className="font-display text-xl font-extrabold uppercase tracking-tight">
             Turnuva ağacı
             <span className="eyebrow pl-3 text-muted">son 16'dan finale</span>
           </h3>
-          {playableRound !== null && playableRound.id !== 'PLAY_OFF' && (
-            <Button variant="primary" onClick={playNextRound}>
+          {isBracketRound && (
+            <Button variant="primary" onClick={playRound}>
               {playableRound.label} oyna
             </Button>
           )}

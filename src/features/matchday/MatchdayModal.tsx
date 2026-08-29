@@ -5,8 +5,9 @@ import { favouriteResultOf, matchdayResults } from './resultList'
 import { Button } from '../../components/Button'
 import { MatchLiveView } from '../match-live/MatchLiveView'
 import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
+import { predictedStandings } from '../../domain/predictedResults'
 import type { MatchdayNumber } from '../../domain/matchdays'
-import type { PredictionMap, StandingRow, Team } from '../../domain/types'
+import type { PredictionMap, Team } from '../../domain/types'
 
 type Stage = 'live' | 'results'
 
@@ -14,7 +15,6 @@ interface MatchdayModalProps {
   matchday: MatchdayNumber
   predictions: PredictionMap
   favouriteTeam: Team | null
-  favouriteStanding: StandingRow | null
   completedCount: number
   isReview: boolean
   hasNext: boolean
@@ -28,7 +28,6 @@ export function MatchdayModal({
   matchday,
   predictions,
   favouriteTeam,
-  favouriteStanding,
   completedCount,
   isReview,
   hasNext,
@@ -41,6 +40,11 @@ export function MatchdayModal({
   const results = matchdayResults(matchday, predictions)
   const favouriteResult = favouriteResultOf(results, favouriteTeam)
   const canWatch = favouriteResult !== null && favouriteResult.isWatchable
+  const standingByTeam = new Map(
+    predictedStandings(predictions, matchday).map((row) => [row.team.id, row]),
+  )
+  const favouriteStanding =
+    favouriteTeam === null ? null : (standingByTeam.get(favouriteTeam.id) ?? null)
   const [stage, setStage] = useState<Stage>(canWatch && !isReview ? 'live' : 'results')
 
   useEffect(() => {
@@ -110,6 +114,7 @@ export function MatchdayModal({
             favouriteResult={favouriteResult}
             favouriteTeam={favouriteTeam}
             favouriteStanding={favouriteStanding}
+            standingByTeam={standingByTeam}
             isReview={isReview}
             hasNext={hasNext}
             onRewatch={canWatch ? () => setStage('live') : null}

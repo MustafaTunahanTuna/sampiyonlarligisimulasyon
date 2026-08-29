@@ -10,6 +10,7 @@ interface MatchdayResultsProps {
   favouriteResult: MatchdayResult | null
   favouriteTeam: Team | null
   favouriteStanding: StandingRow | null
+  standingByTeam: Map<string, StandingRow>
   isReview: boolean
   hasNext: boolean
   onRewatch: (() => void) | null
@@ -24,6 +25,7 @@ export function MatchdayResults({
   favouriteResult,
   favouriteTeam,
   favouriteStanding,
+  standingByTeam,
   isReview,
   hasNext,
   onRewatch,
@@ -45,6 +47,8 @@ export function MatchdayResults({
                 homeTeam={favouriteResult.home}
                 awayTeam={favouriteResult.away}
                 score={favouriteResult.score}
+                homeStanding={standingByTeam.get(favouriteResult.home.id) ?? null}
+                awayStanding={standingByTeam.get(favouriteResult.away.id) ?? null}
                 favouriteTeamId={favouriteTeam?.id ?? null}
                 revealDelay={0}
                 onWatch={onRewatch}
@@ -62,6 +66,8 @@ export function MatchdayResults({
                 homeTeam={result.home}
                 awayTeam={result.away}
                 score={result.score}
+                homeStanding={standingByTeam.get(result.home.id) ?? null}
+                awayStanding={standingByTeam.get(result.away.id) ?? null}
                 favouriteTeamId={favouriteTeam?.id ?? null}
                 revealDelay={120 + index * REVEAL_STEP_MS}
                 onWatch={null}

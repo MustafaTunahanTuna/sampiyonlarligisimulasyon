@@ -2,7 +2,6 @@ import { MatchdayModal } from './MatchdayModal'
 import { useMatchdayRunner } from './useMatchdayRunner'
 import { SimulationControls } from '../simulation/SimulationControls'
 import { completedMatchdayCount } from '../../domain/matchdays'
-import { predictedStandings } from '../../domain/predictedResults'
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
 
@@ -20,12 +19,6 @@ export function SeasonRunner({
   const { state } = usePredictions()
   const runner = useMatchdayRunner()
   const completed = completedMatchdayCount(state.predictions)
-
-  const favouriteStanding =
-    favouriteTeam === null
-      ? null
-      : (predictedStandings(state.predictions).find((row) => row.team.id === favouriteTeam.id) ??
-        null)
 
   return (
     <>
@@ -45,7 +38,6 @@ export function SeasonRunner({
           matchday={runner.activeView.matchday}
           predictions={state.predictions}
           favouriteTeam={favouriteTeam}
-          favouriteStanding={favouriteStanding}
           completedCount={completed}
           isReview={runner.activeView.mode === 'review'}
           hasNext={runner.upcomingMatchday !== null}

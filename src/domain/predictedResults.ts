@@ -21,8 +21,12 @@ export function withPredictedScores(fixtures: Fixture[], predictions: Prediction
   })
 }
 
-export function predictedStandings(predictions: PredictionMap): StandingRow[] {
+export function predictedStandings(
+  predictions: PredictionMap,
+  throughMatchday?: number,
+): StandingRow[] {
   const results = drawPool.matches.flatMap((match) => {
+    if (throughMatchday !== undefined && (match.matchday ?? Infinity) > throughMatchday) return []
     const score = scoreFor(match, predictions)
     return score === null
       ? []
