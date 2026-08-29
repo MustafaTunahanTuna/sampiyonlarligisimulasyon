@@ -1,6 +1,6 @@
 import { buildClips } from './highlights'
 import type { HighlightClip } from './highlights'
-import { goalMouth, teamShape, zoneLine } from './formations'
+import { goalMouth, movingShape, teamShape, zoneLine } from './formations'
 import type { Point } from './formations'
 import { carrierInZone, kickOffCarrier, receiverFor, runnerFor } from './squad'
 import { hashSeed } from '../../domain/random'
@@ -19,10 +19,20 @@ const RUNNER_SURGE = 0.045
 const PRESSURE_PULL = 0.55
 const BALL_FOOT_OFFSET = 0.012
 
+const LIFT_BY_ACTION: Record<ChainAction, number> = {
+  PASS: 0.08,
+  HOLD: 0,
+  DRIBBLE: 0,
+  LONG_BALL: 1,
+  CROSS: 0.82,
+  SHOOT: 0.4,
+}
+
 export interface PitchFrame {
   phase: MatchPhase
   possession: Side
   ball: Point
+  lift: number
   home: Point[]
   away: Point[]
   carrier: number
@@ -38,6 +48,9 @@ interface PhasePlan {
   runner: number
   reach: number
   shotTarget: Point | null
+  ballYFrom: number
+  ballYTo: number
+  lift: number
   ease: (progress: number) => number
 }
 
@@ -143,6 +156,7 @@ function buildPlans(
       : null
     const reach = phase.outcome === 'TURNOVER' ? INTERCEPT_REACH : 1
 
+    const ballEnd = shotTarget ?? lerpPoint(endShape[carrier], endShape[receiver], reach)
     plans.push({
       side: phase.side,
       carrier,
@@ -152,10 +166,13 @@ function buildPlans(
       lineEnd,
       reach,
       shotTarget,
+      ballYFrom: startShape[carrier].y,
+      ballYTo: ballEnd.y,
+      lift: LIFT_BY_ACTION[phase.action],
       ease: EASING[phase.action],
     })
 
-    previousBall = shotTarget ?? lerpPoint(endShape[carrier], endShape[receiver], reach)
+    previousBall = ballEnd
     previousScored = isScoringEvent(event)
     previousSide = phase.side
     carrier = receiver
@@ -210,9 +227,16 @@ export function createPlayback(report: MatchReport): Playback {
       const plan = plans[clamped]
       const t = Math.min(1, Math.max(0, progress))
 
-      const line = lerp(plan.lineStart, plan.lineEnd, easeInOut(t))
-      const home = teamShape('home', line)
-      const away = teamShape('away', line)
+      const ballY = lerp(plan.ballYFrom, plan.ballYTo, plan.ease(t))
+      const motion = {
+        from: plan.lineStart,
+        to: plan.lineEnd,
+        progress: t,
+        ballY,
+        cycle: clamped + t,
+      }
+      const home = movingShape('home', motion)
+      const away = movingShape('away', motion)
       const attackers = plan.side === 'home' ? home : away
       const defenders = plan.side === 'home' ? away : home
 
@@ -235,6 +259,7 @@ export function createPlayback(report: MatchReport): Playback {
         phase,
         possession: plan.side,
         ball,
+        lift: plan.lift * Math.sin(t * Math.PI),
         home,
         away,
         carrier: plan.shotTarget !== null || t < 0.55 ? plan.carrier : plan.receiver,

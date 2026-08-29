@@ -43,6 +43,14 @@ export const live = {
     3: 'son bölgede',
     4: 'ceza sahasında',
   } as Record<number, string>,
+  banner: {
+    goal: 'GOL',
+    penaltyGoal: 'PENALTI GOLÜ',
+    penaltyMissed: 'PENALTI KAÇTI',
+    yellowCard: 'SARI KART',
+    redCard: 'KIRMIZI KART',
+    post: 'DİREK',
+  },
   commentary: {
     KICK_OFF: () => 'Maç başladı.',
     HALF_TIME: () => 'İlk yarı sona erdi.',

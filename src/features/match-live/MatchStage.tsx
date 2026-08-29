@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { renderFrame } from './pitchRenderer'
+import { bannerFor } from './stageBanner'
+import type { StageBanner } from './pitchRenderer'
 import { useTranslation } from '../../i18n/useTranslation'
 import type { Point } from './formations'
 import { KICK_POWER, buildTimelines, revealSecondFor, stepAt } from './clipTimeline'
@@ -11,6 +13,8 @@ const COMMENTARY_RATE = 260
 const REPORT_INTERVAL_MS = 200
 const TRAIL_LENGTH = 26
 const FLASH_DECAY = 1.8
+const BANNER_HOLD_SECONDS = 2.4
+const BANNER_MIN_IMPORTANCE = 2
 const PITCH_ASPECT = 0.64
 
 interface MatchStageProps {
@@ -58,6 +62,7 @@ export function MatchStage({
   const [minute, setMinute] = useState(0)
   const [showPitch, setShowPitch] = useState(false)
 
+  const messages = useRef(t)
   const visuals = useRef({ home, away })
   const controls = useRef({ speed, paused })
   const skipRef = useRef(skipToken)
@@ -70,6 +75,10 @@ export function MatchStage({
   useEffect(() => {
     visuals.current = { home, away }
   }, [home, away])
+
+  useEffect(() => {
+    messages.current = t
+  }, [t])
 
   useEffect(() => {
     callbacks.current = { onProgress, onGoal, onKick, onFinished }
@@ -89,6 +98,9 @@ export function MatchStage({
     let clipIndex = 0
     let clipElapsed = -1
     let flash = 0
+    let flashTint = '#ffffff'
+    let banner: StageBanner | null = null
+    let lastBannerKey = ''
     let finished = false
     let skipSeen = skipRef.current
     let lastMinute = 0
@@ -153,6 +165,10 @@ export function MatchStage({
 
       if (!controls.current.paused && !finished) advance(delta)
       flash = Math.max(0, flash - delta * FLASH_DECAY)
+      if (banner !== null) {
+        banner = { ...banner, strength: banner.strength - delta / BANNER_HOLD_SECONDS }
+        if (banner.strength <= 0) banner = null
+      }
 
       const size = fitCanvas(canvas)
       const ratio = window.devicePixelRatio || 1
@@ -165,9 +181,26 @@ export function MatchStage({
         const frame = playback.frameOfPhase(cursor.step.phaseIndex, cursor.progress)
         trail.push({ ...frame.ball })
         if (trail.length > TRAIL_LENGTH) trail.shift()
+
+        const event = frame.event
+        if (event !== null && event.importance >= BANNER_MIN_IMPORTANCE) {
+          const key = `${active.clip.id}:${event.second}:${event.kind}`
+          if (key !== lastBannerKey) {
+            lastBannerKey = key
+            const content = bannerFor(event, messages.current)
+            if (content !== null) banner = { ...content, strength: 1 }
+            flashTint =
+              event.side === 'home'
+                ? visuals.current.home.kit.outfield
+                : visuals.current.away.kit.outfield
+          }
+        }
+
         renderFrame(context, size, frame, {
           trail,
           flash,
+          flashTint,
+          banner,
           home: visuals.current.home,
           away: visuals.current.away,
         })

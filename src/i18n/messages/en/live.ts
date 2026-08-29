@@ -40,6 +40,14 @@ export const live: Messages['live'] = {
     3: 'in the final third',
     4: 'in the box',
   } as Record<number, string>,
+  banner: {
+    goal: 'GOAL',
+    penaltyGoal: 'PENALTY GOAL',
+    penaltyMissed: 'PENALTY MISSED',
+    yellowCard: 'YELLOW CARD',
+    redCard: 'RED CARD',
+    post: 'OFF THE POST',
+  },
   commentary: {
     KICK_OFF: () => 'Kick-off.',
     HALF_TIME: () => 'Half time.',

@@ -1,35 +1,32 @@
+import { PITCH_PALETTE, drawMarkings, drawTurf } from './pitchScene'
 import type { Kit } from './kits'
 import type { PitchFrame } from './pitchFrame'
 import type { Point } from './formations'
+import type { Size } from './pitchScene'
 import { KEEPER_SLOT, SHIRT_NUMBER } from './squad'
 
-export const PITCH_PALETTE = {
-  turf: '#123521',
-  turfStripe: '#164027',
-  turfEdge: 'rgba(6, 14, 10, 0.45)',
-  markings: 'rgba(226, 240, 255, 0.3)',
-  net: 'rgba(226, 240, 255, 0.18)',
-  carrier: 'rgba(255, 255, 255, 0.92)',
-  ball: '#fbfdff',
-  trail: 'rgba(251, 253, 255, 0.55)',
-  shadow: 'rgba(4, 10, 6, 0.42)',
-}
-
-const STRIPE_COUNT = 12
 const PLAYER_RADIUS_RATIO = 0.028
 const BALL_RADIUS_RATIO = 0.0105
-const BOX_DEPTH = 0.16
-const BOX_HEIGHT = 0.56
-const SIX_YARD_DEPTH = 0.055
-const SIX_YARD_HEIGHT = 0.26
-const GOAL_DEPTH = 0.018
-const GOAL_HEIGHT = 0.16
-const PENALTY_SPOT_DEPTH = 0.11
 const LABEL_MARGIN = 0.022
+const BALL_LIFT_RISE = 0.055
+const BALL_LIFT_GROWTH = 0.55
+const SHADOW_LIFT_DROP = 3.6
 
-export interface Size {
-  width: number
-  height: number
+const BANNER_TONE: Record<BannerTone, string> = {
+  goal: 'rgba(56, 214, 132, 0.92)',
+  card: 'rgba(247, 191, 62, 0.92)',
+  danger: 'rgba(255, 107, 107, 0.95)',
+  miss: 'rgba(226, 240, 255, 0.72)',
+}
+const BANNER_PANEL = 'rgba(6, 14, 10, 0.82)'
+
+export type BannerTone = 'goal' | 'card' | 'danger' | 'miss'
+
+export interface StageBanner {
+  title: string
+  detail: string | null
+  tone: BannerTone
+  strength: number
 }
 
 export interface TeamVisual {
@@ -40,88 +37,10 @@ export interface TeamVisual {
 export interface RenderOptions {
   trail: Point[]
   flash: number
+  flashTint: string
+  banner: StageBanner | null
   home: TeamVisual
   away: TeamVisual
-}
-
-function drawTurf(context: CanvasRenderingContext2D, size: Size) {
-  context.fillStyle = PITCH_PALETTE.turf
-  context.fillRect(0, 0, size.width, size.height)
-  context.fillStyle = PITCH_PALETTE.turfStripe
-  const stripeWidth = size.width / STRIPE_COUNT
-  for (let index = 0; index < STRIPE_COUNT; index += 2) {
-    context.fillRect(index * stripeWidth, 0, stripeWidth, size.height)
-  }
-
-  const vignette = context.createRadialGradient(
-    size.width / 2,
-    size.height / 2,
-    size.height * 0.2,
-    size.width / 2,
-    size.height / 2,
-    size.width * 0.72,
-  )
-  vignette.addColorStop(0, 'rgba(0, 0, 0, 0)')
-  vignette.addColorStop(1, PITCH_PALETTE.turfEdge)
-  context.fillStyle = vignette
-  context.fillRect(0, 0, size.width, size.height)
-}
-
-function strokeBox(
-  context: CanvasRenderingContext2D,
-  size: Size,
-  fromLeft: boolean,
-  depth: number,
-  height: number,
-) {
-  const boxWidth = depth * size.width
-  const boxHeight = height * size.height
-  const x = fromLeft ? 0 : size.width - boxWidth
-  context.strokeRect(x, (size.height - boxHeight) / 2, boxWidth, boxHeight)
-}
-
-function drawGoal(context: CanvasRenderingContext2D, size: Size, fromLeft: boolean) {
-  const goalWidth = GOAL_DEPTH * size.width
-  const goalHeight = GOAL_HEIGHT * size.height
-  const x = fromLeft ? -goalWidth : size.width
-  const y = (size.height - goalHeight) / 2
-  context.fillStyle = PITCH_PALETTE.net
-  context.fillRect(x, y, goalWidth, goalHeight)
-  context.strokeRect(x, y, goalWidth, goalHeight)
-}
-
-function drawSpot(context: CanvasRenderingContext2D, size: Size, x: number) {
-  context.beginPath()
-  context.arc(x, size.height / 2, Math.max(1.2, size.height * 0.006), 0, Math.PI * 2)
-  context.fill()
-}
-
-function drawMarkings(context: CanvasRenderingContext2D, size: Size) {
-  context.strokeStyle = PITCH_PALETTE.markings
-  context.fillStyle = PITCH_PALETTE.markings
-  context.lineWidth = Math.max(1, size.height * 0.0035)
-
-  context.strokeRect(0, 0, size.width, size.height)
-  context.beginPath()
-  context.moveTo(size.width / 2, 0)
-  context.lineTo(size.width / 2, size.height)
-  context.stroke()
-
-  context.beginPath()
-  context.arc(size.width / 2, size.height / 2, size.height * 0.135, 0, Math.PI * 2)
-  context.stroke()
-
-  strokeBox(context, size, true, BOX_DEPTH, BOX_HEIGHT)
-  strokeBox(context, size, false, BOX_DEPTH, BOX_HEIGHT)
-  strokeBox(context, size, true, SIX_YARD_DEPTH, SIX_YARD_HEIGHT)
-  strokeBox(context, size, false, SIX_YARD_DEPTH, SIX_YARD_HEIGHT)
-
-  drawSpot(context, size, size.width / 2)
-  drawSpot(context, size, PENALTY_SPOT_DEPTH * size.width)
-  drawSpot(context, size, size.width - PENALTY_SPOT_DEPTH * size.width)
-
-  drawGoal(context, size, true)
-  drawGoal(context, size, false)
 }
 
 function drawSideLabels(context: CanvasRenderingContext2D, size: Size, options: RenderOptions) {
@@ -204,18 +123,65 @@ function drawTeam(
   })
 }
 
-function drawBall(context: CanvasRenderingContext2D, size: Size, ball: Point) {
+function drawBall(context: CanvasRenderingContext2D, size: Size, ball: Point, lift: number) {
   const radius = size.height * BALL_RADIUS_RATIO
   const x = ball.x * size.width
-  const y = ball.y * size.height
+  const groundY = ball.y * size.height
+  const y = groundY - lift * BALL_LIFT_RISE * size.height
+
+  context.globalAlpha = 1 - lift * 0.45
   context.fillStyle = PITCH_PALETTE.shadow
   context.beginPath()
-  context.ellipse(x, y + radius * 0.9, radius * 0.9, radius * 0.5, 0, 0, Math.PI * 2)
+  context.ellipse(
+    x,
+    groundY + radius * (0.9 + lift * SHADOW_LIFT_DROP),
+    radius * (0.9 - lift * 0.3),
+    radius * (0.5 - lift * 0.18),
+    0,
+    0,
+    Math.PI * 2,
+  )
   context.fill()
+  context.globalAlpha = 1
+
   context.fillStyle = PITCH_PALETTE.ball
   context.beginPath()
-  context.arc(x, y, radius, 0, Math.PI * 2)
+  context.arc(x, y, radius * (1 + lift * BALL_LIFT_GROWTH), 0, Math.PI * 2)
   context.fill()
+}
+
+function drawBanner(context: CanvasRenderingContext2D, size: Size, banner: StageBanner) {
+  const titleSize = Math.max(13, size.height * 0.085)
+  const detailSize = Math.max(10, size.height * 0.05)
+  const padding = size.height * 0.03
+  const centre = size.width / 2
+  const top = size.height * 0.62
+
+  context.font = `800 ${titleSize}px "Archivo", system-ui, sans-serif`
+  const titleWidth = context.measureText(banner.title).width
+  context.font = `600 ${detailSize}px "Archivo", system-ui, sans-serif`
+  const detailWidth = banner.detail === null ? 0 : context.measureText(banner.detail).width
+  const panelWidth = Math.max(titleWidth, detailWidth) + padding * 2
+  const panelHeight = titleSize + (banner.detail === null ? 0 : detailSize * 1.5) + padding * 1.6
+
+  context.globalAlpha = banner.strength
+  context.fillStyle = BANNER_PANEL
+  context.beginPath()
+  context.roundRect(centre - panelWidth / 2, top, panelWidth, panelHeight, panelHeight * 0.22)
+  context.fill()
+
+  context.textAlign = 'center'
+  context.textBaseline = 'top'
+  context.fillStyle = BANNER_TONE[banner.tone]
+  context.font = `800 ${titleSize}px "Archivo", system-ui, sans-serif`
+  context.fillText(banner.title, centre, top + padding * 0.7)
+
+  if (banner.detail !== null) {
+    context.fillStyle = 'rgba(255, 255, 255, 0.88)'
+    context.font = `600 ${detailSize}px "Archivo", system-ui, sans-serif`
+    context.fillText(banner.detail, centre, top + padding * 0.7 + titleSize * 1.12)
+  }
+  context.globalAlpha = 1
 }
 
 export function renderFrame(
@@ -233,9 +199,16 @@ export function renderFrame(
   const awayCarrier = frame.possession === 'away' ? frame.carrier : null
   drawTeam(context, size, frame.away, options.away.kit, awayCarrier)
   drawTeam(context, size, frame.home, options.home.kit, homeCarrier)
-  drawBall(context, size, frame.ball)
+  drawBall(context, size, frame.ball, frame.lift)
 
-  if (options.flash <= 0) return
-  context.fillStyle = `rgba(255, 255, 255, ${options.flash * 0.35})`
-  context.fillRect(0, 0, size.width, size.height)
+  if (options.flash > 0) {
+    context.globalAlpha = options.flash * 0.28
+    context.fillStyle = options.flashTint
+    context.fillRect(0, 0, size.width, size.height)
+    context.globalAlpha = 1
+  }
+
+  if (options.banner !== null && options.banner.strength > 0) {
+    drawBanner(context, size, options.banner)
+  }
 }
