@@ -28,6 +28,10 @@ export const live = {
   pitchLabel: 'Pozisyonun saha üzerinde canlandırması',
   idleHeadline: 'Maç sürüyor, pozisyon bekleniyor.',
   scoreLabel: (home: number, away: number) => `Skor ${home} ${away}`,
+  summaryTitle: 'Maç özeti',
+  summaryEmpty: 'Henüz gol ya da kart yok.',
+  minuteLabel: (minute: number) => `${minute}. dakika`,
+  penaltyMark: '(P)',
   stats: {
     possession: 'Topa sahip olma',
     shots: 'Şut',

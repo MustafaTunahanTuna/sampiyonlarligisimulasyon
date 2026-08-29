@@ -3,6 +3,7 @@ import { movingShape } from './formations'
 import { arch, clamp, lerp, lerpPoint, pitchDistance, saturate } from './geometry'
 import { buildPhasePlans } from './phasePlan'
 import { KEEPER_SLOT } from './squad'
+import type { OnPitch } from './squad'
 import { buildStats } from '../../domain/engine'
 import type { HighlightClip } from './highlights'
 import type { PhasePlan } from './phasePlan'
@@ -10,7 +11,7 @@ import type { Point } from './geometry'
 import type { MatchEvent, MatchPhase, MatchReport, MatchStats, Side } from '../../domain/engine'
 
 const RUNNER_SURGE = 0.045
-const CARRIER_GRIP = 0.72
+const CARRIER_GRIP = 0.85
 const PRESSURE_PULL = 0.55
 const SUPPORT_PULL = 0.24
 const BALL_FOOT_OFFSET = 0.012
@@ -29,6 +30,7 @@ export interface PitchFrame {
   home: Point[]
   away: Point[]
   carrier: number
+  onPitch: Record<Side, OnPitch>
   event: MatchEvent | null
 }
 
@@ -50,13 +52,18 @@ function ballAt(plan: PhasePlan, progress: number): Point {
   return lerpPoint(plan.ballFrom, plan.ballTo, plan.ease(progress))
 }
 
-function closestPair(points: Point[], target: Point, skip: number): [number, number] {
-  let first = -1
-  let second = -1
+function closestPair(
+  points: Point[],
+  target: Point,
+  skip: number,
+  onPitch: OnPitch,
+): [number, number] {
+  let first = skip
+  let second = skip
   let firstGap = Infinity
   let secondGap = Infinity
   for (let slot = 0; slot < points.length; slot += 1) {
-    if (slot === skip) continue
+    if (slot === skip || !onPitch.has(slot)) continue
     const gap = pitchDistance(points[slot], target)
     if (gap < firstGap) {
       second = first
@@ -92,8 +99,8 @@ function positionKeeper(shape: Point[], side: Side, ball: Point) {
   }
 }
 
-function applyPressure(defenders: Point[], ball: Point, progress: number) {
-  const [closest, support] = closestPair(defenders, ball, KEEPER_SLOT)
+function applyPressure(defenders: Point[], ball: Point, progress: number, onPitch: OnPitch) {
+  const [closest, support] = closestPair(defenders, ball, KEEPER_SLOT, onPitch)
   defenders[closest] = lerpPoint(defenders[closest], ball, PRESSURE_PULL * progress)
   defenders[support] = lerpPoint(defenders[support], ball, SUPPORT_PULL * progress)
 }
@@ -120,7 +127,7 @@ function headlineByPhase(report: MatchReport): Map<number, MatchEvent> {
 
 export function createPlayback(report: MatchReport): Playback {
   const eventByPhase = headlineByPhase(report)
-  const plans = buildPhasePlans(report.phases, eventByPhase)
+  const plans = buildPhasePlans(report, eventByPhase)
 
   const frameOfPhase = (index: number, progress: number): PitchFrame => {
     const clamped = clamp(index, 0, report.phases.length - 1)
@@ -159,8 +166,9 @@ export function createPlayback(report: MatchReport): Playback {
       magnetise(attackers, plan.receiver, ball, CARRIER_GRIP * t * grounded)
     }
 
-    applyPressure(defenders, ball, t)
-    positionKeeper(defenders, plan.side === 'home' ? 'away' : 'home', ball)
+    const defendingSide = plan.side === 'home' ? 'away' : 'home'
+    applyPressure(defenders, ball, t, plan.onPitch[defendingSide])
+    positionKeeper(defenders, defendingSide, ball)
 
     return {
       phase,
@@ -171,6 +179,7 @@ export function createPlayback(report: MatchReport): Playback {
       home,
       away,
       carrier: plan.isShot || t < 0.55 ? plan.carrier : plan.receiver,
+      onPitch: plan.onPitch,
       event: eventByPhase.get(clamped) ?? null,
     }
   }

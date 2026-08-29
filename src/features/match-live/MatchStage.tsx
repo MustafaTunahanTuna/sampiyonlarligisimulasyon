@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { bannerFor } from './stageBanner'
 import { buildTimelines } from './clipTimeline'
 import { createStageLoop } from './stageLoop'
+import { StageScoreboard } from './StageScoreboard'
 import { useTranslation } from '../../i18n/useTranslation'
 import type { Playback } from './pitchFrame'
+import type { Score } from '../../domain/types'
 import type { StageInputs, StageLoop } from './stageLoop'
 import type { TeamVisual } from './pitchRenderer'
 
@@ -14,6 +16,7 @@ interface MatchStageProps {
   speed: number
   paused: boolean
   skipToken: number
+  score: Score
   idleHeadline: string | null
   onProgress: (second: number) => void
   onGoal: () => void
@@ -28,6 +31,7 @@ export function MatchStage({
   speed,
   paused,
   skipToken,
+  score,
   idleHeadline,
   onProgress,
   onGoal,
@@ -91,6 +95,7 @@ export function MatchStage({
   return (
     <div className="relative overflow-hidden rounded-control bg-canvas ring-1 ring-line">
       <canvas ref={canvasRef} role="img" aria-label={t.live.pitchLabel} className="block w-full" />
+      <StageScoreboard home={home} away={away} score={score} minute={minute} />
       <div
         aria-hidden={showPitch}
         className={`absolute inset-0 flex flex-col items-center justify-center gap-3 bg-canvas px-6 text-center transition-opacity duration-300 ease-out ${

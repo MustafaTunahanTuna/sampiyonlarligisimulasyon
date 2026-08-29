@@ -403,6 +403,9 @@ src/features/match-live/
   pitchPalette.ts        saha ve banner renk paleti
   pitchFrame.ts          createPlayback → frameOfPhase(index, t)   ← Katman B çekirdeği
   phasePlan.ts           faz planlarının zincirlenmesi (topun sürekliliği burada garanti edilir)
+  matchRestarts.ts       korner, taç, gol vuruşu, santra: oyunun durduğu anların top konumu
+  StageScoreboard.tsx    saha üstü yayın skorbordu (kod, skor, dakika)
+  MatchSummary.tsx       gol ve kart özeti (dakika + oyuncu, takım sütunları)
   geometry.ts            Point/Size, lerp, clamp, easing, kritik sönümleme
   highlights.ts          MatchReport → HighlightClip[] (pozisyon seçimi)
   clipTimeline.ts        klip adımları, aksiyon bazlı ritim, adım imleci (saf, test edilebilir)
@@ -437,6 +440,8 @@ scripts/calibrate-engine.mjs   §6 tablosunun yürütülebilir hâli (`npm run c
 | Yeni bağımlılık | **Sıfır** | Proje 2 runtime bağımlılığıyla yaşıyor (react, react-dom). Motor saf TS, render Canvas 2D API. |
 | React 19 | Canvas dışında normal bileşen; `useRef` + rAF yeterli | Mevcut `features/share/*` zaten imperatif canvas kullanıyor, desen tanıdık. |
 | Görsel süreklilik | Faz planları zincirlenir: `ballFrom(N+1) === ballTo(N)`, blok çizgisi `toZone(N) === fromZone(N+1)` üzerinden devam eder | Motor zonu böyle yazıyor (`state.zone = toZone`, top kaybında `mirrorZone`); `ZONE_PROGRESS` ve `ZONE_SPREAD` ayna-simetriktir, bu yüzden faz sınırında top da blok da sıçramaz. |
+| Zon → görsel derinlik | Topun x'i, taşıyıcının nominal hat konumundan değil **fazın zonundan** türetilir (`zoneAnchor`); oyuncu topa mıknatıslanır | Aksi hâlde Z4'ten şut çeken bir orta saha oyuncusu ekranda santra yakınında durur: motor ceza sahası derken oynatım orta saha gösterir, D4 kırılır. Ölçüm: gollerin %88'i görsel olarak ceza sahasında (motorda %91.5). |
+| Kırmızı kart | Görsel katman `RED_CARD` olayından sonraki fazlarda o taraftan bir forvet/orta saha slotunu sahadan çıkarır; seçim `hashSeed` ile deterministik | Motor zaten `RED_CARD_PENALTY` ile profili zayıflatıyor; eksik olan yalnızca sahadaki oyuncu sayısıydı. `squad.ts` seçimleri `OnPitch` kümesiyle filtrelenir. |
 | Render maliyeti | Statik saha offscreen canvas'ta önbelleklenir, kare başına yalnızca bir `drawImage`; ölçüm `ResizeObserver` ile | Kare içinde `clientWidth` okumak zorunlu yeniden yerleşim tetikler; gradyanı her karede yeniden kurmak boşa boyamadır. |
 | Tailwind v4 | Yalnızca kabuk ve kontroller; sahanın kendisi canvas | Token'lar `@theme` içinde hazır. |
 | TypeScript | `strict` derleme (`tsc -b`), `MatchEvent` discriminated union | Union olunca `switch` exhaustive olur, yorum gerekmez. |

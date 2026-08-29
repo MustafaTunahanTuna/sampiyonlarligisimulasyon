@@ -3,9 +3,7 @@ import { easeOutBack, saturate } from './geometry'
 import type { BannerTone } from './pitchPalette'
 import type { Camera } from './pitchCamera'
 import type { Point, Size } from './geometry'
-import type { TeamVisual } from './pitchRenderer'
 
-const LABEL_MARGIN = 0.026
 const BANNER_ENTER = 0.28
 const BANNER_FADE = 0.4
 const BANNER_TOP = 0.63
@@ -20,28 +18,6 @@ export interface ActiveBanner {
   tone: BannerTone
   age: number
   life: number
-}
-
-export function drawSideLabels(
-  context: CanvasRenderingContext2D,
-  size: Size,
-  home: TeamVisual,
-  away: TeamVisual,
-) {
-  const fontSize = Math.max(9, size.height * 0.042)
-  context.font = `700 ${fontSize}px "Archivo", system-ui, sans-serif`
-  context.textBaseline = 'top'
-  context.globalAlpha = 0.72
-  const margin = size.height * LABEL_MARGIN
-
-  context.textAlign = 'left'
-  context.fillStyle = home.kit.outfield
-  context.fillText(`${home.code} →`, margin, margin)
-
-  context.textAlign = 'right'
-  context.fillStyle = away.kit.outfield
-  context.fillText(`← ${away.code}`, size.width - margin, margin)
-  context.globalAlpha = 1
 }
 
 export function drawMinimap(

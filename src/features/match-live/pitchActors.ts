@@ -2,6 +2,7 @@ import { PITCH_PALETTE } from './pitchPalette'
 import { saturate } from './geometry'
 import { KEEPER_SLOT, SHIRT_NUMBER } from './squad'
 import type { Kit } from './kits'
+import type { OnPitch } from './squad'
 import type { Point, Size } from './geometry'
 
 const PLAYER_RADIUS_RATIO = 0.027
@@ -20,6 +21,7 @@ export interface TeamPose {
   previous: Point[]
   kit: Kit
   carrier: number | null
+  onPitch: OnPitch
 }
 
 function facingOf(current: Point, previous: Point): number | null {
@@ -107,7 +109,9 @@ export function drawTeam(
   context.font = `700 ${radius * 1.1}px "Archivo", system-ui, sans-serif`
   context.textAlign = 'center'
   context.textBaseline = 'middle'
-  pose.points.forEach((_, slot) => drawPlayer(context, size, pose, slot, radius, pulse))
+  pose.points.forEach((_, slot) => {
+    if (pose.onPitch.has(slot)) drawPlayer(context, size, pose, slot, radius, pulse)
+  })
 }
 
 export function drawTrail(context: CanvasRenderingContext2D, size: Size, trail: Point[]) {

@@ -25,6 +25,10 @@ export const live: Messages['live'] = {
   pitchLabel: 'Animazione dell’azione sul campo',
   idleHeadline: 'La partita prosegue, in attesa della prossima azione.',
   scoreLabel: (home, away) => `Risultato ${home} ${away}`,
+  summaryTitle: 'Riepilogo della partita',
+  summaryEmpty: 'Ancora nessun gol o cartellino.',
+  minuteLabel: (minute: number) => `${minute}° minuto`,
+  penaltyMark: '(P)',
   stats: {
     possession: 'Possesso',
     shots: 'Tiri',

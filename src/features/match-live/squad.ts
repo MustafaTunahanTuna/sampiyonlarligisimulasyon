@@ -25,6 +25,14 @@ const NEAREST_POOL = 3
 
 export type SlotDistance = (slot: number) => number
 
+export type OnPitch = ReadonlySet<number>
+
+export const FULL_SQUAD: OnPitch = new Set(SLOTS)
+
+export function outfieldSlots(): number[] {
+  return SLOTS.filter((slot) => slot !== KEEPER_SLOT)
+}
+
 export function allowedInZone(slot: number, zone: Zone): boolean {
   return ZONE_ROLES[zone].includes(SLOT_ROLE[slot])
 }
@@ -77,13 +85,26 @@ function optionsFor(action: ChainAction, carrier: number): number[] {
   }
 }
 
-function fallbackFor(zone: Zone, distanceTo: SlotDistance, seed: number): number {
-  const allowed = SLOTS.filter((slot) => allowedInZone(slot, zone))
-  return nearestOf(allowed.length === 0 ? SLOTS : allowed, distanceTo, seed)
+function fallbackFor(
+  zone: Zone,
+  distanceTo: SlotDistance,
+  seed: number,
+  onPitch: OnPitch,
+): number {
+  const present = SLOTS.filter((slot) => onPitch.has(slot))
+  const allowed = present.filter((slot) => allowedInZone(slot, zone))
+  return nearestOf(allowed.length === 0 ? present : allowed, distanceTo, seed)
 }
 
-export function carrierInZone(carrier: number, zone: Zone, distanceTo: SlotDistance): number {
-  return allowedInZone(carrier, zone) ? carrier : fallbackFor(zone, distanceTo, 0)
+export function carrierInZone(
+  carrier: number,
+  zone: Zone,
+  distanceTo: SlotDistance,
+  onPitch: OnPitch,
+): number {
+  return onPitch.has(carrier) && allowedInZone(carrier, zone)
+    ? carrier
+    : fallbackFor(zone, distanceTo, 0, onPitch)
 }
 
 export function receiverFor(
@@ -92,23 +113,31 @@ export function receiverFor(
   targetZone: Zone,
   seed: number,
   distanceTo: SlotDistance,
+  onPitch: OnPitch,
 ): number {
   if (action === 'SHOOT') return carrier
   if (action === 'DRIBBLE' && allowedInZone(carrier, targetZone)) return carrier
 
   const candidates = optionsFor(action, carrier).filter(
-    (slot) => slot !== carrier && allowedInZone(slot, targetZone),
+    (slot) => slot !== carrier && onPitch.has(slot) && allowedInZone(slot, targetZone),
   )
   return candidates.length === 0
-    ? fallbackFor(targetZone, distanceTo, seed)
+    ? fallbackFor(targetZone, distanceTo, seed, onPitch)
     : nearestOf(candidates, distanceTo, seed)
 }
 
-export function runnerFor(carrier: number, receiver: number, seed: number): number {
+export function runnerFor(
+  carrier: number,
+  receiver: number,
+  seed: number,
+  onPitch: OnPitch,
+): number {
   const candidates = [...FORWARDS, ...MIDFIELDERS].filter(
-    (slot) => slot !== carrier && slot !== receiver,
+    (slot) => slot !== carrier && slot !== receiver && onPitch.has(slot),
   )
-  return candidates[Math.abs(seed) % candidates.length]
+  return candidates.length === 0
+    ? receiver
+    : candidates[Math.abs(seed) % candidates.length]
 }
 
 export function kickOffCarrier(): number {

@@ -4,6 +4,7 @@ import { EventTicker } from './EventTicker'
 import { matchKits } from './kits'
 import { MatchStage } from './MatchStage'
 import { MatchStatsPanel } from './MatchStatsPanel'
+import { MatchSummary } from './MatchSummary'
 import { useMatchAudio } from './useMatchAudio'
 import { PLAYBACK_SPEEDS, useMatchPlayback } from './useMatchPlayback'
 import { useMatchReport } from './useMatchReport'
@@ -139,6 +140,7 @@ export function MatchLiveView({
                 speed={playback.speed}
                 paused={playback.paused}
                 skipToken={playback.skipToken}
+                score={score}
                 idleHeadline={idleHeadline}
                 onProgress={playback.setSecond}
                 onGoal={audio.cheer}
@@ -161,6 +163,14 @@ export function MatchLiveView({
             )}
 
             <section className="mt-4">
+              <h3 className="eyebrow mb-2 text-muted">{t.live.summaryTitle}</h3>
+              <MatchSummary
+                events={playback.finished ? report.timeline : playback.visibleEvents}
+                teams={teams}
+              />
+            </section>
+
+            <section className="mt-4">
               <h3 className="eyebrow mb-2 text-muted">{t.live.matchStats}</h3>
               <MatchStatsPanel stats={playback.finished ? report.stats : playback.liveStats} />
             </section>
@@ -169,7 +179,7 @@ export function MatchLiveView({
           <section className="flex min-w-0 flex-col lg:min-h-0">
             <h3 className="eyebrow mb-2 shrink-0 text-accent">{t.live.commentaryTitle}</h3>
             <div className="scroll-area min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
-              <EventTicker events={playback.visibleEvents} teams={teams} minImportance={1} />
+              <EventTicker events={playback.visibleEvents} teams={teams} minImportance={0} />
             </div>
           </section>
         </div>

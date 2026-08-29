@@ -10,6 +10,7 @@
   --cyan-400: oklch(0.78 0.14 220);
   --pitch-400: oklch(0.76 0.17 155);
   --amber-400: oklch(0.83 0.15 85);
+  --rose-400: oklch(0.68 0.19 25);
 }
 
 :root,
@@ -27,6 +28,7 @@
   --home: var(--pitch-400);
   --away: var(--cyan-400);
   --highlight: var(--amber-400);
+  --danger: var(--rose-400);
 }
 
 @theme inline {
@@ -43,6 +45,7 @@
   --color-home: var(--home);
   --color-away: var(--away);
   --color-highlight: var(--highlight);
+  --color-danger: var(--danger);
 }
 
 @theme {

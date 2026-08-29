@@ -1,12 +1,16 @@
 import { goalMouth, teamShape, zoneLine } from './formations'
-import { easeIn, easeInOut, easeOut, linear, lerpPoint, pitchDistance } from './geometry'
-import { carrierInZone, kickOffCarrier, receiverFor, runnerFor } from './squad'
+import { clamp, easeIn, easeInOut, easeOut, linear, lerpPoint, pitchDistance } from './geometry'
+import { restartBall, restartBefore, sidelineFor } from './matchRestarts'
+import { FULL_SQUAD, carrierInZone, kickOffCarrier, outfieldSlots, receiverFor, runnerFor } from './squad'
 import { hashSeed } from '../../domain/random'
+import type { OnPitch } from './squad'
 import type { Point } from './geometry'
-import type { ChainAction, MatchEvent, MatchPhase, Side, Zone } from '../../domain/engine'
+import type { Restart } from './matchRestarts'
+import type { ChainAction, MatchEvent, MatchReport, Side, Zone } from '../../domain/engine'
 
 const INTERCEPT_REACH = 0.76
-const KICK_OFF_BALL: Point = { x: 0.5, y: 0.5 }
+const ZONE_DRIFT = 0.035
+const DEPTH_LIMIT = 0.965
 
 const LIFT_BY_ACTION: Record<ChainAction, number> = {
   PASS: 0.08,
@@ -47,6 +51,8 @@ export interface PhasePlan {
   ballTo: Point
   lift: number
   isShot: boolean
+  restart: Restart
+  onPitch: Record<Side, OnPitch>
   ease: (progress: number) => number
 }
 
@@ -65,10 +71,11 @@ function shotTargetY(event: MatchEvent | undefined, seed: number): number {
   }
 }
 
-function nearestSlot(points: Point[], target: Point): number {
-  let best = 0
+function nearestSlot(points: Point[], target: Point, onPitch: OnPitch): number {
+  let best = kickOffCarrier()
   let bestDistance = Infinity
   points.forEach((point, index) => {
+    if (!onPitch.has(index)) return
     const candidate = pitchDistance(point, target)
     if (candidate < bestDistance) {
       bestDistance = candidate
@@ -78,42 +85,59 @@ function nearestSlot(points: Point[], target: Point): number {
   return best
 }
 
-function isScoringEvent(event: MatchEvent | undefined): boolean {
-  return event?.kind === 'GOAL' || event?.kind === 'PENALTY_GOAL'
+function zoneAnchor(side: Side, zone: Zone, seed: number): number {
+  const drift = ((hashSeed(`depth:${seed}`) % 1000) / 1000 - 0.5) * 2 * ZONE_DRIFT
+  return clamp(zoneLine(side, zone) + drift, 1 - DEPTH_LIMIT, DEPTH_LIMIT)
+}
+
+function sentOffSlot(side: Side, index: number, taken: OnPitch): number {
+  const candidates = outfieldSlots().filter((slot) => taken.has(slot))
+  return candidates[hashSeed(`sentoff:${side}:${index}`) % candidates.length]
+}
+
+function redCardsByPhase(report: MatchReport): Map<number, Side[]> {
+  const byPhase = new Map<number, Side[]>()
+  for (const event of report.timeline) {
+    if (event.kind !== 'RED_CARD') continue
+    const existing = byPhase.get(event.phaseIndex) ?? []
+    byPhase.set(event.phaseIndex, [...existing, event.side])
+  }
+  return byPhase
 }
 
 interface Handover {
   ball: Point
   carrier: number
   side: Side | null
-  restarted: boolean
-}
-
-function carrierAfterHandover(
-  handover: Handover,
-  phase: MatchPhase,
-  startShape: Point[],
-): number {
-  if (handover.side === phase.side && !handover.restarted) return handover.carrier
-  if (handover.restarted || handover.side === null) return kickOffCarrier()
-  return nearestSlot(startShape, handover.ball)
 }
 
 export function buildPhasePlans(
-  phases: MatchPhase[],
+  report: MatchReport,
   eventByPhase: Map<number, MatchEvent>,
 ): PhasePlan[] {
-  let handover: Handover = { ball: KICK_OFF_BALL, carrier: kickOffCarrier(), side: null, restarted: true }
+  const phases = report.phases
+  const redCards = redCardsByPhase(report)
+  let onPitch: Record<Side, OnPitch> = { home: FULL_SQUAD, away: FULL_SQUAD }
+  let handover: Handover = { ball: { x: 0.5, y: 0.5 }, carrier: kickOffCarrier(), side: null }
 
-  return phases.map((phase) => {
+  return phases.map((phase, order) => {
+    const event = eventByPhase.get(phase.index)
+    const previousPhase = order === 0 ? undefined : phases[order - 1]
+    const previousEvent =
+      previousPhase === undefined ? undefined : eventByPhase.get(previousPhase.index)
+    const restart = restartBefore(phase, event, previousPhase, previousEvent)
+    const ballFrom = restartBall(restart, phase.side, handover.ball, phase.index) ?? handover.ball
+
     const lineStart = zoneLine(phase.side, phase.fromZone)
     const startShape = teamShape(phase.side, lineStart)
-    const claimed = carrierAfterHandover(handover, phase, startShape)
+    const squad = onPitch[phase.side]
+    const claimed =
+      handover.side === phase.side && restart === 'none'
+        ? handover.carrier
+        : nearestSlot(startShape, ballFrom, squad)
     const carrier = carrierInZone(claimed, phase.fromZone, (slot) =>
-      pitchDistance(startShape[slot], startShape[claimed]),
-    )
+      pitchDistance(startShape[slot], ballFrom), squad)
 
-    const event = eventByPhase.get(phase.index)
     const isShot = phase.action === 'SHOOT'
     const lineEnd = isShot ? lineStart : zoneLine(phase.side, phase.toZone)
     const endShape = teamShape(phase.side, lineEnd)
@@ -122,27 +146,32 @@ export function buildPhasePlans(
       carrier,
       phase.toZone,
       hashSeed(`pass:${phase.index}`),
-      (slot) => pitchDistance(endShape[slot], startShape[carrier]),
+      (slot) => pitchDistance(endShape[slot], ballFrom),
+      squad,
     )
 
-    const ballFrom = handover.restarted ? KICK_OFF_BALL : handover.ball
     const reach = phase.outcome === 'TURNOVER' ? INTERCEPT_REACH : 1
+    const settled = {
+      x: zoneAnchor(phase.side, phase.toZone, phase.index),
+      y: endShape[receiver].y,
+    }
+    const intercepted = lerpPoint(ballFrom, settled, reach)
+    const nextRestart =
+      order + 1 < phases.length
+        ? restartBefore(phases[order + 1], eventByPhase.get(phases[order + 1].index), phase, event)
+        : 'none'
     const ballTo = isShot
       ? { x: goalMouth(phase.side).x, y: shotTargetY(event, phase.index) }
-      : lerpPoint(ballFrom, endShape[receiver], reach)
+      : nextRestart === 'throwIn'
+        ? sidelineFor(intercepted, phase.index)
+        : intercepted
 
-    handover = {
-      ball: ballTo,
-      carrier: receiver,
-      side: phase.side,
-      restarted: isScoringEvent(event),
-    }
-
-    return {
+    handover = { ball: ballTo, carrier: receiver, side: phase.side }
+    const plan: PhasePlan = {
       side: phase.side,
       carrier,
       receiver,
-      runner: runnerFor(carrier, receiver, hashSeed(`run:${phase.index}`)),
+      runner: runnerFor(carrier, receiver, hashSeed(`run:${phase.index}`), squad),
       lineStart,
       lineEnd,
       spreadStart: ZONE_SPREAD[phase.fromZone],
@@ -151,7 +180,17 @@ export function buildPhasePlans(
       ballTo,
       lift: LIFT_BY_ACTION[phase.action],
       isShot,
+      restart,
+      onPitch,
       ease: EASING[phase.action],
     }
+
+    for (const punished of redCards.get(phase.index) ?? []) {
+      const remaining = new Set(onPitch[punished])
+      remaining.delete(sentOffSlot(punished, phase.index, remaining))
+      onPitch = { ...onPitch, [punished]: remaining }
+    }
+
+    return plan
   })
 }

@@ -25,6 +25,10 @@ export const live: Messages['live'] = {
   pitchLabel: 'Animation of the move on the pitch',
   idleHeadline: 'The match is on, waiting for the next move.',
   scoreLabel: (home, away) => `Score ${home} ${away}`,
+  summaryTitle: 'Match summary',
+  summaryEmpty: 'No goals or cards yet.',
+  minuteLabel: (minute: number) => `Minute ${minute}`,
+  penaltyMark: '(P)',
   stats: {
     possession: 'Possession',
     shots: 'Shots',

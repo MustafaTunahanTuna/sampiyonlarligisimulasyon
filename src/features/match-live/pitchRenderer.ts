@@ -1,6 +1,6 @@
 import { drawBall, drawTeam, drawTrail } from './pitchActors'
 import { viewportOf } from './pitchCamera'
-import { drawBanner, drawFlash, drawMinimap, drawSideLabels } from './stageOverlay'
+import { drawBanner, drawFlash, drawMinimap } from './stageOverlay'
 import type { ActiveBanner } from './stageOverlay'
 import type { Backdrop } from './pitchBackdrop'
 import type { Camera } from './pitchCamera'
@@ -47,12 +47,14 @@ function drawWorld(
     previous: previous.home,
     kit: visuals.home.kit,
     carrier: frame.possession === 'home' ? frame.carrier : null,
+    onPitch: frame.onPitch.home,
   }
   const awayPose = {
     points: frame.away,
     previous: previous.away,
     kit: visuals.away.kit,
     carrier: frame.possession === 'away' ? frame.carrier : null,
+    onPitch: frame.onPitch.away,
   }
   drawTeam(context, size, frame.possession === 'home' ? awayPose : homePose, scene.pulse)
   drawTeam(context, size, frame.possession === 'home' ? homePose : awayPose, scene.pulse)
@@ -76,7 +78,6 @@ export function renderStage(
 
   context.setTransform(ratio, 0, 0, ratio, 0, 0)
   drawFlash(context, size, scene.flash, scene.flashTint)
-  drawSideLabels(context, size, visuals.home, visuals.away)
   drawMinimap(context, size, scene.camera, scene.frame.ball)
   if (scene.banner !== null) drawBanner(context, size, scene.banner)
 }
