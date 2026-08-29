@@ -1,21 +1,53 @@
-export const LOCALES = ['tr', 'en'] as const
+export const LOCALES = ['tr', 'en', 'fr', 'es', 'pt', 'it'] as const
 
 export type Locale = (typeof LOCALES)[number]
 
 const STORAGE_KEY = 'ucl:locale'
-const TURKISH_TAG = 'tr'
+const FALLBACK_LOCALE: Locale = 'en'
 
-export const LOCALE_TAG: Record<Locale, string> = { tr: 'tr-TR', en: 'en-GB' }
+export const LOCALE_TAG: Record<Locale, string> = {
+  tr: 'tr-TR',
+  en: 'en-GB',
+  fr: 'fr-FR',
+  es: 'es-ES',
+  pt: 'pt-PT',
+  it: 'it-IT',
+}
 
-export const LOCALE_NAME: Record<Locale, string> = { tr: 'Türkçe', en: 'English' }
+export const LOCALE_NAME: Record<Locale, string> = {
+  tr: 'Türkçe',
+  en: 'English',
+  fr: 'Français',
+  es: 'Español',
+  pt: 'Português',
+  it: 'Italiano',
+}
 
-function isLocale(value: string): value is Locale {
+export function isLocale(value: string): value is Locale {
   return LOCALES.some((locale) => locale === value)
 }
 
+function primaryLanguageOf(tag: string): string {
+  return tag.toLowerCase().split('-')[0]
+}
+
+function localeOfTag(tag: string): Locale | null {
+  const language = primaryLanguageOf(tag)
+  return isLocale(language) ? language : null
+}
+
+function preferredTags(): readonly string[] {
+  const { languages, language } = window.navigator
+  if (languages !== undefined && languages.length > 0) return languages
+  return language === undefined ? [] : [language]
+}
+
 function browserLocale(): Locale {
-  const language = window.navigator.language?.toLowerCase() ?? ''
-  return language.startsWith(TURKISH_TAG) ? 'tr' : 'en'
+  for (const tag of preferredTags()) {
+    const locale = localeOfTag(tag)
+    if (locale !== null) return locale
+  }
+  return FALLBACK_LOCALE
 }
 
 export function readStoredLocale(): Locale | null {

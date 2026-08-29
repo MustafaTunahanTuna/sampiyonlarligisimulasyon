@@ -1,0 +1,32 @@
+import type { Messages } from '../messages'
+
+export const matchday: Messages['matchday'] = {
+  title: (matchday) => `Jornada ${matchday}`,
+  progress: (matchday, total, matches) => `${matchday} / ${total} · ${matches} jogos`,
+  yourMatch: 'O teu jogo',
+  otherMatches: 'Outros jogos',
+  seeOtherResults: 'Ver os outros resultados →',
+  standingHint: (team, position) => `${team} · ${position} na classificação`,
+  watchMatch: 'Ver o jogo',
+  watchMatchOf: (home, away) => `Ver ${home} - ${away}`,
+  closeAndReview: 'Fechar e rever',
+  finishAll: 'Terminar tudo',
+  nextWeek: 'Jornada seguinte →',
+  viewStandings: 'Ver a classificação →',
+  playMatchday: (matchday) => `Jogar a jornada ${matchday}`,
+  startSeason: 'Começar a época',
+  goToKnockout: 'Ir para as eliminatórias',
+  reset: 'Reiniciar',
+  unpredictability: 'Nível de surpresa',
+  unpredictabilitySteps: {
+    form: 'Pela forma',
+    balanced: 'Equilibrado',
+    surprising: 'Surpreendente',
+    chaos: 'Caos',
+  },
+  seed: 'Código de cenário',
+  seedHint: 'Código de cenário — o mesmo código recria a mesma época',
+  newSeed: 'Gerar um novo código de cenário',
+  dotPlayed: (matchday) => `Ver os resultados da jornada ${matchday}`,
+  dotUnplayed: (matchday) => `Jornada ${matchday} por jogar`,
+}

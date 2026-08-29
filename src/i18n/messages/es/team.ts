@@ -1,0 +1,36 @@
+import type { Messages } from '../messages'
+
+export const team: Messages['team'] = {
+  firstStep: 'Primer paso',
+  changingTeam: 'Cambio de club',
+  pickTitle: 'Elige tu club',
+  changeTitle: 'Cambia de club',
+  pickBody: 'Se hace seguimiento de los ocho partidos y del recorrido en la tabla del club que elijas.',
+  changeBody: (current) =>
+    `Estás siguiendo a ${current}. Elige otro club y confirma para cambiar: tus pronósticos se conservan.`,
+  release: 'Dejar de seguir',
+  changeTeam: 'Cambiar de club',
+  searchLabel: 'Buscar',
+  searchPlaceholder: 'Club o país',
+  noMatches: (query, total) => `Ningún resultado para «${query}» entre los ${total} clubes.`,
+  pickFromList: 'Elige un club de la lista: tu elección aparece aquí para confirmarla.',
+  pot: 'Bombo',
+  current: 'Actual',
+  selected: 'Seleccionado',
+  cancel: 'Cancelar',
+  alreadyFollowed: 'Ya lo sigues',
+  confirm: 'Confirmar como mi club',
+  emptySeason: (totalFixtures) =>
+    `Este club juega ${totalFixtures} partidos. Introduce tú los marcadores o simula la temporada: la clasificación y la tarjeta para compartir se generan al instante.`,
+  statPosition: 'Puesto',
+  statPoints: 'Puntos',
+  statRecord: 'V / E / D',
+  statGoals: 'Goles',
+  positionValue: (position) => `${position}`,
+  predictedCount: (played, total) => `${played}/${total} partidos pronosticados`,
+  tabFixtures: 'Mis partidos',
+  tabStandings: 'Clasificación',
+  panelSections: 'Secciones del panel',
+  yourTeamIsChampion: 'Tu club es campeón',
+  championOrigin: (country, pot) => `${country} · salió del bombo ${pot}`,
+}
