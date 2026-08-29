@@ -4,6 +4,7 @@ import { DownloadStandingsButton } from '../share/DownloadStandingsButton'
 import { DownloadTeamButton } from '../share/DownloadTeamButton'
 import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
+import { scrollToStandings } from '../standings/standingsAnchor'
 import { SeasonSummary } from './SeasonSummary'
 import { TeamHeader } from './TeamHeader'
 import { fixturesOf, recordOf } from '../../domain/fixtures'
@@ -55,7 +56,14 @@ export function TeamDashboard({
     <div key={team.id} className="animate-rise space-y-10">
       <TeamHeader team={team} onChangeTeam={onChangeTeam} onReleaseTeam={onReleaseTeam} />
       <SeasonSummary record={record} totalFixtures={fixtures.length} standing={standing} />
-      <SeasonRunner favouriteTeam={team} onGoToKnockout={onGoToKnockout} />
+      <SeasonRunner
+        favouriteTeam={team}
+        onGoToKnockout={onGoToKnockout}
+        onViewStandings={() => {
+          setActiveTab('standings')
+          scrollToStandings()
+        }}
+      />
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-strong">
         <nav className="flex gap-6" aria-label="Panel bölümleri">

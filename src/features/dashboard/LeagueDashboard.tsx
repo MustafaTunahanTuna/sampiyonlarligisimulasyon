@@ -5,6 +5,7 @@ import { RankingList } from './RankingList'
 import { StatTiles } from './StatTiles'
 import { SeasonRunner } from '../matchday/SeasonRunner'
 import { StandingsTable } from '../standings/StandingsTable'
+import { scrollToStandings } from '../standings/standingsAnchor'
 import { DownloadStandingsButton } from '../share/DownloadStandingsButton'
 import { PickTeamCallout } from './PickTeamCallout'
 import {
@@ -52,7 +53,11 @@ export function LeagueDashboard({
         />
       )}
 
-      <SeasonRunner favouriteTeam={favouriteTeam} onGoToKnockout={onGoToKnockout} />
+      <SeasonRunner
+        favouriteTeam={favouriteTeam}
+        onGoToKnockout={onGoToKnockout}
+        onViewStandings={scrollToStandings}
+      />
 
       {hasPredictions ? (
         <>

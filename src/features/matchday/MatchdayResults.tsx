@@ -14,7 +14,7 @@ interface MatchdayResultsProps {
   hasNext: boolean
   onRewatch: (() => void) | null
   onNext: () => void
-  onGoToKnockout: () => void
+  onViewStandings: () => void
   onFinishAll: () => void
   onClose: () => void
 }
@@ -28,7 +28,7 @@ export function MatchdayResults({
   hasNext,
   onRewatch,
   onNext,
-  onGoToKnockout,
+  onViewStandings,
   onFinishAll,
   onClose,
 }: MatchdayResultsProps) {
@@ -80,9 +80,11 @@ export function MatchdayResults({
           </p>
         )}
         <div className="ml-auto flex flex-wrap items-center gap-3">
-          <Button variant="ghost" onClick={onClose}>
-            {isReview ? 'Kapat' : 'Kapat ve incele'}
-          </Button>
+          {isReview || hasNext ? (
+            <Button variant="ghost" onClick={onClose}>
+              {isReview ? 'Kapat' : 'Kapat ve incele'}
+            </Button>
+          ) : null}
           {isReview ? null : hasNext ? (
             <>
               <Button variant="ghost" onClick={onFinishAll}>
@@ -93,8 +95,8 @@ export function MatchdayResults({
               </Button>
             </>
           ) : (
-            <Button variant="primary" onClick={onGoToKnockout}>
-              Nakavt aşamasına geç →
+            <Button variant="primary" onClick={onViewStandings}>
+              Lig tablosuna göz at →
             </Button>
           )}
         </div>

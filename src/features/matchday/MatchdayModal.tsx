@@ -19,7 +19,7 @@ interface MatchdayModalProps {
   isReview: boolean
   hasNext: boolean
   onNext: () => void
-  onGoToKnockout: () => void
+  onViewStandings: () => void
   onFinishAll: () => void
   onClose: () => void
 }
@@ -33,7 +33,7 @@ export function MatchdayModal({
   isReview,
   hasNext,
   onNext,
-  onGoToKnockout,
+  onViewStandings,
   onFinishAll,
   onClose,
 }: MatchdayModalProps) {
@@ -114,7 +114,7 @@ export function MatchdayModal({
             hasNext={hasNext}
             onRewatch={canWatch ? () => setStage('live') : null}
             onNext={onNext}
-            onGoToKnockout={onGoToKnockout}
+            onViewStandings={onViewStandings}
             onFinishAll={onFinishAll}
             onClose={onClose}
           />

@@ -3,6 +3,7 @@ import { StandingsRow } from './StandingsRow'
 import { QUALIFICATION_TEXT_TONE } from './qualificationTone'
 import { QUALIFICATION_LABEL } from '../../domain/standings'
 import type { Qualification } from '../../domain/standings'
+import { STANDINGS_ANCHOR_ID } from './standingsAnchor'
 import type { StandingRow, Team } from '../../domain/types'
 
 const ZONES: Qualification[] = ['LAST_16', 'PLAY_OFF', 'ELIMINATED']
@@ -22,7 +23,7 @@ export function StandingsTable({
 }: StandingsTableProps) {
   if (!hasPredictions) {
     return (
-      <section>
+      <section id={STANDINGS_ANCHOR_ID} className="scroll-mt-6">
         <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">Puan tablosu</h2>
         <p className="mt-4 max-w-md text-sm text-muted">
           Tablo tahminlerinden oluşur. Skorları elle girerek ya da sezonu simüle ederek başla —
@@ -33,7 +34,7 @@ export function StandingsTable({
   }
 
   return (
-    <section>
+    <section id={STANDINGS_ANCHOR_ID} className="scroll-mt-6">
       <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-line-strong pb-3">
         <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">Puan tablosu</h2>
         {shareAction}

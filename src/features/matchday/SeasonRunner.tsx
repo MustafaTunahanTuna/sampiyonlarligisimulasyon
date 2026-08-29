@@ -9,9 +9,14 @@ import type { Team } from '../../domain/types'
 interface SeasonRunnerProps {
   favouriteTeam: Team | null
   onGoToKnockout: () => void
+  onViewStandings: () => void
 }
 
-export function SeasonRunner({ favouriteTeam, onGoToKnockout }: SeasonRunnerProps) {
+export function SeasonRunner({
+  favouriteTeam,
+  onGoToKnockout,
+  onViewStandings,
+}: SeasonRunnerProps) {
   const { state } = usePredictions()
   const runner = useMatchdayRunner()
   const completed = completedMatchdayCount(state.predictions)
@@ -45,9 +50,9 @@ export function SeasonRunner({ favouriteTeam, onGoToKnockout }: SeasonRunnerProp
           isReview={runner.activeView.mode === 'review'}
           hasNext={runner.upcomingMatchday !== null}
           onNext={runner.startNext}
-          onGoToKnockout={() => {
+          onViewStandings={() => {
             runner.close()
-            onGoToKnockout()
+            onViewStandings()
           }}
           onFinishAll={runner.finishRemaining}
           onClose={runner.close}
