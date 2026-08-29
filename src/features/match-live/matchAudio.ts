@@ -1,3 +1,5 @@
+const GOAL_SOUND_URL = '/sounds/goal_sound.mp3'
+const GOAL_GAIN = 0.9
 const AMBIENCE_GAIN = 0.055
 const ROAR_GAIN = 0.5
 const KICK_GAIN = 0.16
@@ -27,6 +29,16 @@ function noiseBuffer(context: AudioContext): AudioBuffer {
     channel[index] = previous * 3.2
   }
   return buffer
+}
+
+async function loadGoalSound(context: AudioContext): Promise<AudioBuffer | null> {
+  try {
+    const response = await fetch(GOAL_SOUND_URL)
+    if (!response.ok) return null
+    return await context.decodeAudioData(await response.arrayBuffer())
+  } catch {
+    return null
+  }
 }
 
 function startAmbience(context: AudioContext, buffer: AudioBuffer, destination: GainNode) {
@@ -73,8 +85,12 @@ export function createMatchAudio(): MatchAudio | null {
   const buffer = noiseBuffer(context)
   const stopAmbience = startAmbience(context, buffer, master)
 
-  const cheer = () => {
-    if (context.state !== 'running') return
+  let goalBuffer: AudioBuffer | null = null
+  void loadGoalSound(context).then((decoded) => {
+    goalBuffer = decoded
+  })
+
+  const roar = () => {
     const now = context.currentTime
     const source = context.createBufferSource()
     source.buffer = buffer
@@ -96,6 +112,20 @@ export function createMatchAudio(): MatchAudio | null {
     source.connect(shape).connect(envelope).connect(master)
     source.start(now)
     source.stop(now + ROAR_RELEASE + 0.1)
+  }
+
+  const cheer = () => {
+    if (context.state !== 'running') return
+    if (goalBuffer === null) {
+      roar()
+      return
+    }
+    const source = context.createBufferSource()
+    source.buffer = goalBuffer
+    const level = context.createGain()
+    level.gain.value = GOAL_GAIN
+    source.connect(level).connect(master)
+    source.start(context.currentTime)
   }
 
   const kick = (power: number) => {
