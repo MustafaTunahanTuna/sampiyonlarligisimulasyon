@@ -12,7 +12,9 @@ import type { MatchReport, MatchSimulationOptions, Side } from './types'
 export const ENGINE_VERSION = 1
 
 const PROBE_RUNS = 8
-const HOME_ADVANTAGE = 4
+const HOME_ADVANTAGE_PEAK = 5
+const HOME_ADVANTAGE_FLOOR = 2
+const HOME_ADVANTAGE_FADE = 60
 
 const FULL_MATCH: MatchSimulationOptions = {
   durationMinutes: 90,
@@ -27,6 +29,12 @@ function withDefaults(options: Partial<MatchSimulationOptions>): MatchSimulation
   return { ...FULL_MATCH, ...options }
 }
 
+function homeAdvantageFor(home: Team, away: Team): number {
+  const gap = Math.abs(home.strength - away.strength)
+  const fade = Math.exp(-gap / HOME_ADVANTAGE_FADE)
+  return HOME_ADVANTAGE_FLOOR + (HOME_ADVANTAGE_PEAK - HOME_ADVANTAGE_FLOOR) * fade
+}
+
 function baseConfig(
   home: Team,
   away: Team,
@@ -36,7 +44,7 @@ function baseConfig(
   const homeSide = options.profiles?.home ?? teamProfile(home)
   const awaySide = options.profiles?.away ?? teamProfile(away)
   return {
-    profiles: { home: homeProfile(homeSide, HOME_ADVANTAGE), away: awaySide },
+    profiles: { home: homeProfile(homeSide, homeAdvantageFor(home, away)), away: awaySide },
     lineups: NO_LINEUPS,
     actorRandom: createRandom(0),
     unpredictability,
