@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react'
 import { ClubCrest } from '../../components/ClubCrest'
 import { QUALIFICATION_TEXT_TONE } from './qualificationTone'
 import { OUTCOME_LABEL, OUTCOME_SHORT } from '../fixtures/matchPresentation'
 import { QUALIFICATION_OUTCOME_LABEL } from '../../domain/standings'
 import { fixturesOf } from '../../domain/fixtures'
 import { withPredictedScores } from '../../domain/predictedResults'
+import { useModalDialog } from '../../hooks/useModalDialog'
 import { usePredictions } from '../../state/usePredictions'
 import type { Outcome, StandingRow } from '../../domain/types'
 
@@ -20,15 +20,10 @@ interface TeamFixturesModalProps {
 }
 
 export function TeamFixturesModal({ standing, onClose }: TeamFixturesModalProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const dialogRef = useModalDialog()
   const { state } = usePredictions()
   const team = standing.team
   const fixtures = withPredictedScores(fixturesOf(team), state.predictions)
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (dialog !== null && !dialog.open) dialog.showModal()
-  }, [])
 
   return (
     <dialog

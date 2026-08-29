@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { MatchLiveView } from '../match-live/MatchLiveView'
 import { Button } from '../../components/Button'
+import { useModalDialog } from '../../hooks/useModalDialog'
 import { ROUND_LABEL } from '../../domain/knockoutFormat'
 import { tieLegSetups } from '../../domain/knockoutTie'
 import type { KnockoutTie, TieDecision, TieOutcome } from '../../domain/types'
@@ -18,14 +19,9 @@ interface KnockoutMatchModalProps {
 }
 
 export function KnockoutMatchModal({ tie, outcome, onClose }: KnockoutMatchModalProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const dialogRef = useModalDialog()
   const [legIndex, setLegIndex] = useState(0)
   const setups = tieLegSetups(tie)
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (dialog !== null && !dialog.open) dialog.showModal()
-  }, [])
 
   const setup = setups[legIndex]
   if (setup === undefined) return null

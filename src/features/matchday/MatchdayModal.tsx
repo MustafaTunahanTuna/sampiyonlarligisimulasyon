@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { MatchdayProgress } from './MatchdayProgress'
 import { MatchdayResults } from './MatchdayResults'
 import { favouriteResultOf, matchdayResults } from './resultList'
 import { Button } from '../../components/Button'
+import { useModalDialog } from '../../hooks/useModalDialog'
 import { MatchLiveView } from '../match-live/MatchLiveView'
 import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
 import { predictedStandings } from '../../domain/predictedResults'
@@ -36,7 +37,7 @@ export function MatchdayModal({
   onFinishAll,
   onClose,
 }: MatchdayModalProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const dialogRef = useModalDialog()
   const results = matchdayResults(matchday, predictions)
   const favouriteResult = favouriteResultOf(results, favouriteTeam)
   const canWatch = favouriteResult !== null && favouriteResult.isWatchable
@@ -46,11 +47,6 @@ export function MatchdayModal({
   const favouriteStanding =
     favouriteTeam === null ? null : (standingByTeam.get(favouriteTeam.id) ?? null)
   const [stage, setStage] = useState<Stage>(canWatch && !isReview ? 'live' : 'results')
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (dialog !== null && !dialog.open) dialog.showModal()
-  }, [])
 
   const isLive = stage === 'live' && favouriteResult !== null
 
