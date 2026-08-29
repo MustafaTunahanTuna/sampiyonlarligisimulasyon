@@ -1,4 +1,5 @@
 import { BracketTie } from './BracketTie'
+import { isWatchableTie } from './watchableTie'
 import { LEFT_ROUND_OF_16_ORDER, RIGHT_ROUND_OF_16_ORDER } from '../share/bracketLayout'
 import type { KnockoutRoundId } from '../../domain/knockoutFormat'
 import type { KnockoutStage } from '../../domain/knockoutStage'
@@ -63,11 +64,12 @@ function Group({ side, withConnector = false, children }: GroupProps) {
 interface SlotProps {
   entry: Entry | null
   favouriteTeamId: string | null
+  onWatchTie: (tie: KnockoutTie) => void
   side: Side
   withStem?: boolean
 }
 
-function Slot({ entry, favouriteTeamId, side, withStem = false }: SlotProps) {
+function Slot({ entry, favouriteTeamId, onWatchTie, side, withStem = false }: SlotProps) {
   if (entry === null) return null
   return (
     <div className="relative">
@@ -75,6 +77,11 @@ function Slot({ entry, favouriteTeamId, side, withStem = false }: SlotProps) {
         tie={entry.tie}
         outcome={entry.outcome}
         favouriteTeamId={favouriteTeamId}
+        onWatch={
+          isWatchableTie(entry.tie, entry.outcome, favouriteTeamId)
+            ? () => onWatchTie(entry.tie)
+            : null
+        }
       />
       {withStem && <Stem side={side} />}
     </div>
@@ -85,9 +92,10 @@ interface BranchProps {
   stage: KnockoutStage
   side: Side
   favouriteTeamId: string | null
+  onWatchTie: (tie: KnockoutTie) => void
 }
 
-function Branch({ stage, side, favouriteTeamId }: BranchProps) {
+function Branch({ stage, side, favouriteTeamId, onWatchTie }: BranchProps) {
   const roundOf16Orders = side === 'left' ? LEFT_ROUND_OF_16_ORDER : RIGHT_ROUND_OF_16_ORDER
   const quarterOrders = QUARTER_ORDERS[side]
   const columns = [
@@ -99,6 +107,7 @@ function Branch({ stage, side, favouriteTeamId }: BranchProps) {
               key={order}
               entry={entryOf(stage, 'ROUND_OF_16', order)}
               favouriteTeamId={favouriteTeamId}
+              onWatchTie={onWatchTie}
               side={side}
               withStem
             />
@@ -113,6 +122,7 @@ function Branch({ stage, side, favouriteTeamId }: BranchProps) {
             key={order}
             entry={entryOf(stage, 'QUARTER_FINAL', order)}
             favouriteTeamId={favouriteTeamId}
+            onWatchTie={onWatchTie}
             side={side}
             withStem
           />
@@ -123,6 +133,7 @@ function Branch({ stage, side, favouriteTeamId }: BranchProps) {
       <Slot
         entry={entryOf(stage, 'SEMI_FINAL', SEMI_ORDER[side])}
         favouriteTeamId={favouriteTeamId}
+        onWatchTie={onWatchTie}
         side={side}
         withStem
       />
@@ -135,11 +146,12 @@ function Branch({ stage, side, favouriteTeamId }: BranchProps) {
 interface BracketTreeProps {
   stage: KnockoutStage
   favouriteTeamId: string | null
+  onWatchTie: (tie: KnockoutTie) => void
 }
 
 const COLUMN_HEADINGS = ['Son 16', 'Çeyrek final', 'Yarı final', 'Final', 'Yarı final', 'Çeyrek final', 'Son 16']
 
-export function BracketTree({ stage, favouriteTeamId }: BracketTreeProps) {
+export function BracketTree({ stage, favouriteTeamId, onWatchTie }: BracketTreeProps) {
   const final = entryOf(stage, 'FINAL', 1)
 
   return (
@@ -157,18 +169,33 @@ export function BracketTree({ stage, favouriteTeamId }: BracketTreeProps) {
         </div>
 
         <div className="grid min-h-[30rem] grid-cols-7 gap-x-2">
-          <Branch stage={stage} side="left" favouriteTeamId={favouriteTeamId} />
+          <Branch
+            stage={stage}
+            side="left"
+            favouriteTeamId={favouriteTeamId}
+            onWatchTie={onWatchTie}
+          />
           <div className="flex flex-col justify-center">
             {final !== null && (
               <BracketTie
                 tie={final.tie}
                 outcome={final.outcome}
                 favouriteTeamId={favouriteTeamId}
+                onWatch={
+                  isWatchableTie(final.tie, final.outcome, favouriteTeamId)
+                    ? () => onWatchTie(final.tie)
+                    : null
+                }
                 emphasis
               />
             )}
           </div>
-          <Branch stage={stage} side="right" favouriteTeamId={favouriteTeamId} />
+          <Branch
+            stage={stage}
+            side="right"
+            favouriteTeamId={favouriteTeamId}
+            onWatchTie={onWatchTie}
+          />
         </div>
       </div>
     </div>

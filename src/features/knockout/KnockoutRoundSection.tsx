@@ -1,14 +1,21 @@
 import { TieCard } from './TieCard'
+import { isWatchableTie } from './watchableTie'
 import type { KnockoutRound } from '../../domain/knockoutStage'
+import type { KnockoutTie } from '../../domain/types'
 
 const REVEAL_STEP_MS = 60
 
 interface KnockoutRoundSectionProps {
   round: KnockoutRound
   favouriteTeamId: string | null
+  onWatchTie: (tie: KnockoutTie) => void
 }
 
-export function KnockoutRoundSection({ round, favouriteTeamId }: KnockoutRoundSectionProps) {
+export function KnockoutRoundSection({
+  round,
+  favouriteTeamId,
+  onWatchTie,
+}: KnockoutRoundSectionProps) {
   return (
     <section>
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
@@ -29,6 +36,11 @@ export function KnockoutRoundSection({ round, favouriteTeamId }: KnockoutRoundSe
             outcome={round.outcomes.get(tie.id)}
             favouriteTeamId={favouriteTeamId}
             revealDelay={index * REVEAL_STEP_MS}
+            onWatch={
+              isWatchableTie(tie, round.outcomes.get(tie.id), favouriteTeamId)
+                ? () => onWatchTie(tie)
+                : null
+            }
           />
         ))}
       </div>

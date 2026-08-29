@@ -1,4 +1,5 @@
 import { ClubCrest } from '../../components/ClubCrest'
+import { WatchTieButton } from './WatchTieButton'
 import { decisionSuffix } from '../../domain/teamKnockoutRun'
 import type { KnockoutTie, Team, TieOutcome } from '../../domain/types'
 
@@ -47,10 +48,17 @@ interface BracketTieProps {
   tie: KnockoutTie
   outcome: TieOutcome | undefined
   favouriteTeamId: string | null
+  onWatch?: (() => void) | null
   emphasis?: boolean
 }
 
-export function BracketTie({ tie, outcome, favouriteTeamId, emphasis = false }: BracketTieProps) {
+export function BracketTie({
+  tie,
+  outcome,
+  favouriteTeamId,
+  onWatch = null,
+  emphasis = false,
+}: BracketTieProps) {
   const winnerId = outcome?.winner.id ?? null
   const suffix = outcome === undefined ? '' : decisionSuffix(outcome.decidedBy)
 
@@ -76,10 +84,15 @@ export function BracketTie({ tie, outcome, favouriteTeamId, emphasis = false }: 
         isWinner={winnerId === tie.challenger?.id}
         isFavourite={tie.challenger?.id === favouriteTeamId}
       />
-      {suffix !== '' && (
-        <p className="border-t border-line pt-1 text-[0.65rem] uppercase tracking-wide text-dim">
-          {suffix}
-        </p>
+      {(suffix !== '' || onWatch !== null) && (
+        <div className="flex items-center gap-1 border-t border-line pt-1">
+          <p className="min-w-0 flex-1 truncate text-[0.65rem] uppercase tracking-wide text-dim">
+            {suffix}
+          </p>
+          {onWatch !== null && (
+            <WatchTieButton label="Eşleşmeyi izle" onWatch={onWatch} compact />
+          )}
+        </div>
       )}
     </article>
   )

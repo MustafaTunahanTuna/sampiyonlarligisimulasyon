@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import { ChampionBanner } from './ChampionBanner'
 import { BracketTree } from './BracketTree'
+import { KnockoutMatchModal } from './KnockoutMatchModal'
 import { KnockoutRoundSection } from './KnockoutRoundSection'
 import { useKnockoutRunner } from './useKnockoutRunner'
 import { Button } from '../../components/Button'
 import { DownloadKnockoutButton } from '../share/DownloadKnockoutButton'
 import { completedMatchdayCount, MATCHDAY_NUMBERS } from '../../domain/matchdays'
 import { usePredictions } from '../../state/usePredictions'
-import type { Team } from '../../domain/types'
+import type { KnockoutTie, Team } from '../../domain/types'
 
 const BRACKET_ANCHOR_ID = 'turnuva-agaci'
 
@@ -19,17 +21,39 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
   const { state } = usePredictions()
   const { stage, playableRound, playNextRound } = useKnockoutRunner()
   const completed = completedMatchdayCount(state.predictions)
+  const [watchedTieId, setWatchedTieId] = useState<string | null>(null)
   const isBracketRound = playableRound !== null && playableRound.id !== 'PLAY_OFF'
+
+  const watched = stage.rounds
+    .flatMap((round) => round.ties.map((tie) => ({ tie, outcome: round.outcomes.get(tie.id) })))
+    .find((entry) => entry.tie.id === watchedTieId)
+
+  const scrollToBracket = () => {
+    requestAnimationFrame(() => {
+      document
+        .getElementById(BRACKET_ANCHOR_ID)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  const favouriteTieOf = (tie: KnockoutTie) =>
+    favouriteTeam !== null &&
+    (tie.seeded?.id === favouriteTeam.id || tie.challenger?.id === favouriteTeam.id)
 
   const playRound = () => {
     playNextRound()
-    if (isBracketRound) {
-      requestAnimationFrame(() => {
-        document
-          .getElementById(BRACKET_ANCHOR_ID)
-          ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+    const favouriteTie = playableRound?.ties.find(favouriteTieOf)
+    if (favouriteTie !== undefined) {
+      setWatchedTieId(favouriteTie.id)
+      return
     }
+    if (isBracketRound) scrollToBracket()
+  }
+
+  const closeWatch = () => {
+    const wasBracketTie = watched !== undefined && watched.tie.round !== 'PLAY_OFF'
+    setWatchedTieId(null)
+    if (wasBracketTie) scrollToBracket()
   }
 
   if (completed < MATCHDAY_NUMBERS.length) {
@@ -87,7 +111,11 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
         />
       )}
 
-      <KnockoutRoundSection round={stage.rounds[0]} favouriteTeamId={favouriteTeam?.id ?? null} />
+      <KnockoutRoundSection
+        round={stage.rounds[0]}
+        favouriteTeamId={favouriteTeam?.id ?? null}
+        onWatchTie={(tie) => setWatchedTieId(tie.id)}
+      />
 
       <section id={BRACKET_ANCHOR_ID} className="scroll-mt-6">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line-strong pb-3">
@@ -103,9 +131,22 @@ export function KnockoutStageView({ favouriteTeam, onBackToLeague }: KnockoutSta
         </header>
 
         <div className="mt-5">
-          <BracketTree stage={stage} favouriteTeamId={favouriteTeam?.id ?? null} />
+          <BracketTree
+            stage={stage}
+            favouriteTeamId={favouriteTeam?.id ?? null}
+            onWatchTie={(tie) => setWatchedTieId(tie.id)}
+          />
         </div>
       </section>
+
+      {watched !== undefined && (
+        <KnockoutMatchModal
+          key={watched.tie.id}
+          tie={watched.tie}
+          outcome={watched.outcome}
+          onClose={closeWatch}
+        />
+      )}
     </div>
   )
 }

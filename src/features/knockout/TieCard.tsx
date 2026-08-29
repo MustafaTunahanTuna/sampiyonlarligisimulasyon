@@ -1,4 +1,5 @@
 import { TieTeamRow } from './TieTeamRow'
+import { WatchTieButton } from './WatchTieButton'
 import { tieLegSetups } from '../../domain/knockoutTie'
 import type { KnockoutTie, TieOutcome } from '../../domain/types'
 
@@ -12,9 +13,10 @@ interface TieCardProps {
   outcome: TieOutcome | undefined
   favouriteTeamId: string | null
   revealDelay: number
+  onWatch: (() => void) | null
 }
 
-export function TieCard({ tie, outcome, favouriteTeamId, revealDelay }: TieCardProps) {
+export function TieCard({ tie, outcome, favouriteTeamId, revealDelay, onWatch }: TieCardProps) {
   const setups = tieLegSetups(tie)
   const winnerId = outcome?.winner.id ?? null
   const note = outcome === undefined ? null : DECISION_NOTE[outcome.decidedBy]
@@ -40,15 +42,20 @@ export function TieCard({ tie, outcome, favouriteTeamId, revealDelay }: TieCardP
       />
 
       {outcome !== undefined && (
-        <p className="mt-1.5 border-t border-line pt-1.5 text-xs text-dim">
-          {outcome.legs.map((leg, index) => (
-            <span key={setups[index]?.id ?? index} className="tabular-nums">
-              {index > 0 && <span className="px-1.5">·</span>}
-              {leg.home}-{leg.away}
-            </span>
-          ))}
-          {note !== null && <span className="pl-2 text-highlight">{note}</span>}
-        </p>
+        <div className="mt-1.5 flex items-center gap-2 border-t border-line pt-1.5">
+          <p className="min-w-0 flex-1 text-xs text-dim">
+            {outcome.legs.map((leg, index) => (
+              <span key={setups[index]?.id ?? index} className="tabular-nums">
+                {index > 0 && <span className="px-1.5">·</span>}
+                {leg.home}-{leg.away}
+              </span>
+            ))}
+            {note !== null && <span className="pl-2 text-highlight">{note}</span>}
+          </p>
+          {onWatch !== null && (
+            <WatchTieButton label="Eşleşmeyi izle" onWatch={onWatch} compact />
+          )}
+        </div>
       )}
     </article>
   )
