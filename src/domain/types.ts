@@ -8,7 +8,11 @@ export type MatchStatus =
   | 'POSTPONED'
   | 'CANCELLED'
 
-export type StrengthSource = 'club-coefficient' | 'association-estimate' | 'pot-baseline'
+export type StrengthSource =
+  | 'club-coefficient'
+  | 'association-estimate'
+  | 'pot-baseline'
+  | 'squad-blend'
 
 export interface Team {
   id: string

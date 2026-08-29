@@ -1,4 +1,5 @@
 import { createRandom, hashSeed } from '../random'
+import { squadRatings } from '../squads'
 import type { Team } from '../types'
 import type { TeamProfile } from './types'
 
@@ -23,11 +24,8 @@ function tempoFor(teamId: string): number {
 
 const cache = new Map<string, TeamProfile>()
 
-export function teamProfile(team: Team): TeamProfile {
-  const cached = cache.get(team.id)
-  if (cached !== undefined) return cached
-
-  const profile: TeamProfile = {
+function derivedProfile(team: Team): TeamProfile {
+  return {
     attack: dimension(team.id, 'attack', team.strength),
     midfield: dimension(team.id, 'midfield', team.strength),
     defence: dimension(team.id, 'defence', team.strength),
@@ -35,8 +33,35 @@ export function teamProfile(team: Team): TeamProfile {
     discipline: dimension(team.id, 'discipline', team.strength),
     tempo: tempoFor(team.id),
   }
+}
+
+export function teamProfile(team: Team): TeamProfile {
+  const cached = cache.get(team.id)
+  if (cached !== undefined) return cached
+
+  const ratings = squadRatings(team.id)
+  const profile: TeamProfile =
+    ratings === null
+      ? derivedProfile(team)
+      : {
+          attack: clampRating(ratings.attack),
+          midfield: clampRating(ratings.midfield),
+          defence: clampRating(ratings.defence),
+          goalkeeping: clampRating(ratings.goalkeeping),
+          discipline: clampRating(ratings.discipline),
+          tempo: tempoFor(team.id),
+        }
   cache.set(team.id, profile)
   return profile
+}
+
+export function homeProfile(profile: TeamProfile, bonus: number): TeamProfile {
+  return {
+    ...profile,
+    attack: clampRating(profile.attack + bonus),
+    midfield: clampRating(profile.midfield + bonus),
+    defence: clampRating(profile.defence + bonus),
+  }
 }
 
 export function weakenedProfile(profile: TeamProfile, penalty: number): TeamProfile {

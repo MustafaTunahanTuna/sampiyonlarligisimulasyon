@@ -5,12 +5,13 @@ import { runChain } from './chain'
 import type { ChainConfig } from './chainState'
 import { finishingScale } from './calibration'
 import { buildStats } from './stats'
-import { teamProfile } from './teamProfile'
+import { homeProfile, teamProfile } from './teamProfile'
 import type { MatchReport, MatchSimulationOptions, Side } from './types'
 
 export const ENGINE_VERSION = 1
 
 const PROBE_RUNS = 8
+const HOME_ADVANTAGE = 4
 
 const FULL_MATCH: MatchSimulationOptions = {
   durationMinutes: 90,
@@ -30,8 +31,10 @@ function baseConfig(
   unpredictability: number,
   options: MatchSimulationOptions,
 ): Omit<ChainConfig, 'finishingScale'> {
+  const homeSide = options.profiles?.home ?? teamProfile(home)
+  const awaySide = options.profiles?.away ?? teamProfile(away)
   return {
-    profiles: { home: teamProfile(home), away: teamProfile(away) },
+    profiles: { home: homeProfile(homeSide, HOME_ADVANTAGE), away: awaySide },
     unpredictability,
     regulationSeconds: options.durationMinutes * 60,
     halfTimeSecond: options.halfTimeMinute === null ? null : options.halfTimeMinute * 60,
@@ -78,10 +81,11 @@ function probeAverage(
 }
 
 function scaleFrom(target: Record<Side, number>, probe: ProbeAverage): Record<Side, number> {
-  return {
-    home: finishingScale(target.home - probe.penaltyExpectedGoals.home, probe.expectedGoals.home),
-    away: finishingScale(target.away - probe.penaltyExpectedGoals.away, probe.expectedGoals.away),
-  }
+  const openPlayTarget =
+    target.home - probe.penaltyExpectedGoals.home + (target.away - probe.penaltyExpectedGoals.away)
+  const probedExpectedGoals = probe.expectedGoals.home + probe.expectedGoals.away
+  const shared = finishingScale(openPlayTarget, probedExpectedGoals)
+  return { home: shared, away: shared }
 }
 
 export function simulateMatchReport(

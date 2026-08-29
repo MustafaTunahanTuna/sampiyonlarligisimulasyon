@@ -1,7 +1,17 @@
 import rawPool from '../data/league-phase-2026-27.json'
+import { squadRatings } from './squads'
 import type { DrawPool, Team } from './types'
 
-export const drawPool = rawPool as DrawPool
+const rawDrawPool = rawPool as DrawPool
+
+export const drawPool: DrawPool = {
+  ...rawDrawPool,
+  teams: rawDrawPool.teams.map((team) => {
+    const ratings = squadRatings(team.id)
+    if (ratings === null) return team
+    return { ...team, strength: ratings.strength, strengthSource: 'squad-blend' }
+  }),
+}
 
 const teamsById = new Map<string, Team>(drawPool.teams.map((team) => [team.id, team]))
 

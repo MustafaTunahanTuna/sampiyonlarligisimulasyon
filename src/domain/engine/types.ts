@@ -89,4 +89,5 @@ export interface MatchSimulationOptions {
   durationMinutes: number
   halfTimeMinute: number | null
   goalScale: number
+  profiles?: Record<Side, TeamProfile>
 }

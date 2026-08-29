@@ -4,6 +4,7 @@ import type { TeamProfile } from './types'
 const BASE_PHASE_SECONDS = 26
 const PHASE_JITTER_SECONDS = 18
 const SECONDS_PER_MINUTE = 60
+const MIN_PHASE_SECONDS = 4
 
 export function phaseDuration(
   attacker: TeamProfile,
@@ -11,7 +12,8 @@ export function phaseDuration(
   random: RandomSource,
 ): number {
   const pace = (attacker.tempo + defender.tempo) / 2
-  return Math.round((BASE_PHASE_SECONDS + random() * PHASE_JITTER_SECONDS) / pace)
+  const seconds = Math.round((BASE_PHASE_SECONDS + random() * PHASE_JITTER_SECONDS) / pace)
+  return Number.isFinite(seconds) ? Math.max(MIN_PHASE_SECONDS, seconds) : BASE_PHASE_SECONDS
 }
 
 export function addedTimeSeconds(

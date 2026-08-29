@@ -1,0 +1,48 @@
+{
+  "comment": "Backtest sezonları. eaTeam null ise takım EA FC verisinde yoktur (lisanssız lig); o takımın kadro kalitesi katsayıdan türetilir. uefaName UEFA katsayı listesindeki internationalName karşılığıdır.",
+  "seasons": [
+    {
+      "season": "2025-26",
+      "resultsUrl": "https://raw.githubusercontent.com/openfootball/champions-league/master/2025-26/cl.txt",
+      "coefficientSeasonYear": 2025,
+      "teams": {
+        "AFC Ajax": { "eaTeam": "Ajax", "uefaName": "AFC Ajax" },
+        "AS Monaco FC": { "eaTeam": "AS Monaco", "uefaName": "AS Monaco FC" },
+        "Arsenal FC": { "eaTeam": "Arsenal", "uefaName": "Arsenal FC" },
+        "Atalanta BC": { "eaTeam": "Bergamo Calcio", "uefaName": "Atalanta BC" },
+        "Athletic Club": { "eaTeam": "Athletic Club", "uefaName": "Athletic Club" },
+        "Bayer 04 Leverkusen": { "eaTeam": "Leverkusen", "uefaName": "Bayer 04 Leverkusen" },
+        "Borussia Dortmund": { "eaTeam": "Borussia Dortmund", "uefaName": "Borussia Dortmund" },
+        "Chelsea FC": { "eaTeam": "Chelsea", "uefaName": "Chelsea FC" },
+        "Club Atlético de Madrid": { "eaTeam": "Atlético de Madrid", "uefaName": "Club Atlético de Madrid" },
+        "Club Brugge KV": { "eaTeam": "Club Brugge", "uefaName": "Club Brugge KV" },
+        "Eintracht Frankfurt": { "eaTeam": "Frankfurt", "uefaName": "Eintracht Frankfurt" },
+        "FC Barcelona": { "eaTeam": "FC Barcelona", "uefaName": "FC Barcelona" },
+        "FC Bayern München": { "eaTeam": "FC Bayern München", "uefaName": "FC Bayern München" },
+        "FC Internazionale Milano": { "eaTeam": "Lombardia FC", "uefaName": "FC Internazionale Milano" },
+        "FC København": { "eaTeam": "F.C. København", "uefaName": "FC København" },
+        "FK Bodø/Glimt": { "eaTeam": "FK Bodø/Glimt", "uefaName": "FK Bodø/Glimt" },
+        "FK Kairat": { "eaTeam": null, "uefaName": "FK Kairat" },
+        "Galatasaray SK": { "eaTeam": "Galatasaray", "uefaName": "Galatasaray SK" },
+        "Juventus FC": { "eaTeam": "Juventus", "uefaName": "Juventus FC" },
+        "Liverpool FC": { "eaTeam": "Liverpool", "uefaName": "Liverpool FC" },
+        "Manchester City FC": { "eaTeam": "Manchester City", "uefaName": "Manchester City FC" },
+        "Newcastle United FC": { "eaTeam": "Newcastle Utd", "uefaName": "Newcastle United FC" },
+        "Olympique de Marseille": { "eaTeam": "OM", "uefaName": "Olympique de Marseille" },
+        "PAE Olympiakos SFP": { "eaTeam": "Olympiacos FC", "uefaName": "PAE Olympiakos SFP" },
+        "PSV": { "eaTeam": "PSV", "uefaName": "PSV" },
+        "Paphos FC": { "eaTeam": null, "uefaName": "Paphos FC" },
+        "Paris Saint-Germain FC": { "eaTeam": "Paris SG", "uefaName": "Paris Saint-Germain FC" },
+        "Qarabağ Ağdam FK": { "eaTeam": "Qarabağ FK", "uefaName": "Qarabağ Ağdam FK" },
+        "Real Madrid CF": { "eaTeam": "Real Madrid", "uefaName": "Real Madrid C.F." },
+        "Royale Union Saint-Gilloise": { "eaTeam": "R. Union St.-G.", "uefaName": "Royale Union Saint-Gilloise" },
+        "SK Slavia Praha": { "eaTeam": "Slavia Praha", "uefaName": "SK Slavia Praha" },
+        "SSC Napoli": { "eaTeam": "SSC Napoli", "uefaName": "SSC Napoli" },
+        "Sport Lisboa e Benfica": { "eaTeam": "SL Benfica", "uefaName": "Sport Lisboa e Benfica" },
+        "Sporting Clube de Portugal": { "eaTeam": "Sporting CP", "uefaName": "Sporting Clube de Portugal" },
+        "Tottenham Hotspur FC": { "eaTeam": "Spurs", "uefaName": "Tottenham Hotspur FC" },
+        "Villarreal CF": { "eaTeam": "Villarreal CF", "uefaName": "Villarreal CF" }
+      }
+    }
+  ]
+}

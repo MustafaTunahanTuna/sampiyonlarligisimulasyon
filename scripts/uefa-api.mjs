@@ -42,19 +42,19 @@ export function fetchMatches({ competitionId, seasonYear, roundId }) {
   )
 }
 
-function fetchCoefficients(coefficientType, seasonYear) {
+function fetchCoefficients(coefficientType, seasonYear, offset = 0) {
   const query = new URLSearchParams({
     coefficientType,
     coefficientRange: 'OVERALL',
     seasonYear: String(seasonYear),
     limit: '500',
-    offset: '0',
+    offset: String(offset),
   })
   return request(`${COMP_SERVICE}/coefficients?${query}`).then((payload) => payload.data.members)
 }
 
-export function fetchClubCoefficients(seasonYear) {
-  return fetchCoefficients('MEN_CLUB', seasonYear)
+export function fetchClubCoefficients(seasonYear, offset = 0) {
+  return fetchCoefficients('MEN_CLUB', seasonYear, offset)
 }
 
 export function fetchAssociationCoefficients(seasonYear) {

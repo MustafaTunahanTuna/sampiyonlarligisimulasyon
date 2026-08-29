@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ham veri kaynakları (türetilmiş çıktı src/data içinde versiyonlanır)
+scripts/.cache

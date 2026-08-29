@@ -9,7 +9,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "scrape": "node scripts/scrape-draw.mjs",
-    "calibrate": "node scripts/calibrate-engine.mjs"
+    "calibrate": "node scripts/calibrate-engine.mjs",
+    "squads": "node scripts/build-squads.mjs",
+    "backtest": "node scripts/backtest.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
