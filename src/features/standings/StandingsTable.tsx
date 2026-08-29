@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { StandingsRow } from './StandingsRow'
+import { TeamFixturesModal } from './TeamFixturesModal'
 import { QUALIFICATION_TEXT_TONE } from './qualificationTone'
 import { QUALIFICATION_LABEL } from '../../domain/standings'
 import type { Qualification } from '../../domain/standings'
@@ -21,6 +23,9 @@ export function StandingsTable({
   hasPredictions,
   shareAction,
 }: StandingsTableProps) {
+  const [openTeamId, setOpenTeamId] = useState<string | null>(null)
+  const openStanding = rows.find((row) => row.team.id === openTeamId) ?? null
+
   if (!hasPredictions) {
     return (
       <section id={STANDINGS_ANCHOR_ID} className="scroll-mt-6">
@@ -68,11 +73,20 @@ export function StandingsTable({
                 key={row.team.id}
                 row={row}
                 isFavourite={row.team.id === favouriteTeam?.id}
+                onOpen={() => setOpenTeamId(row.team.id)}
               />
             ))}
           </tbody>
         </table>
       </div>
+
+      {openStanding !== null && (
+        <TeamFixturesModal
+          key={openStanding.team.id}
+          standing={openStanding}
+          onClose={() => setOpenTeamId(null)}
+        />
+      )}
     </section>
   )
 }
