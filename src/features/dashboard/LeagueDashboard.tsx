@@ -1,6 +1,7 @@
 import { FavouriteTeamStrip } from './FavouriteTeamStrip'
 import { GettingStarted } from './GettingStarted'
 import { HighlightMatches } from './HighlightMatches'
+import { PlayerRankingList } from './PlayerRankingList'
 import { RankingList } from './RankingList'
 import { StatTiles } from './StatTiles'
 import { SeasonRunner } from '../matchday/SeasonRunner'
@@ -15,8 +16,10 @@ import {
   playedMatches,
   topScorers,
 } from '../../domain/leagueStats'
+import { topAssistProviders, topGoalscorers } from '../../domain/playerStats'
 import { predictedStandings } from '../../domain/predictedResults'
 import { useTranslation } from '../../i18n/useTranslation'
+import { usePlayerTallies } from './usePlayerTallies'
 import { usePredictions } from '../../state/usePredictions'
 import type { Team } from '../../domain/types'
 
@@ -35,6 +38,7 @@ export function LeagueDashboard({
 }: LeagueDashboardProps) {
   const { state } = usePredictions()
   const t = useTranslation()
+  const tallies = usePlayerTallies()
   const matches = playedMatches(state.predictions)
   const stats = leagueStats(matches)
   const standings = predictedStandings(state.predictions)
@@ -99,6 +103,24 @@ export function LeagueDashboard({
               rankings={biggestOverperformers(standings)}
               formatValue={(value) => (value > 0 ? `+${value}` : String(value))}
               favouriteTeamId={favouriteTeam?.id ?? null}
+            />
+          </div>
+          <div className="grid gap-x-10 gap-y-10 lg:grid-cols-2">
+            <PlayerRankingList
+              title={t.dashboard.topGoalscorers}
+              players={topGoalscorers(tallies)}
+              primaryValue={(tally) => tally.goals}
+              secondaryText={(tally) => t.dashboard.playerAssists(tally.assists)}
+              favouriteTeamId={favouriteTeam?.id ?? null}
+              emptyText={t.dashboard.playerStatsEmpty}
+            />
+            <PlayerRankingList
+              title={t.dashboard.topAssistProviders}
+              players={topAssistProviders(tallies)}
+              primaryValue={(tally) => tally.assists}
+              secondaryText={(tally) => t.dashboard.playerGoals(tally.goals)}
+              favouriteTeamId={favouriteTeam?.id ?? null}
+              emptyText={t.dashboard.playerStatsEmpty}
             />
           </div>
         </>

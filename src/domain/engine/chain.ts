@@ -11,8 +11,10 @@ import {
   result,
 } from './chainState'
 import type { ChainConfig, ChainState } from './chainState'
+import type { Side } from './types'
 import { addedTimeSeconds, phaseDuration } from './clock'
 import { rollFoul } from './discipline'
+import { pickAssist, pickOffender, pickScorer } from './lineup'
 import { PENALTY_CONVERSION, penaltyConverted, resolveShot, shotQuality } from './shot'
 import { weakenedProfile } from './teamProfile'
 import { mirrorZone, zoneAfterAction } from './zones'
@@ -26,9 +28,16 @@ const SET_PIECE_DURATION = 24
 const ASSUMED_SUBSTITUTIONS = 5
 const BIG_CHANCE_XG = 0.2
 
+function offenderName(state: ChainState, side: Side): string | null {
+  const lineup = state.lineups[side]
+  return lineup === null ? null : pickOffender(lineup, state.actorRandom).name
+}
+
 function applyCard(state: ChainState, card: 'YELLOW' | 'RED') {
   const punished = other(state.side)
-  emit(state, card === 'YELLOW' ? 'YELLOW_CARD' : 'RED_CARD', punished, state.zone)
+  emit(state, card === 'YELLOW' ? 'YELLOW_CARD' : 'RED_CARD', punished, state.zone, {
+    actor: offenderName(state, punished),
+  })
   if (card === 'YELLOW') {
     state.yellows[punished] += 1
     return
@@ -38,16 +47,17 @@ function applyCard(state: ChainState, card: 'YELLOW' | 'RED') {
 
 function resolvePenalty(state: ChainState, random: RandomSource) {
   const attacking = state.side
+  const taker = state.lineups[attacking]?.penaltyTaker.name ?? null
   state.penaltyExpectedGoals[attacking] += PENALTY_CONVERSION
-  emit(state, 'PENALTY_AWARDED', attacking, 4)
+  emit(state, 'PENALTY_AWARDED', attacking, 4, { actor: taker })
   if (penaltyConverted(state.profiles[other(attacking)], random)) {
     state.goals[attacking] += 1
-    emit(state, 'PENALTY_GOAL', attacking, 4, { xg: PENALTY_CONVERSION })
+    emit(state, 'PENALTY_GOAL', attacking, 4, { xg: PENALTY_CONVERSION, actor: taker })
     pushPhase(state, 'SHOOT', 'SHOT', 4, 4, SET_PIECE_DURATION)
     restartFromKickOff(state, other(attacking))
     return
   }
-  emit(state, 'PENALTY_MISSED', attacking, 4, { xg: PENALTY_CONVERSION })
+  emit(state, 'PENALTY_MISSED', attacking, 4, { xg: PENALTY_CONVERSION, actor: taker })
   pushPhase(state, 'SHOOT', 'SHOT', 4, 4, SET_PIECE_DURATION)
   concedePossession(state, 0)
 }
@@ -91,9 +101,17 @@ function resolveShotAttempt(state: ChainState, config: ChainConfig, random: Rand
   const result = resolveShot(quality, config.finishingScale[attacking], state.profiles[defending], random)
   const missedBigChance =
     quality >= BIG_CHANCE_XG && (result === 'SHOT_SAVED' || result === 'SHOT_OFF')
+  const lineup = state.lineups[attacking]
+  const shooter = lineup === null ? null : pickScorer(lineup, zone, state.actorRandom)
+  const assist =
+    lineup === null || shooter === null || result !== 'GOAL'
+      ? null
+      : pickAssist(lineup, shooter, state.actorRandom)
   emit(state, result, attacking, zone, {
     importance: missedBigChance ? 2 : IMPORTANCE[result],
     xg: quality,
+    actor: shooter?.name ?? null,
+    assist: assist?.name ?? null,
   })
   pushPhase(state, 'SHOOT', 'SHOT', zone, zone, SET_PIECE_DURATION)
 

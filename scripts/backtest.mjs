@@ -13,6 +13,8 @@ const RATINGS_PATH = join(CACHE, 'eafc26-men.csv')
 const SEASONS_PATH = join(ROOT, 'scripts/backtest-seasons.json')
 
 const RUNS_PER_MATCH = Number(process.env.RUNS ?? 400)
+const ROUND_ROBIN_RUNS = Number(process.env.RR_RUNS ?? 120)
+const ROUND_ROBIN = process.env.RR !== '0'
 const UNPREDICTABILITY = 0.25
 const EPSILON = 1e-9
 
@@ -327,6 +329,114 @@ function baselineScores(matches) {
   return { logLoss: logLoss / total, brier: brier / total, hit: hits / total, rates }
 }
 
+function roundRobinFixtures(names) {
+  const fixtures = []
+  for (const home of names) {
+    for (const away of names) {
+      if (home !== away) fixtures.push({ home, away })
+    }
+  }
+  return fixtures
+}
+
+function distributionFor(engine, model, fixture, seedPrefix, runs) {
+  const home = withTempo(model.profiles.get(fixture.home))
+  const away = withTempo(model.profiles.get(fixture.away))
+  const counts = { home: 0, draw: 0, away: 0 }
+  for (let run = 0; run < runs; run += 1) {
+    const report = engine.simulateMatchReport(
+      fakeTeam(fixture.home, home.strength),
+      fakeTeam(fixture.away, away.strength),
+      `${seedPrefix}:${fixture.home}:${fixture.away}:${run}`,
+      UNPREDICTABILITY,
+      model.usesProfiles ? { profiles: { home, away } } : {},
+    )
+    counts[outcomeOf(report.score.home, report.score.away)] += 1
+  }
+  return { home: counts.home / runs, draw: counts.draw / runs, away: counts.away / runs }
+}
+
+function mostLikely(distribution) {
+  return ['home', 'draw', 'away'].sort((left, right) => distribution[right] - distribution[left])[0]
+}
+
+function expectedPoints(distribution) {
+  return {
+    home: distribution.home * 3 + distribution.draw,
+    away: distribution.away * 3 + distribution.draw,
+  }
+}
+
+async function runRoundRobin(engine, models, season) {
+  const names = Object.keys(season.teams)
+  const fixtures = roundRobinFixtures(names)
+  console.log(`\n=== Ayrışma analizi · ${names.length} takım çift devreli · ${fixtures.length} maç · maç başına ${ROUND_ROBIN_RUNS} simülasyon`)
+  console.log('(gerçek sonuç yok: bu doğruluk değil, modeller arası ayrışma ölçer)')
+
+  const runs = [
+    ...models.map((model) => ({ label: model.key, model, seed: 'RR' })),
+    { label: `${models[0].key} [aynı model, farklı tohum]`, model: models[0], seed: 'RR2' },
+  ]
+
+  const tables = new Map()
+  for (const entry of runs) {
+    const distributions = fixtures.map((fixture) =>
+      distributionFor(engine, entry.model, fixture, entry.seed, ROUND_ROBIN_RUNS),
+    )
+    const points = new Map(names.map((name) => [name, 0]))
+    for (let index = 0; index < fixtures.length; index += 1) {
+      const fixture = fixtures[index]
+      const share = expectedPoints(distributions[index])
+      points.set(fixture.home, points.get(fixture.home) + share.home)
+      points.set(fixture.away, points.get(fixture.away) + share.away)
+    }
+    tables.set(entry.label, { distributions, points })
+    console.log(`  ${entry.label} tamamlandı`)
+  }
+
+  const reference = models[0].key
+  const referenceRun = tables.get(reference)
+  console.log('\nkarşılaştırma (referans: ' + reference + ')')
+  console.log('model                                   TVD    farklı favori   puan sapması')
+  for (const [label, run] of tables) {
+    if (label === reference) continue
+    let totalVariation = 0
+    let disagreements = 0
+    for (let index = 0; index < fixtures.length; index += 1) {
+      const left = referenceRun.distributions[index]
+      const right = run.distributions[index]
+      totalVariation +=
+        (Math.abs(left.home - right.home) + Math.abs(left.draw - right.draw) + Math.abs(left.away - right.away)) / 2
+      if (mostLikely(left) !== mostLikely(right)) disagreements += 1
+    }
+    let pointGap = 0
+    for (const name of names) pointGap += Math.abs(referenceRun.points.get(name) - run.points.get(name))
+    console.log(
+      `${label.padEnd(38)} ${(totalVariation / fixtures.length).toFixed(4)}   %${((disagreements / fixtures.length) * 100).toFixed(1).padStart(5)}        ${(pointGap / names.length).toFixed(2)}`,
+    )
+  }
+
+  const squadLabel = 'saf kadro'
+  if (tables.has(squadLabel)) {
+    const squadRun = tables.get(squadLabel)
+    const rows = names
+      .map((name) => ({
+        name,
+        reference: referenceRun.points.get(name),
+        squad: squadRun.points.get(name),
+      }))
+      .map((row) => ({ ...row, delta: row.squad - row.reference }))
+      .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
+    console.log(`\nbeklenen puan (${fixtures.length / names.length * 1} maç üzerinden) · en çok ayrışan 10 takım`)
+    console.log('takım                        katsayı   saf kadro    fark')
+    for (const row of rows.slice(0, 10)) {
+      console.log(
+        `${row.name.padEnd(28)} ${row.reference.toFixed(1).padStart(7)}   ${row.squad.toFixed(1).padStart(9)}   ${(row.delta >= 0 ? '+' : '') + row.delta.toFixed(1)}`,
+      )
+    }
+  }
+}
+
 async function main() {
   const seasons = JSON.parse(readFileSync(SEASONS_PATH, 'utf8')).seasons
   const eaSquads = loadEaSquads()
@@ -390,6 +500,8 @@ async function main() {
       const verdict = Math.abs(t) >= 2 ? (mean < 0 ? 'ANLAMLI daha iyi' : 'ANLAMLI daha kötü') : 'ayırt edilemez'
       console.log(`  ${key.padEnd(24)} ${(mean >= 0 ? '+' : '')}${mean.toFixed(4)} ±${stdError.toFixed(4)}  t=${t.toFixed(2)}  ${verdict}`)
     }
+
+    if (ROUND_ROBIN) await runRoundRobin(engine, models, season)
 
     const strengthRows = models.map((model) => ({
       key: model.key,

@@ -38,4 +38,10 @@ export const dashboard: Messages['dashboard'] = {
   overperformers: 'Overperformers',
   rankingPlayed: (played) => `${played} matches`,
   rankingExpected: (position) => `expected ${position}`,
+  topGoalscorers: 'Top scorers',
+  topAssistProviders: 'Top assists',
+  playerGoals: (goals: number) => `${goals} goals`,
+  playerAssists: (assists: number) => `${assists} assists`,
+  playerStatsEmpty:
+    'Player stats come from simulated matches only. Scores you enter by hand have no scorer attached.',
 }

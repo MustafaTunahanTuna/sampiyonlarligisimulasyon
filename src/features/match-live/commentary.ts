@@ -7,7 +7,12 @@ export function commentaryFor(
   teams: Record<Side, Team>,
   t: Messages,
 ): string {
-  return t.live.commentary[event.kind](teams[event.side].name, t.live.zonePhrase[event.zone])
+  return t.live.commentary[event.kind](
+    teams[event.side].name,
+    t.live.zonePhrase[event.zone],
+    event.actor,
+    event.assist,
+  )
 }
 
 export function clockLabel(event: MatchEvent): string {

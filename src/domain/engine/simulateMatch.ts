@@ -5,6 +5,7 @@ import { runChain } from './chain'
 import type { ChainConfig } from './chainState'
 import { finishingScale } from './calibration'
 import { buildStats } from './stats'
+import { selectLineup } from './lineup'
 import { homeProfile, teamProfile } from './teamProfile'
 import type { MatchReport, MatchSimulationOptions, Side } from './types'
 
@@ -20,6 +21,7 @@ const FULL_MATCH: MatchSimulationOptions = {
 }
 
 const NEUTRAL_SCALE: Record<Side, number> = { home: 0, away: 0 }
+const NO_LINEUPS: Record<Side, null> = { home: null, away: null }
 
 function withDefaults(options: Partial<MatchSimulationOptions>): MatchSimulationOptions {
   return { ...FULL_MATCH, ...options }
@@ -35,6 +37,8 @@ function baseConfig(
   const awaySide = options.profiles?.away ?? teamProfile(away)
   return {
     profiles: { home: homeProfile(homeSide, HOME_ADVANTAGE), away: awaySide },
+    lineups: NO_LINEUPS,
+    actorRandom: createRandom(0),
     unpredictability,
     regulationSeconds: options.durationMinutes * 60,
     halfTimeSecond: options.halfTimeMinute === null ? null : options.halfTimeMinute * 60,
@@ -102,7 +106,15 @@ export function simulateMatchReport(
   const rough = probeAverage(shared, NEUTRAL_SCALE, `${seedKey}:probe`)
   const refined = probeAverage(shared, scaleFrom(target, rough), `${seedKey}:refine`)
   const played = runChain(
-    { ...shared, finishingScale: scaleFrom(target, refined) },
+    {
+      ...shared,
+      finishingScale: scaleFrom(target, refined),
+      lineups: {
+        home: selectLineup(home.id, seedKey),
+        away: selectLineup(away.id, seedKey),
+      },
+      actorRandom: createRandom(hashSeed(`${seedKey}:actors`)),
+    },
     createRandom(hashSeed(`${seedKey}:play`)),
   )
 

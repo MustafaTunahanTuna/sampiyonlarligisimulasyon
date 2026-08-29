@@ -56,6 +56,7 @@ export interface MatchEvent {
   xg: number | null
   phaseIndex: number
   actor: string | null
+  assist: string | null
 }
 
 export interface SideStats {

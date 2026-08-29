@@ -1,5 +1,7 @@
 import { minuteOf } from './clock'
 import { KICK_OFF_ZONE } from './zones'
+import type { Lineup } from './lineup'
+import type { RandomSource } from '../random'
 import type {
   ChainAction,
   EventImportance,
@@ -31,6 +33,8 @@ export const IMPORTANCE: Record<MatchEventKind, EventImportance> = {
 
 export interface ChainConfig {
   profiles: Record<Side, TeamProfile>
+  lineups: Record<Side, Lineup | null>
+  actorRandom: RandomSource
   finishingScale: Record<Side, number>
   unpredictability: number
   regulationSeconds: number
@@ -49,6 +53,8 @@ export interface ChainResult {
 }
 
 export interface ChainState extends ChainResult {
+  lineups: Record<Side, Lineup | null>
+  actorRandom: RandomSource
   side: Side
   zone: Zone
   second: number
@@ -66,6 +72,8 @@ export function other(side: Side): Side {
 
 export function createState(config: ChainConfig): ChainState {
   return {
+    lineups: config.lineups,
+    actorRandom: config.actorRandom,
     side: config.kickOffSide,
     zone: KICK_OFF_ZONE,
     second: 0,
@@ -88,6 +96,8 @@ export function createState(config: ChainConfig): ChainState {
 export interface EventDetail {
   importance?: EventImportance
   xg?: number
+  actor?: string | null
+  assist?: string | null
 }
 
 export function emit(
@@ -106,7 +116,8 @@ export function emit(
     importance: detail.importance ?? IMPORTANCE[kind],
     xg: detail.xg ?? null,
     phaseIndex: state.phases.length,
-    actor: null,
+    actor: detail.actor ?? null,
+    assist: detail.assist ?? null,
   })
 }
 

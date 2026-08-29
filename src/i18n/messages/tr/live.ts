@@ -1,5 +1,16 @@
 import type { MatchEventKind } from '../../../domain/engine'
 
+type CommentaryLine = (
+  team: string,
+  zone: string,
+  actor: string | null,
+  assist: string | null,
+) => string
+
+function named(actor: string | null, team: string): string {
+  return actor === null ? team : `${actor} (${team})`
+}
+
 export const live = {
   playbackSpeed: 'Oynatma hızı',
   unmute: 'Sesi aç',
@@ -36,16 +47,25 @@ export const live = {
     KICK_OFF: () => 'Maç başladı.',
     HALF_TIME: () => 'İlk yarı sona erdi.',
     FULL_TIME: () => 'Maç sona erdi.',
-    GOAL: (team: string) => `GOL! ${team} ağları havalandırdı.`,
+    GOAL: (team: string, _zone: string, actor: string | null, assist: string | null) =>
+      `GOL! ${named(actor, team)} ağları havalandırdı.${assist === null ? '' : ` Asist: ${assist}.`}`,
     PENALTY_AWARDED: (team: string) => `${team} penaltı kazandı.`,
-    PENALTY_GOAL: (team: string) => `GOL! ${team} penaltıyı değerlendirdi.`,
-    PENALTY_MISSED: (team: string) => `${team} penaltıdan yararlanamadı.`,
-    SHOT_SAVED: (team: string) => `${team} vurdu, kaleci kurtardı.`,
-    SHOT_OFF: (team: string, zone: string) => `${team} ${zone} denedi, top auta gitti.`,
-    SHOT_BLOCKED: (team: string) => `${team} şutunu savunma bloke etti.`,
-    POST: (team: string) => `${team} direkten döndü!`,
+    PENALTY_GOAL: (team: string, _zone: string, actor: string | null) =>
+      `GOL! ${named(actor, team)} penaltıyı değerlendirdi.`,
+    PENALTY_MISSED: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} penaltıdan yararlanamadı.`,
+    SHOT_SAVED: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} vurdu, kaleci kurtardı.`,
+    SHOT_OFF: (team: string, zone: string, actor: string | null) =>
+      `${named(actor, team)} ${zone} denedi, top auta gitti.`,
+    SHOT_BLOCKED: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} şutunu savunma bloke etti.`,
+    POST: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} direkten döndü!`,
     CORNER: (team: string) => `${team} korner kullanıyor.`,
-    YELLOW_CARD: (team: string) => `${team} sarı kart gördü.`,
-    RED_CARD: (team: string) => `${team} kırmızı kart gördü!`,
-  } as Record<MatchEventKind, (team: string, zone: string) => string>,
+    YELLOW_CARD: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} sarı kart gördü.`,
+    RED_CARD: (team: string, _zone: string, actor: string | null) =>
+      `${named(actor, team)} kırmızı kart gördü!`,
+  } as Record<MatchEventKind, CommentaryLine>,
 }

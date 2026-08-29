@@ -37,4 +37,10 @@ export const dashboard = {
   overperformers: 'Sürpriz yapanlar',
   rankingPlayed: (played: number) => `${played} maç`,
   rankingExpected: (position: number) => `beklenen ${position}.`,
+  topGoalscorers: 'Gol krallığı',
+  topAssistProviders: 'Asist krallığı',
+  playerGoals: (goals: number) => `${goals} gol`,
+  playerAssists: (assists: number) => `${assists} asist`,
+  playerStatsEmpty:
+    'Oyuncu istatistikleri yalnızca simüle edilen maçlardan toplanır. Elle girdiğin skorlarda golü kimin attığı bilinmez.',
 }
