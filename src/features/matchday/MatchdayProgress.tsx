@@ -1,4 +1,5 @@
 import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
+import { useTranslation } from '../../i18n/useTranslation'
 import type { MatchdayNumber } from '../../domain/matchdays'
 
 interface MatchdayProgressProps {
@@ -7,8 +8,10 @@ interface MatchdayProgressProps {
 }
 
 export function MatchdayProgress({ current, completed }: MatchdayProgressProps) {
+  const t = useTranslation()
+
   return (
-    <ol className="flex items-center gap-1.5" aria-label={`Hafta ${current} / ${MATCHDAY_NUMBERS.length}`}>
+    <ol className="flex items-center gap-1.5" aria-label={t.matchday.title(current)}>
       {MATCHDAY_NUMBERS.map((matchday) => (
         <li
           key={matchday}

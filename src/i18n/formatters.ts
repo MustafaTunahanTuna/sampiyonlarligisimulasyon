@@ -22,6 +22,10 @@ export function formatDay(value: string, locale: Locale): string {
   return DAY_FORMATS[locale].format(new Date(value))
 }
 
+export function formatDayRange(from: string, to: string, locale: Locale): string {
+  return DAY_FORMATS[locale].formatRange(new Date(from), new Date(to))
+}
+
 export function formatKickOff(value: string | null, locale: Locale): string | null {
   return value === null ? null : KICK_OFF_FORMATS[locale].format(new Date(value))
 }

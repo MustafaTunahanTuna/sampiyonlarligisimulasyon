@@ -13,8 +13,30 @@ const matchesByMatchday = new Map<number, Match[]>(
   ]),
 )
 
+export interface MatchdayWindow {
+  from: string
+  to: string
+}
+
+const windowByMatchday = new Map<number, MatchdayWindow | null>(
+  MATCHDAY_NUMBERS.map((matchday) => {
+    const kickOffs = (matchesByMatchday.get(matchday) ?? [])
+      .map((match) => match.kickOff)
+      .filter((kickOff): kickOff is string => kickOff !== null)
+      .sort()
+    return [
+      matchday,
+      kickOffs.length === 0 ? null : { from: kickOffs[0], to: kickOffs[kickOffs.length - 1] },
+    ]
+  }),
+)
+
 export function matchdayMatches(matchday: MatchdayNumber): Match[] {
   return matchesByMatchday.get(matchday) ?? []
+}
+
+export function matchdayWindow(matchday: MatchdayNumber): MatchdayWindow | null {
+  return windowByMatchday.get(matchday) ?? null
 }
 
 export function isMatchdayComplete(matchday: MatchdayNumber, predictions: PredictionMap): boolean {

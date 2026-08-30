@@ -58,13 +58,18 @@ function toScore(rawMatch) {
   return { home: total.home, away: total.away }
 }
 
+function toMatchdayNumber(rawMatch) {
+  const sequence = rawMatch.matchday?.sequenceNumber
+  return sequence === undefined ? null : Number(sequence)
+}
+
 function indexLiveMatches(rawMatches) {
   const index = new Map()
   for (const rawMatch of rawMatches) {
     index.set(toMatchKey(rawMatch.homeTeam.id, rawMatch.awayTeam.id), {
       matchId: rawMatch.id,
       kickOff: rawMatch.kickOffTime?.dateTime ?? null,
-      matchday: rawMatch.matchday?.number ?? null,
+      matchday: toMatchdayNumber(rawMatch),
       status: rawMatch.status ?? 'UPCOMING',
       score: toScore(rawMatch),
     })

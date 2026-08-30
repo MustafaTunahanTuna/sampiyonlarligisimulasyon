@@ -6,7 +6,9 @@ import { Button } from '../../components/Button'
 import { useModalDialog } from '../../hooks/useModalDialog'
 import { useTranslation } from '../../i18n/useTranslation'
 import { MatchLiveView } from '../match-live/MatchLiveView'
-import { MATCHDAY_NUMBERS } from '../../domain/matchdays'
+import { MATCHDAY_NUMBERS, matchdayWindow } from '../../domain/matchdays'
+import { formatDayRange } from '../../i18n/formatters'
+import { useLocale } from '../../i18n/useLocale'
 import { predictedStandings } from '../../domain/predictedResults'
 import type { MatchdayNumber } from '../../domain/matchdays'
 import type { PredictionMap, Team } from '../../domain/types'
@@ -40,6 +42,8 @@ export function MatchdayModal({
 }: MatchdayModalProps) {
   const dialogRef = useModalDialog()
   const t = useTranslation()
+  const { locale } = useLocale()
+  const schedule = matchdayWindow(matchday)
   const results = matchdayResults(matchday, predictions)
   const favouriteResult = favouriteResultOf(results, favouriteTeam)
   const canWatch = favouriteResult !== null && favouriteResult.isWatchable
@@ -64,9 +68,14 @@ export function MatchdayModal({
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2
               id="matchday-title"
-              className="font-display text-2xl font-extrabold uppercase tracking-tight"
+              className="flex flex-wrap items-baseline gap-x-2.5 font-display text-2xl font-extrabold uppercase tracking-tight"
             >
               {t.matchday.title(matchday)}
+              {schedule !== null && (
+                <span className="eyebrow text-dim">
+                  {formatDayRange(schedule.from, schedule.to, locale)}
+                </span>
+              )}
             </h2>
             <div className="flex items-center gap-4">
               <p className="eyebrow text-muted tabular-nums">
