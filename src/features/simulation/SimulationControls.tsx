@@ -1,5 +1,6 @@
 import { MatchdayDots } from './MatchdayDots'
 import { Button } from '../../components/Button'
+import { SelectMenu } from '../../components/SelectMenu'
 import { Starball } from '../../components/Starball'
 import { useTranslation } from '../../i18n/useTranslation'
 import { usePredictions } from '../../state/usePredictions'
@@ -12,6 +13,13 @@ const UNPREDICTABILITY_STEPS = [
   { value: 0.6, key: 'surprising' },
   { value: 0.9, key: 'chaos' },
 ] as const
+
+function selectedStep(unpredictability: number): (typeof UNPREDICTABILITY_STEPS)[number] {
+  return (
+    UNPREDICTABILITY_STEPS.find((step) => step.value === unpredictability) ??
+    UNPREDICTABILITY_STEPS[1]
+  )
+}
 
 interface SimulationControlsProps {
   upcomingMatchday: MatchdayNumber | null
@@ -66,23 +74,20 @@ export function SimulationControls({
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-        <select
+        <SelectMenu
           value={state.unpredictability}
-          onChange={(event) =>
-            dispatch({
-              type: 'unpredictability-changed',
-              unpredictability: Number(event.target.value),
-            })
+          options={UNPREDICTABILITY_STEPS.map((step) => ({
+            value: step.value,
+            label: t.matchday.unpredictabilitySteps[step.key],
+          }))}
+          label={t.matchday.unpredictability}
+          triggerText={t.matchday.unpredictabilitySteps[selectedStep(state.unpredictability).key]}
+          variant="control"
+          alignEnd={false}
+          onChange={(unpredictability) =>
+            dispatch({ type: 'unpredictability-changed', unpredictability })
           }
-          aria-label={t.matchday.unpredictability}
-          className="rounded-control border border-line-strong bg-surface/60 px-3 py-1.5 text-sm text-fg focus:border-accent focus:outline-none"
-        >
-          {UNPREDICTABILITY_STEPS.map((step) => (
-            <option key={step.value} value={step.value} className="bg-surface">
-              {t.matchday.unpredictabilitySteps[step.key]}
-            </option>
-          ))}
-        </select>
+        />
 
         <div className="flex items-center gap-1.5">
           <input
@@ -92,7 +97,7 @@ export function SimulationControls({
             }
             aria-label={t.matchday.seed}
             title={t.matchday.seedHint}
-            className="w-24 rounded-control border border-line-strong bg-surface/60 px-3 py-1.5 font-display text-sm font-bold uppercase tracking-widest text-fg focus:border-accent focus:outline-none"
+            className="w-24 rounded-control bg-surface/60 px-3 py-1.5 font-display text-sm font-bold uppercase tracking-widest text-fg ring-1 ring-line-strong transition-colors hover:ring-accent/45"
           />
           <button
             type="button"
