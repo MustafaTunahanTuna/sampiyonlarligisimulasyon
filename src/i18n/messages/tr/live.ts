@@ -27,6 +27,7 @@ export const live = {
   noEvents: 'Henüz kayda değer bir an yok.',
   pitchLabel: 'Pozisyonun saha üzerinde canlandırması',
   replayLabel: 'TEKRAR',
+  fullTime: 'MAÇ SONU',
   idleHeadline: 'Maç sürüyor, pozisyon bekleniyor.',
   scoreLabel: (home: number, away: number) => `Skor ${home} ${away}`,
   summaryTitle: 'Maç özeti',

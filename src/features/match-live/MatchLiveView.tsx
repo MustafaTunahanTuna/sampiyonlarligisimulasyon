@@ -146,9 +146,15 @@ export function MatchLiveView({
         <div className="grid gap-4 lg:h-full lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="scroll-area lg:min-h-0 lg:overflow-y-auto lg:pr-1">
             {prefersReducedMotion ? (
-              <p className="rounded-control bg-raised px-4 py-3 text-sm text-muted">
-                {t.live.reducedMotion}
-              </p>
+              <>
+                <p className="rounded-control bg-raised px-4 py-3 text-sm text-muted">
+                  {t.live.reducedMotion}
+                </p>
+                <section className="mt-4">
+                  <h3 className="eyebrow mb-2 text-muted">{t.live.matchStats}</h3>
+                  <MatchStatsPanel stats={report.stats} />
+                </section>
+              </>
             ) : (
               <MatchStage
                 playback={playback.playback}
@@ -160,6 +166,19 @@ export function MatchLiveView({
                 score={score}
                 idleHeadline={idleHeadline}
                 showReplays={settings.showReplays}
+                finale={
+                  playback.finished ? (
+                    <div className="animate-modal-in">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="eyebrow text-accent">{t.live.fullTime}</p>
+                        <p className="eyebrow text-muted">{t.live.matchStats}</p>
+                      </div>
+                      <div className="mt-4">
+                        <MatchStatsPanel stats={report.stats} staggered />
+                      </div>
+                    </div>
+                  ) : null
+                }
                 onProgress={playback.setSecond}
                 onGoal={audio.cheer}
                 onKick={audio.kick}
@@ -171,13 +190,17 @@ export function MatchLiveView({
 
             {!prefersReducedMotion && (
               <div className="mt-3 flex flex-wrap items-center gap-2.5">
-                <Button variant="ghost" onClick={playback.togglePause} disabled={playback.finished}>
-                  {playback.paused ? t.live.resume : t.live.pause}
-                </Button>
-                <SpeedControl speed={playback.speed} onChange={playback.setSpeed} />
-                <Button variant="ghost" onClick={playback.skipToEnd} disabled={playback.finished}>
-                  {t.live.showResult}
-                </Button>
+                {!playback.finished && (
+                  <>
+                    <Button variant="ghost" onClick={playback.togglePause}>
+                      {playback.paused ? t.live.resume : t.live.pause}
+                    </Button>
+                    <SpeedControl speed={playback.speed} onChange={playback.setSpeed} />
+                    <Button variant="ghost" onClick={playback.skipToEnd}>
+                      {t.live.showResult}
+                    </Button>
+                  </>
+                )}
                 <MuteToggle isMuted={audio.isMuted} onToggle={audio.toggleMuted} />
               </div>
             )}
@@ -188,11 +211,6 @@ export function MatchLiveView({
                 events={playback.finished ? report.timeline : playback.visibleEvents}
                 teams={teams}
               />
-            </section>
-
-            <section className="mt-4">
-              <h3 className="eyebrow mb-2 text-muted">{t.live.matchStats}</h3>
-              <MatchStatsPanel stats={playback.finished ? report.stats : playback.liveStats} />
             </section>
           </div>
 

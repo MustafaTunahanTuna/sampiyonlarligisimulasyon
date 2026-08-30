@@ -4,13 +4,12 @@ import { movingShape } from './formations'
 import { arch, clamp, easeIn, easeOut, lerp, lerpPoint, pitchDistance, saturate } from './geometry'
 import { buildPhasePlans } from './phasePlan'
 import { KEEPER_SLOT } from './squad'
-import { buildStats } from '../../domain/engine'
 import type { OnPitch } from './squad'
 import type { HighlightClip } from './highlights'
 import type { PhasePlan } from './phasePlan'
 import type { Restart } from './matchRestarts'
 import type { Point } from './geometry'
-import type { MatchEvent, MatchPhase, MatchReport, MatchStats, Side } from '../../domain/engine'
+import type { MatchEvent, MatchPhase, MatchReport, Side } from '../../domain/engine'
 
 const RUNNER_SURGE = 0.045
 const CARRIER_GRIP = 0.85
@@ -63,7 +62,6 @@ export interface Playback {
   travelOf: (index: number) => number
   restartOf: (index: number) => Restart
   eventsUntil: (second: number) => MatchEvent[]
-  statsUntil: (second: number) => MatchStats
 }
 
 function attackingSign(side: Side): number {
@@ -156,15 +154,6 @@ function applyPressure(defenders: Point[], ball: Point, progress: number, onPitc
   const [closest, support] = closestPair(defenders, ball, KEEPER_SLOT, onPitch)
   defenders[closest] = lerpPoint(defenders[closest], ball, PRESSURE_PULL * progress)
   defenders[support] = lerpPoint(defenders[support], ball, SUPPORT_PULL * progress)
-}
-
-function possessionUntil(phases: MatchPhase[], second: number): Record<Side, number> {
-  const played = { home: 0, away: 0 }
-  for (const phase of phases) {
-    if (phase.startSecond >= second) break
-    played[phase.side] += Math.min(phase.endSecond, second) - phase.startSecond
-  }
-  return played
 }
 
 function headlineByPhase(report: MatchReport): Map<number, MatchEvent> {
@@ -278,11 +267,6 @@ export function createPlayback(report: MatchReport): Playback {
     totalSeconds: report.durationSeconds,
     phaseCount: report.phases.length,
     eventsUntil: (second) => report.timeline.filter((event) => event.second <= second),
-    statsUntil: (second) =>
-      buildStats(
-        report.timeline.filter((event) => event.second <= second),
-        possessionUntil(report.phases, second),
-      ),
     travelOf: (index) => plans[clamp(index, 0, plans.length - 1)].travel,
     restartOf: (index) => plans[clamp(index, 0, plans.length - 1)].restart,
     frameOfPhase,

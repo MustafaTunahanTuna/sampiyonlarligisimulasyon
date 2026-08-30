@@ -33,7 +33,6 @@ export function useMatchPlayback(report: MatchReport, startFinished: boolean) {
   }, [report.durationSeconds])
 
   const visibleEvents = useMemo(() => playback.eventsUntil(second), [playback, second])
-  const liveStats = useMemo(() => playback.statsUntil(second), [playback, second])
 
   return {
     playback,
@@ -43,7 +42,6 @@ export function useMatchPlayback(report: MatchReport, startFinished: boolean) {
     finished,
     skipToken,
     visibleEvents,
-    liveStats,
     liveScore: useMemo(() => scoreOf(visibleEvents), [visibleEvents]),
     setSecond,
     setSpeed,

@@ -58,13 +58,24 @@ function buildRows(stats: MatchStats, t: Messages): StatRow[] {
   ]
 }
 
-export function MatchStatsPanel({ stats }: { stats: MatchStats }) {
+const STAGGER_STEP_MS = 80
+
+interface MatchStatsPanelProps {
+  stats: MatchStats
+  staggered?: boolean
+}
+
+export function MatchStatsPanel({ stats, staggered = false }: MatchStatsPanelProps) {
   const t = useTranslation()
 
   return (
     <dl className="space-y-2.5">
-      {buildRows(stats, t).map((row) => (
-        <div key={row.label}>
+      {buildRows(stats, t).map((row, index) => (
+        <div
+          key={row.label}
+          className={staggered ? 'animate-rise' : undefined}
+          style={staggered ? { animationDelay: `${index * STAGGER_STEP_MS}ms` } : undefined}
+        >
           <div className="flex items-baseline justify-between gap-3">
             <span className="font-display text-sm tabular-nums text-fg">{row.home}</span>
             <dt className="eyebrow text-muted">{row.label}</dt>

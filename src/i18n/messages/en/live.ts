@@ -24,6 +24,7 @@ export const live: Messages['live'] = {
   noEvents: 'Nothing worth reporting yet.',
   pitchLabel: 'Animation of the move on the pitch',
   replayLabel: 'REPLAY',
+  fullTime: 'FULL TIME',
   idleHeadline: 'The match is on, waiting for the next move.',
   scoreLabel: (home, away) => `Score ${home} ${away}`,
   summaryTitle: 'Match summary',

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { bannerFor } from './stageBanner'
 import { buildTimelines } from './clipTimeline'
 import { createStageLoop } from './stageLoop'
@@ -19,6 +20,7 @@ interface MatchStageProps {
   score: Score
   idleHeadline: string | null
   showReplays: boolean
+  finale: ReactNode | null
   onProgress: (second: number) => void
   onGoal: () => void
   onKick: (power: number) => void
@@ -37,6 +39,7 @@ export function MatchStage({
   score,
   idleHeadline,
   showReplays,
+  finale,
   onProgress,
   onGoal,
   onKick,
@@ -114,15 +117,21 @@ export function MatchStage({
     <div className="relative overflow-hidden rounded-control bg-canvas ring-1 ring-line">
       <canvas ref={canvasRef} role="img" aria-label={t.live.pitchLabel} className="block w-full" />
       <StageScoreboard home={home} away={away} score={score} minute={minute} />
-      <div
-        aria-hidden={showPitch}
-        className={`absolute inset-0 flex flex-col items-center justify-center gap-3 bg-canvas px-6 text-center transition-opacity duration-300 ease-out ${
-          showPitch ? 'pointer-events-none opacity-0' : 'opacity-100'
-        }`}
-      >
-        <span className="font-display text-5xl font-extrabold tabular-nums text-fg">{minute}'</span>
-        <p className="max-w-md text-sm text-muted">{idleHeadline ?? t.live.idleHeadline}</p>
-      </div>
+      {finale !== null ? (
+        <div className="absolute inset-0 overflow-y-auto bg-canvas px-6 py-5 sm:px-8">
+          {finale}
+        </div>
+      ) : (
+        <div
+          aria-hidden={showPitch}
+          className={`absolute inset-0 flex flex-col items-center justify-center gap-3 bg-canvas px-6 text-center transition-opacity duration-300 ease-out ${
+            showPitch ? 'pointer-events-none opacity-0' : 'opacity-100'
+          }`}
+        >
+          <span className="font-display text-5xl font-extrabold tabular-nums text-fg">{minute}'</span>
+          <p className="max-w-md text-sm text-muted">{idleHeadline ?? t.live.idleHeadline}</p>
+        </div>
+      )}
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-0.5 bg-line">
         <div
           style={{ transform: `scaleX(${Math.min(1, minute / totalMinutes)})` }}

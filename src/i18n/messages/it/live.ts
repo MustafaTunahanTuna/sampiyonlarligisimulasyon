@@ -24,6 +24,7 @@ export const live: Messages['live'] = {
   noEvents: 'Ancora nulla da segnalare.',
   pitchLabel: 'Animazione dell’azione sul campo',
   replayLabel: 'REPLAY',
+  fullTime: 'FINE PARTITA',
   idleHeadline: 'La partita prosegue, in attesa della prossima azione.',
   scoreLabel: (home, away) => `Risultato ${home} ${away}`,
   summaryTitle: 'Riepilogo della partita',

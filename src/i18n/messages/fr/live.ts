@@ -24,6 +24,7 @@ export const live: Messages['live'] = {
   noEvents: 'Rien à signaler pour l’instant.',
   pitchLabel: 'Animation de l’action sur le terrain',
   replayLabel: 'RALENTI',
+  fullTime: 'FIN DU MATCH',
   idleHeadline: 'Le match est en cours, en attente de la prochaine action.',
   scoreLabel: (home, away) => `Score ${home} ${away}`,
   summaryTitle: 'Résumé du match',

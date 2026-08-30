@@ -289,13 +289,13 @@ Oynatım iki ayrı saat tutar:
 
 Ölçüldü: 80 maçtaki **266 gol klibinin 266'sında** ses ile skor açılışı arasındaki sapma **0.000 sn**, ve o anda top kale çizgisinde.
 
-### 5.9 Canlı istatistikler
+### 5.9 Maç sonu istatistikleri
 
-İstatistik paneli maç boyunca ekranda durur ve pozisyonlar ilerledikçe dolar. Bunun için `MatchEvent` artık `xg` alanı taşır ve `buildStats(events, possessionSeconds)` tamamen olaylardan türetir:
-
-- Şut, isabet, korner, kart → `reveal` saatine kadarki olaylardan sayılır.
-- Beklenen gol → aynı olayların `xg` alanlarının toplamı.
-- Topa sahip olma → `reveal` saatine kadarki fazların süre payı.
+İstatistik paneli maç sürerken gösterilmez (v5.1): maç bittiğinde sahanın yerini alır ve satırlar
+kademeli `animate-rise` ile gelir. Veri `MatchReport.stats`'tan okunur; `buildStats` istatistiği
+tamamen olaylardan türetir (şut, isabet, korner, kart olay sayımı; beklenen gol `xg` toplamı;
+topa sahip olma faz süre payı). `prefers-reduced-motion` açıkken panel, metin listesinin üstünde
+animasyonsuz gösterilir.
 
 D2 korunur: hiçbir istatistik için ayrı zar atılmaz, hepsi tek olay akışının türevidir.
 
