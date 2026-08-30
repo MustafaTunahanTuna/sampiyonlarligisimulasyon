@@ -1,6 +1,7 @@
-import { goalMouth, teamShape, zoneLine } from './formations'
-import { clamp, easeIn, easeInOut, easeOut, linear, lerpPoint, pitchDistance } from './geometry'
+import { teamShape, zoneLine } from './formations'
+import { clamp, easeInOut, easeOut, easeOutStrong, linear, lerpPoint, pitchDistance } from './geometry'
 import { restartBall, restartBefore, sidelineFor } from './matchRestarts'
+import { resolveShot } from './shotResolution'
 import { FULL_SQUAD, carrierInZone, kickOffCarrier, outfieldSlots, receiverFor, runnerFor } from './squad'
 import { hashSeed } from '../../domain/random'
 import type { OnPitch } from './squad'
@@ -22,13 +23,15 @@ const LIFT_BY_ACTION: Record<ChainAction, number> = {
 }
 
 const EASING: Record<ChainAction, (progress: number) => number> = {
-  PASS: easeOut,
-  HOLD: easeOut,
+  PASS: easeOutStrong,
+  HOLD: easeOutStrong,
   DRIBBLE: linear,
   LONG_BALL: easeOut,
   CROSS: easeInOut,
-  SHOOT: easeIn,
+  SHOOT: linear,
 }
+
+const KICK_ACTIONS: ReadonlySet<ChainAction> = new Set(['PASS', 'CROSS', 'LONG_BALL', 'SHOOT'])
 
 const ZONE_SPREAD: Record<Zone, number> = {
   0: -1,
@@ -49,26 +52,16 @@ export interface PhasePlan {
   spreadEnd: number
   ballFrom: Point
   ballTo: Point
+  deflectTo: Point | null
+  deflectAt: number
+  keeperTo: Point | null
+  travel: number
+  windup: boolean
   lift: number
   isShot: boolean
   restart: Restart
   onPitch: Record<Side, OnPitch>
   ease: (progress: number) => number
-}
-
-function shotTargetY(event: MatchEvent | undefined, seed: number): number {
-  const drift = (hashSeed(`shot:${seed}`) % 1000) / 1000 - 0.5
-  switch (event?.kind) {
-    case 'GOAL':
-    case 'PENALTY_GOAL':
-      return 0.5 + drift * 0.2
-    case 'SHOT_OFF':
-      return 0.5 + Math.sign(drift || 1) * 0.17
-    case 'POST':
-      return 0.5 + Math.sign(drift || 1) * 0.11
-    default:
-      return 0.5 + drift * 0.08
-  }
 }
 
 function nearestSlot(points: Point[], target: Point, onPitch: OnPitch): number {
@@ -156,17 +149,20 @@ export function buildPhasePlans(
       y: endShape[receiver].y,
     }
     const intercepted = lerpPoint(ballFrom, settled, reach)
+    const nextPhase = order + 1 < phases.length ? phases[order + 1] : undefined
     const nextRestart =
-      order + 1 < phases.length
-        ? restartBefore(phases[order + 1], eventByPhase.get(phases[order + 1].index), phase, event)
-        : 'none'
-    const ballTo = isShot
-      ? { x: goalMouth(phase.side).x, y: shotTargetY(event, phase.index) }
-      : nextRestart === 'throwIn'
-        ? sidelineFor(intercepted, phase.index)
-        : intercepted
+      nextPhase === undefined
+        ? 'none'
+        : restartBefore(nextPhase, eventByPhase.get(nextPhase.index), phase, event)
+    const shot = isShot ? resolveShot(event, phase.side, phase.index, ballFrom) : null
+    const ballTo =
+      shot !== null
+        ? shot.target
+        : nextRestart === 'throwIn'
+          ? sidelineFor(intercepted, phase.index)
+          : intercepted
 
-    handover = { ball: ballTo, carrier: receiver, side: phase.side }
+    handover = { ball: shot?.deflectTo ?? ballTo, carrier: receiver, side: phase.side }
     const plan: PhasePlan = {
       side: phase.side,
       carrier,
@@ -178,6 +174,17 @@ export function buildPhasePlans(
       spreadEnd: ZONE_SPREAD[phase.toZone],
       ballFrom,
       ballTo,
+      deflectTo: shot?.deflectTo ?? null,
+      deflectAt: shot?.deflectAt ?? 1,
+      keeperTo: shot?.keeperTo ?? null,
+      travel:
+        pitchDistance(ballFrom, ballTo) +
+        (shot?.deflectTo == null ? 0 : pitchDistance(ballTo, shot.deflectTo)),
+      windup:
+        nextRestart === 'none' &&
+        nextPhase !== undefined &&
+        nextPhase.side === phase.side &&
+        KICK_ACTIONS.has(nextPhase.action),
       lift: LIFT_BY_ACTION[phase.action],
       isShot,
       restart,

@@ -3,7 +3,7 @@
 > Bu doküman `champions-league-sim` için 2D maç motorunun **referans sözleşmesidir**.
 > Kod bu dokümanı takip eder; doküman koddan sonra değil, önce revize edilir.
 >
-> Durum: v4 uygulandı (F1–F11) · Son güncelleme: 2026-08-28
+> Durum: v5 uygulandı (F1–F12) · Son güncelleme: 2026-08-30
 
 ---
 
@@ -318,13 +318,64 @@ gürültü tamponu (3 sn, kahverengi gürültü)
 - Sessize alma tercihi `localStorage`'da; sekme gizlenince ses susar.
 - Master üzerindeki limiter, üst üste binen seslerde kırpılmayı engeller.
 
-### 5.11 Render mimarisi
+### 5.11 Yayın hissi (v5)
+
+v4'ün oynatımı doğruydu ama "izlenen maç" gibi değil "çalışan diyagram" gibi hissettiriyordu.
+v5, yayın futbolunun dilini uygular. Hepsi Katman B'de; motor ve `ENGINE_VERSION` değişmez.
+
+**Düzeltilen görsel hatalar:**
+
+1. **Kaleler görünmüyordu.** Saha çizgileri kanvasın tamamını kaplıyor, kaleler `x<0` / `x>1`
+   dünya koordinatına çiziliyordu; kamera `framed()` ile [0,1]'e kelepçeli olduğundan ağlar hiçbir
+   zoom seviyesinde ekrana giremiyordu. Çözüm: dünya, kanvasın içine **çim apron** ile yerleştirilir
+   (`pitchLayout.ts`, tekdüze ölçek — daireler bozulmaz). Kale ve ağ artık her şutta görünür.
+2. **Şut sonuçları yörüngeye yansımıyordu** (`shotResolution.ts`). Artık sonuç yörüngeyi belirler:
+   `GOAL` top **direkler arasından ağa girer** (y direk açıklığına kelepçeli, x kale çizgisinin
+   ötesinde); `POST` tam direk hizasına çarpar ve **saha içine seker** (iki parçalı yörünge);
+   `SHOT_OFF` kale çizgisini geçip aut apronunda durur; `SHOT_SAVED` kalecinin eldiveninde biter;
+   `SHOT_BLOCKED` şut yolunun ~%30'unda savunucuda kesilir; `PENALTY_MISSED` deterministik olarak
+   kurtarış ya da aut olarak çözülür.
+3. **Kaleci kurtarışta hareketsizdi.** Şut fazında kaleci topun hedef y'sine **dive** eder
+   (t≈0.45'te başlar, easeIn); kurtarışta topla aynı noktada buluşur, golde erişimi kısaltılır
+   ("yetişemedi" okunur). Çizimde hız-yönlü kapsül esnemesi dive'ı satar.
+4. **Top izi restart'larda sahayı kesen çizgi bırakıyordu.** Faz `restart !== 'none'` ile
+   başladığında ve replay'e girerken iz sıfırlanır.
+
+**Top fiziği ve tempo:**
+
+- Faz süresi artık **mesafeye bağlıdır** (`clipTimeline.ts`): `duration = base + travel × katsayı`
+  (aksiyon başına, kelepçeli). 5 metrelik pasla 40 metrelik pas aynı sürede oynamaz.
+- Yer pasları **üstel yavaşlama** ile gider (`easeOutStrong`): hızlı çıkar, sürtünmeyle ölür.
+- `LONG_BALL`/`CROSS` inişte **seker** (restitüsyon ~0.5, iki küçük sıçrama) sonra yuvarlanır.
+- Şut temasında **hit-stop**: render saati ~70 ms donar, sonra şut akar. Saf zaman-eğrisi
+  bükülmesi olduğundan determinizm ve `reveal` etkilenmez.
+
+**Oyuncu canlılığı:** hız yönünde alan-koruyan elips esnemesi (koşu eğilimi), pas/şut öncesi
+taşıyıcıda kısa **hazırlık pulse'ı** (anticipation), kırmızı kartlı taraf davranışları korunur.
+
+**Gol montajı** (yayın dramaturjisi, `celebration.ts`): şut → ağ dalgası (`pitchEffects.ts`,
+sönümlü sinüs yer değiştirme) + flaş + sarsıntı → golcü kavisli koşuyla uzaklaşır, en yakın iki
+takım arkadaşı yanına koşar, savunma kendi yarısına süzülür; kamera golcüyü takip eder → **tekrar**:
+son iki faz 0.55× hızda, letterbox bantlarıyla yeniden oynar (skor zaten açıldığı için spoiler yok;
+tekrar adımlarında ses tetiklenmez) → santra.
+
+**Ses genişlemesi** (`matchAudio.ts`): sentezlenmiş **hakem düdüğü** (başlama tek, devre tek,
+bitiş üçlü), kaçan/kurtarılan şutlarda seyirci **"ooh"** tepkisi, pozisyon ekranı açıkken
+ambiyansın yükselmesi (tension). Hepsi dosyasız, Web Audio.
+
+**Banner:** `SHOT_SAVED` (importance ≥ 2) artık "KURTARIŞ" banner'ı alır — 6 dilde.
+
+**Ayar bağları:** gol tekrarı oynatımı ayarlar sayfasından kapatılabilir (`ucl:settings` →
+`buildTimelines`'a `includeReplays` bayrağı); tribün ambiyansı ve efekt sesleri ayrı seviye
+kontrolleriyle (`matchAudio.setLevels`) ölçeklenir. Varsayılanlar mevcut davranışı korur.
+
+### 5.12 Render mimarisi
 
 - Tek `<canvas>`, `requestAnimationFrame`, `devicePixelRatio` ölçekli.
 - **React her karede render etmez.** Saat ve çizim rAF içinde ref'lerle yürür; React'e yalnızca dakika değiştiğinde ve 240 ms'de bir anlatım ilerlemesi bildirilir.
 - Saha koordinatları normalize (0–1 × 0–1) → responsive bedava gelir.
 
-### 5.12 Performans bütçesi
+### 5.13 Performans bütçesi
 
 | İş | Bütçe | Ölçülen |
 |---|---|---|
@@ -362,7 +413,10 @@ Bu bütçeler aşılırsa Worker konuşulur; önceden değil.
 | **Skor = gol olayı sayısı** | Her maçta | 0 ihlal |
 | **Determinizm** | Aynı seed, iki koşu, aynı JSON | geçti |
 
-Ek yapısal doğrulama (Katman B): 40 maçın 76.616 karesinde faz sürekliliği ihlali 0, saha dışına taşan koordinat 0.
+Ek yapısal doğrulama (Katman B, v5): 432 maç ve 2.579 klipte faz sürekliliği ihlali 0; oyuncular saha
+içinde, top yalnızca şut sonuçlarının gerektirdiği kadar apron bölgesine taşar (gol ağın içi, aut çizgi
+ötesi); 1.380 golün tamamı direkler arasından çizgiyi geçiyor, 444 direk vuruşunun tamamı direk hizasında
+sekiyor, 2.913 kurtarışın tamamında kaleci topla buluşuyor.
 
 `unpredictability` 0 → güç farkı maksimum etkili; 1 → takımlar eşitlenir. Kalibrasyon varsayılan 0.25 üzerinden yapılır, uçlar ayrıca kontrol edilir.
 
@@ -392,13 +446,19 @@ src/domain/engine/
 src/features/match-live/
   MatchLiveView.tsx      maçın canlı görünümü (skor, saha, kontroller, anlatım)
   MatchStage.tsx         React kabuğu: canvas, klipler arası DOM katmanı, döngü yaşam döngüsü
-  stageLoop.ts           rAF döngüsü, klip giriş/çıkış, ResizeObserver ile ölçüm
-  stageDirector.ts       dramaturji: kamera cue'su, zaman ölçeği, flaş, sarsıntı, banner ömrü
+  stageLoop.ts           rAF döngüsü, klip giriş/çıkış, saat, hit-stop, iz sıfırlama
+  stageSurface.ts        kanvas ölçümü (ResizeObserver, devicePixelRatio)
+  stageCues.ts           adım cue kararları: vuruş sesi, kutlama, seyirci tepkisi (saf)
+  stageDirector.ts       dramaturji: kamera cue'su, zaman ölçeği, flaş, sarsıntı, banner, letterbox
   pitchCamera.ts         yayın kamerası: ölü bölge, sönümleme, öngörü, zoom, sarsıntı
   pitchRenderer.ts       katman sırası ve kamera dönüşümü (dünya → ekran uzayı)
   pitchBackdrop.ts       statik sahanın offscreen önbelleği (yalnız ölçü değişince yeniden çizilir)
   pitchScene.ts          çim, ışık, FIFA oranlı çizgiler, kale ağı (yalnız backdrop çağırır)
-  pitchActors.ts         oyuncu, top, iz çizimi (yön, gölge, taşıyıcı halkası, dikiş)
+  pitchLayout.ts         dünya → kanvas apron yerleşimi (kaleleri görünür kılan tekdüze inset)
+  pitchActors.ts         oyuncu, top, iz çizimi (yön, gölge, esneme, taşıyıcı halkası, dikiş)
+  pitchEffects.ts        ağ dalgası ve replay letterbox çizimi
+  shotResolution.ts      şut sonucu → yörünge hedefi, sekme ve kaleci dive planı
+  celebration.ts         gol kutlaması koreografisi (golcü, takım arkadaşları, savunma)
   stageOverlay.ts        ekran uzayı: banner, flaş, taraf etiketleri, mini harita
   pitchPalette.ts        saha ve banner renk paleti
   pitchFrame.ts          createPlayback → frameOfPhase(index, t)   ← Katman B çekirdeği
@@ -466,6 +526,7 @@ scripts/calibrate-engine.mjs   §6 tablosunun yürütülebilir hâli (`npm run c
 | **F9** | Web Audio ambiyans + gol tezahüratı (v2) | ✅ dosyasız, sessize alınabilir |
 | **F10** | Pas zinciri + takım kimliği (v3) | ✅ 819 geçişte 3 kopukluk, 0 kaleci şutu, 0 renk çakışması |
 | **F11** | Canlı istatistik, sabit yükseklik, vuruş sesi, gol senkronu (v4) | ✅ 266 gol klibinde 0.000 sn sapma |
+| **F12** | Yayın hissi: görünür kaleler, sonuç-tabanlı şut çözümü, kaleci dive, mesafe-tabanlı tempo, hit-stop, gol montajı + tekrar, düdük/ooh/tension (v5) | ✅ 432 maç / 12.371 şut yapısal doğrulamadan geçti |
 
 F1–F4 motoru **tek başına** kullanılabilir kılar; 2D olmadan da proje değer kazanır. Bu bilinçli bir sıralamadır: 2D katmanı kesilirse iş yine tamamlanmış olur.
 
@@ -481,7 +542,8 @@ F1–F4 motoru **tek başına** kullanılabilir kılar; 2D olmadan da proje değ
 - Hava durumu, saha ve seyirci etkisi
 - Zaman çizelgesinin paylaşılabilir kart olarak dışa aktarımı (`features/share` deseni hazır)
 - Nakavt turlarında da pozisyon oynatımı (şu an yalnızca lig aşamasında)
-- Şut, kurtarış ve düdük için ek ses efektleri; klip sırasında ambiyansın yükselmesi
+- Falsolu şut yörüngeleri (kuadratik Bézier sapması) ve konfeti parçacıkları
+- Kutlamada tribün reaksiyon katmanı (seyirci dokusu apronda)
 
 ---
 

@@ -18,8 +18,8 @@ export function LocaleSwitch() {
       value={locale}
       options={OPTIONS}
       label={t.layout.languageGroup}
-      triggerText={locale}
-      variant="pill"
+      triggerText={LOCALE_NAME[locale]}
+      variant="control"
       alignEnd
       onChange={setLocale}
     />

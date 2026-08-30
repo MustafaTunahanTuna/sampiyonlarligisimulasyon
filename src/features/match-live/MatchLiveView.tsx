@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { commentaryFor } from './commentary'
 import { EventTicker } from './EventTicker'
 import { matchKits } from './kits'
@@ -12,6 +12,7 @@ import { Button } from '../../components/Button'
 import { ClubCrest } from '../../components/ClubCrest'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { useTranslation } from '../../i18n/useTranslation'
+import { useSettings } from '../../state/useSettings'
 import type { ReactNode } from 'react'
 import type { Team } from '../../domain/types'
 
@@ -75,9 +76,25 @@ export function MatchLiveView({
   const prefersReducedMotion = usePrefersReducedMotion()
   const playback = useMatchPlayback(report, prefersReducedMotion)
   const audio = useMatchAudio()
+  const { settings } = useSettings()
 
   const kits = useMemo(() => matchKits(homeTeam.id, awayTeam.id), [homeTeam.id, awayTeam.id])
   const teams = { home: homeTeam, away: awayTeam }
+  const whistle = audio.whistle
+  const seenEventsRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const events = playback.visibleEvents
+    const seen = seenEventsRef.current ?? (prefersReducedMotion ? events.length : 0)
+    seenEventsRef.current = events.length
+    if (events.length - seen > 4) return
+    for (let index = seen; index < events.length; index += 1) {
+      const kind = events[index].kind
+      if (kind === 'KICK_OFF') whistle('kickoff')
+      if (kind === 'HALF_TIME') whistle('half')
+      if (kind === 'FULL_TIME') whistle('full')
+    }
+  }, [playback.visibleEvents, whistle, prefersReducedMotion])
   const score = playback.finished ? report.score : playback.liveScore
   const lastHighlight = playback.visibleEvents.filter((event) => event.importance >= 2).at(-1)
   const idleHeadline =
@@ -142,9 +159,12 @@ export function MatchLiveView({
                 skipToken={playback.skipToken}
                 score={score}
                 idleHeadline={idleHeadline}
+                showReplays={settings.showReplays}
                 onProgress={playback.setSecond}
                 onGoal={audio.cheer}
                 onKick={audio.kick}
+                onCrowd={audio.ooh}
+                onPitchVisible={audio.tension}
                 onFinished={playback.handleFinished}
               />
             )}

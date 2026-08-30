@@ -9,6 +9,7 @@ export const layout = {
   navKnockout: 'Nakavt',
   navTeam: 'Takımım',
   languageGroup: 'Dil seçimi',
+  navSettings: 'Ayarlar',
   drawEyebrow: (date: string, venue: string) => `${date} · ${venue} kurası`,
   leaguePhase: 'Lig aşaması',
   drawSummary: (teams: number, matches: number) =>

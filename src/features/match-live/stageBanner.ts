@@ -17,6 +17,8 @@ export function bannerFor(event: MatchEvent, t: Messages): BannerContent | null 
       return { title: t.live.banner.penaltyGoal, detail, tone: 'goal' }
     case 'PENALTY_MISSED':
       return { title: t.live.banner.penaltyMissed, detail, tone: 'miss' }
+    case 'SHOT_SAVED':
+      return { title: t.live.banner.save, detail, tone: 'miss' }
     case 'POST':
       return { title: t.live.banner.post, detail, tone: 'miss' }
     case 'YELLOW_CARD':

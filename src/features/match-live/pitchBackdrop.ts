@@ -1,4 +1,5 @@
-import { drawMarkings, drawTurf } from './pitchScene'
+import { applyWorldInset } from './pitchLayout'
+import { drawApron, drawMarkings, drawTurf } from './pitchScene'
 import type { Size } from './geometry'
 
 const SUPERSAMPLE = 1.6
@@ -19,6 +20,8 @@ export function createBackdrop(): Backdrop {
     const context = layer.getContext('2d')
     if (context === null) return
     context.setTransform(scale, 0, 0, scale, 0, 0)
+    drawApron(context, size)
+    applyWorldInset(context, size)
     drawTurf(context, size)
     drawMarkings(context, size)
   }

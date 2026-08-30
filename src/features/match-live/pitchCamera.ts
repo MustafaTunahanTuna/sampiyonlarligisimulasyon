@@ -2,7 +2,7 @@ import { approach, clamp, saturate } from './geometry'
 import type { Point, Size } from './geometry'
 
 const WIDE_ZOOM = 1
-const MAX_ZOOM = 1.52
+const MAX_ZOOM = 1.66
 const DEAD_ZONE_X = 0.26
 const DEAD_ZONE_Y = 0.2
 const LOOKAHEAD = 7

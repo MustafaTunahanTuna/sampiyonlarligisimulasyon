@@ -1,4 +1,6 @@
 export const PITCH_PALETTE = {
+  apron: '#0b2415',
+  apronShade: 'rgba(3, 8, 5, 0.55)',
   turfDark: '#0f2f1d',
   turfLight: '#164027',
   turfSheen: 'rgba(148, 214, 158, 0.07)',

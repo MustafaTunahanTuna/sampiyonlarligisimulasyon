@@ -1,6 +1,8 @@
 import { createBackdrop } from './pitchBackdrop'
 import { renderStage } from './pitchRenderer'
-import { revealSecondFor, stepAt, KICK_POWER } from './clipTimeline'
+import { revealSecondFor, stepAt } from './clipTimeline'
+import { crowdCueFor, stepCueFor } from './stageCues'
+import { observeStageSurface } from './stageSurface'
 import {
   advanceDirector,
   announceBanner,
@@ -11,25 +13,27 @@ import {
   timeScaleOf,
 } from './stageDirector'
 import type { BannerContent } from './stageBanner'
-import type { ClipTimeline } from './clipTimeline'
+import type { ClipTimeline, StepCursor } from './clipTimeline'
 import type { MatchEvent } from '../../domain/engine'
+import type { NetRipple } from './pitchEffects'
 import type { PitchFrame, Playback } from './pitchFrame'
-import type { Point, Size } from './geometry'
+import type { Point } from './geometry'
 import type { TeamVisual } from './pitchRenderer'
-
-export const PITCH_ASPECT = 0.648
 
 const COMMENTARY_RATE = 260
 const REPORT_INTERVAL_MS = 200
 const TRAIL_LENGTH = 26
 const MAX_FRAME_DELTA = 0.12
 const BANNER_MIN_IMPORTANCE = 2
+const HIT_STOP_SECONDS = 0.07
+const RIPPLE_MAX_AGE = 0.75
 
 export interface StageInputs {
   speed: number
   paused: boolean
   home: TeamVisual
   away: TeamVisual
+  replayLabel: string
   resolveBanner: (event: MatchEvent) => BannerContent | null
 }
 
@@ -39,6 +43,7 @@ export interface StageSignals {
   onPitchVisible: (visible: boolean) => void
   onGoal: () => void
   onKick: (power: number) => void
+  onCrowd: () => void
   onFinished: () => void
 }
 
@@ -63,25 +68,12 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
 
   const backdrop = createBackdrop()
   const trail: Point[] = []
-  const size: Size = { width: 0, height: 0 }
-  let ratio = 1
-
-  const measure = () => {
-    ratio = window.devicePixelRatio || 1
-    size.width = canvas.clientWidth
-    size.height = Math.round(size.width * PITCH_ASPECT)
-    canvas.width = Math.max(1, Math.round(size.width * ratio))
-    canvas.height = Math.max(1, Math.round(size.height * ratio))
-    canvas.style.height = `${size.height}px`
-    context.imageSmoothingQuality = 'high'
-  }
-
-  const observer = new ResizeObserver(measure)
-  observer.observe(canvas)
-  measure()
+  const surface = observeStageSurface(canvas, context)
+  const size = surface.size
 
   let director = createDirector()
   let previousFrame: PitchFrame | null = null
+  let ripple: NetRipple | null = null
   let animation = 0
   let previousNow = performance.now()
   let reportedAt = 0
@@ -89,9 +81,13 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
   let reveal = 0
   let clipIndex = 0
   let clipElapsed = -1
+  let freezeLeft = 0
   let lastMinute = 0
   let lastStepKey = ''
+  let lastCrowdKey = ''
   let lastBannerKey = ''
+  let lastPhaseIndex = -1
+  let lastReplay = false
   let finished = false
   let skipRequested = false
 
@@ -99,6 +95,9 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     clipElapsed = 0
     trail.length = 0
     previousFrame = null
+    ripple = null
+    lastPhaseIndex = -1
+    lastReplay = false
     signals.onPitchVisible(true)
   }
 
@@ -107,6 +106,7 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     clipIndex += 1
     clipElapsed = -1
     lastStepKey = ''
+    ripple = null
     director = restDirector(director)
     signals.onPitchVisible(false)
   }
@@ -127,15 +127,26 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     if (clipElapsed >= active.total) leaveClip()
   }
 
-  const announceStep = (stepKey: string, hold: boolean, power: number, tint: string) => {
-    if (stepKey === lastStepKey) return
-    lastStepKey = stepKey
-    if (hold) {
+  const announceStep = (cursor: StepCursor, clipId: string, tint: string) => {
+    const cue = stepCueFor(cursor, clipId)
+    if (cue.key === lastStepKey) return
+    lastStepKey = cue.key
+    if (cue.kind === 'celebrate') {
       director = celebrate(director, tint)
+      ripple = { impact: { ...playback.frameOfPhase(cursor.step.phaseIndex, 1).ball }, age: 0 }
       signals.onGoal()
       return
     }
-    if (power > 0) signals.onKick(power)
+    if (cue.kind !== 'kick') return
+    signals.onKick(cue.power)
+    if (cue.hitStop) freezeLeft = HIT_STOP_SECONDS
+  }
+
+  const announceCrowd = (cursor: StepCursor, clipId: string, frame: PitchFrame) => {
+    const key = crowdCueFor(cursor, clipId, frame)
+    if (key === null || key === lastCrowdKey) return
+    lastCrowdKey = key
+    signals.onCrowd()
   }
 
   const raiseBanner = (event: MatchEvent, clipId: string, inputs: StageInputs) => {
@@ -156,19 +167,29 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     signals.onPitchVisible(false)
   }
 
+  const refreshTrail = (cursor: StepCursor) => {
+    if (cursor.step.phaseIndex === lastPhaseIndex && cursor.step.replay === lastReplay) return
+    const replayJump = cursor.step.replay !== lastReplay
+    lastPhaseIndex = cursor.step.phaseIndex
+    lastReplay = cursor.step.replay
+    if (replayJump || playback.restartOf(cursor.step.phaseIndex) !== 'none') trail.length = 0
+  }
+
   const renderClip = (delta: number, inputs: StageInputs) => {
     const active = timelines[clipIndex]
     const cursor = stepAt(active, clipElapsed)
-    const frame = playback.frameOfPhase(cursor.step.phaseIndex, cursor.progress)
+    const celebration = cursor.step.hold ? cursor.progress : 0
+    const frame = playback.frameOfPhase(
+      cursor.step.phaseIndex,
+      cursor.step.hold ? 1 : cursor.progress,
+      celebration,
+    )
     const tint =
       frame.event?.side === 'away' ? inputs.away.kit.outfield : inputs.home.kit.outfield
 
-    announceStep(
-      `${active.clip.id}:${cursor.order}`,
-      cursor.step.hold,
-      KICK_POWER[cursor.step.action],
-      tint,
-    )
+    refreshTrail(cursor)
+    announceStep(cursor, active.clip.id, tint)
+    announceCrowd(cursor, active.clip.id, frame)
     if (frame.event !== null && frame.event.importance >= BANNER_MIN_IMPORTANCE) {
       raiseBanner(frame.event, active.clip.id, inputs)
     }
@@ -176,11 +197,15 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     trail.push({ ...frame.ball })
     if (trail.length > TRAIL_LENGTH) trail.shift()
 
+    if (ripple !== null) {
+      ripple = ripple.age >= RIPPLE_MAX_AGE ? null : { ...ripple, age: ripple.age + delta }
+    }
+
     director = advanceDirector(director, frame, cursor, delta)
     renderStage(
       context,
       size,
-      ratio,
+      surface.ratio(),
       {
         frame,
         previous: previousFrame ?? frame,
@@ -191,6 +216,9 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
         flash: director.flash,
         flashTint: director.flashTint,
         banner: director.banner,
+        letterbox: director.letterbox,
+        replayLabel: inputs.replayLabel,
+        ripple,
       },
       { backdrop, home: inputs.home, away: inputs.away },
     )
@@ -215,17 +243,22 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
 
     if (skipRequested) applySkip()
     if (!inputs.paused && !finished) {
-      const scale =
-        clipElapsed >= 0
-          ? timeScaleOf(stepAt(timelines[clipIndex], clipElapsed))
-          : 1
-      advanceClock(delta * scale, inputs.speed)
+      if (freezeLeft > 0) {
+        freezeLeft = Math.max(0, freezeLeft - delta)
+      } else {
+        const scale =
+          clipElapsed >= 0
+            ? timeScaleOf(stepAt(timelines[clipIndex], clipElapsed))
+            : 1
+        advanceClock(delta * scale, inputs.speed)
+      }
     }
 
     if (size.width > 0) {
       if (clipElapsed >= 0) {
         renderClip(delta, inputs)
       } else {
+        const ratio = surface.ratio()
         context.setTransform(ratio, 0, 0, ratio, 0, 0)
         context.clearRect(0, 0, size.width, size.height)
         reveal = Math.max(reveal, second)
@@ -253,7 +286,7 @@ export function createStageLoop(options: StageLoopOptions): StageLoop {
     },
     stop: () => {
       cancelAnimationFrame(animation)
-      observer.disconnect()
+      surface.release()
       backdrop.release()
     },
   }

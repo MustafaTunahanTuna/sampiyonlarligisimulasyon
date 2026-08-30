@@ -5,6 +5,7 @@ import { knockout } from './knockout'
 import { layout } from './layout'
 import { live } from './live'
 import { matchday } from './matchday'
+import { settings } from './settings'
 import { share } from './share'
 import { standings } from './standings'
 import { team } from './team'
@@ -18,6 +19,7 @@ export const es: Messages = {
   layout,
   live,
   matchday,
+  settings,
   share,
   standings,
   team,

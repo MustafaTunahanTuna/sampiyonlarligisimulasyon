@@ -23,6 +23,7 @@ export const live: Messages['live'] = {
   commentaryTitle: 'Narración',
   noEvents: 'Todavía no hay nada que contar.',
   pitchLabel: 'Animación de la jugada sobre el campo',
+  replayLabel: 'REPETICIÓN',
   idleHeadline: 'El partido sigue, esperando la próxima jugada.',
   scoreLabel: (home, away) => `Marcador ${home} ${away}`,
   summaryTitle: 'Resumen del partido',
@@ -51,6 +52,7 @@ export const live: Messages['live'] = {
     yellowCard: 'TARJETA AMARILLA',
     redCard: 'TARJETA ROJA',
     post: 'AL POSTE',
+    save: 'PARADA',
   },
   commentary: {
     KICK_OFF: () => 'Comienza el partido.',

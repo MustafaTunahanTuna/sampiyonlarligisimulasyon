@@ -4,6 +4,7 @@ import { KEEPER_SLOT, SHIRT_NUMBER } from './squad'
 import type { Kit } from './kits'
 import type { OnPitch } from './squad'
 import type { Point, Size } from './geometry'
+import type { WindupCue } from './pitchFrame'
 
 const PLAYER_RADIUS_RATIO = 0.027
 const BALL_RADIUS_RATIO = 0.0105
@@ -15,6 +16,9 @@ const FACING_ARC = 0.7
 const CARRIER_PULSE = 0.12
 const TRAIL_WIDTH = 0.0062
 const SEAM_COUNT = 3
+const STRETCH_RATE = 42
+const STRETCH_LIMIT = 0.38
+const WINDUP_GROWTH = 0.12
 
 export interface TeamPose {
   points: Point[]
@@ -22,12 +26,22 @@ export interface TeamPose {
   kit: Kit
   carrier: number | null
   onPitch: OnPitch
+  windup: WindupCue | null
 }
 
-function facingOf(current: Point, previous: Point): number | null {
+interface Stride {
+  facing: number | null
+  stretch: number
+}
+
+function strideOf(current: Point, previous: Point): Stride {
   const dx = current.x - previous.x
   const dy = current.y - previous.y
-  return Math.hypot(dx, dy) < FACING_THRESHOLD ? null : Math.atan2(dy, dx)
+  const pace = Math.hypot(dx, dy)
+  return {
+    facing: pace < FACING_THRESHOLD ? null : Math.atan2(dy, dx),
+    stretch: 1 + Math.min(STRETCH_LIMIT, pace * STRETCH_RATE),
+  }
 }
 
 function drawShadow(context: CanvasRenderingContext2D, x: number, y: number, radius: number) {
@@ -73,21 +87,31 @@ function drawPlayer(
   size: Size,
   pose: TeamPose,
   slot: number,
-  radius: number,
+  baseRadius: number,
   pulse: number,
 ) {
   const point = pose.points[slot]
   const x = point.x * size.width
   const y = point.y * size.height
+  const windup = pose.windup !== null && pose.windup.slot === slot ? pose.windup.amount : 0
+  const radius = baseRadius * (1 + WINDUP_GROWTH * windup)
 
   drawShadow(context, x, y, radius)
 
-  const facing = facingOf(point, pose.previous[slot])
-  if (facing !== null) drawFacing(context, x, y, radius, facing)
+  const stride = strideOf(point, pose.previous[slot])
+  if (stride.facing !== null) drawFacing(context, x, y, radius, stride.facing)
 
   context.fillStyle = slot === KEEPER_SLOT ? pose.kit.keeper : pose.kit.outfield
   context.beginPath()
-  context.arc(x, y, radius, 0, Math.PI * 2)
+  context.ellipse(
+    x,
+    y,
+    radius * stride.stretch,
+    radius / Math.sqrt(stride.stretch),
+    stride.facing ?? 0,
+    0,
+    Math.PI * 2,
+  )
   context.fill()
   context.strokeStyle = 'rgba(6, 14, 10, 0.5)'
   context.lineWidth = Math.max(0.6, radius * 0.09)

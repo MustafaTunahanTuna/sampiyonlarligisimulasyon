@@ -23,6 +23,7 @@ export const live: Messages['live'] = {
   commentaryTitle: 'Commentaires',
   noEvents: 'Rien à signaler pour l’instant.',
   pitchLabel: 'Animation de l’action sur le terrain',
+  replayLabel: 'RALENTI',
   idleHeadline: 'Le match est en cours, en attente de la prochaine action.',
   scoreLabel: (home, away) => `Score ${home} ${away}`,
   summaryTitle: 'Résumé du match',
@@ -51,6 +52,7 @@ export const live: Messages['live'] = {
     yellowCard: 'CARTON JAUNE',
     redCard: 'CARTON ROUGE',
     post: 'SUR LE POTEAU',
+    save: 'ARRÊT',
   },
   commentary: {
     KICK_OFF: () => 'Coup d’envoi.',

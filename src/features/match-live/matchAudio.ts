@@ -1,6 +1,14 @@
+import { createOoh, createWhistle } from './matchAudioCues'
+import type { WhistlePattern } from './matchAudioCues'
+
+export type { WhistlePattern } from './matchAudioCues'
+
 const GOAL_SOUND_URL = '/sounds/goal_sound.mp3'
 const GOAL_GAIN = 0.9
 const AMBIENCE_GAIN = 0.055
+const TENSION_LIFT = 1.7
+const TENSION_RAMP = 0.6
+const LEVEL_RAMP = 0.08
 const ROAR_GAIN = 0.5
 const KICK_GAIN = 0.16
 const NOISE_SECONDS = 3
@@ -13,8 +21,12 @@ const THUMP_RELEASE = 0.13
 export interface MatchAudio {
   resume: () => Promise<void>
   setMuted: (muted: boolean) => void
+  setLevels: (ambience: number, effects: number) => void
   cheer: () => void
   kick: (power: number) => void
+  whistle: (pattern: WhistlePattern) => void
+  ooh: () => void
+  tension: (active: boolean) => void
   dispose: () => void
 }
 
@@ -41,7 +53,17 @@ async function loadGoalSound(context: AudioContext): Promise<AudioBuffer | null>
   }
 }
 
-function startAmbience(context: AudioContext, buffer: AudioBuffer, destination: GainNode) {
+interface Ambience {
+  stop: () => void
+  setTension: (active: boolean) => void
+  setVolume: (volume: number) => void
+}
+
+function startAmbience(
+  context: AudioContext,
+  buffer: AudioBuffer,
+  destination: GainNode,
+): Ambience {
   const source = context.createBufferSource()
   source.buffer = buffer
   source.loop = true
@@ -67,9 +89,32 @@ function startAmbience(context: AudioContext, buffer: AudioBuffer, destination: 
   source.connect(body).connect(ceiling).connect(level).connect(destination)
   source.start()
   swell.start()
-  return () => {
-    source.stop()
-    swell.stop()
+
+  let tense = false
+  let volume = 1
+  const apply = (ramp: number) => {
+    const loudness = volume * volume
+    level.gain.setTargetAtTime(
+      AMBIENCE_GAIN * (tense ? TENSION_LIFT : 1) * loudness,
+      context.currentTime,
+      ramp,
+    )
+    swellDepth.gain.setTargetAtTime(AMBIENCE_GAIN * 0.35 * loudness, context.currentTime, ramp)
+  }
+
+  return {
+    stop: () => {
+      source.stop()
+      swell.stop()
+    },
+    setTension: (active) => {
+      tense = active
+      apply(TENSION_RAMP)
+    },
+    setVolume: (next) => {
+      volume = next
+      apply(LEVEL_RAMP)
+    },
   }
 }
 
@@ -82,8 +127,13 @@ export function createMatchAudio(): MatchAudio | null {
   master.gain.value = 1
   master.connect(limiter).connect(context.destination)
 
+  const effects = context.createGain()
+  effects.connect(master)
+
   const buffer = noiseBuffer(context)
-  const stopAmbience = startAmbience(context, buffer, master)
+  const ambience = startAmbience(context, buffer, master)
+  const whistle = createWhistle(context, effects)
+  const ooh = createOoh(context, buffer, effects)
 
   let goalBuffer: AudioBuffer | null = null
   void loadGoalSound(context).then((decoded) => {
@@ -109,7 +159,7 @@ export function createMatchAudio(): MatchAudio | null {
     envelope.gain.setValueAtTime(ROAR_GAIN, now + ROAR_ATTACK + 0.5)
     envelope.gain.exponentialRampToValueAtTime(0.0001, now + ROAR_RELEASE)
 
-    source.connect(shape).connect(envelope).connect(master)
+    source.connect(shape).connect(envelope).connect(effects)
     source.start(now)
     source.stop(now + ROAR_RELEASE + 0.1)
   }
@@ -124,7 +174,7 @@ export function createMatchAudio(): MatchAudio | null {
     source.buffer = goalBuffer
     const level = context.createGain()
     level.gain.value = GOAL_GAIN
-    source.connect(level).connect(master)
+    source.connect(level).connect(effects)
     source.start(context.currentTime)
   }
 
@@ -142,7 +192,7 @@ export function createMatchAudio(): MatchAudio | null {
     const clickEnvelope = context.createGain()
     clickEnvelope.gain.setValueAtTime(level, now)
     clickEnvelope.gain.exponentialRampToValueAtTime(0.0001, now + KICK_RELEASE)
-    click.connect(clickShape).connect(clickEnvelope).connect(master)
+    click.connect(clickShape).connect(clickEnvelope).connect(effects)
     click.start(now, Math.random() * (NOISE_SECONDS - 0.2))
     click.stop(now + KICK_RELEASE + 0.02)
 
@@ -153,7 +203,7 @@ export function createMatchAudio(): MatchAudio | null {
     const thumpEnvelope = context.createGain()
     thumpEnvelope.gain.setValueAtTime(level * 0.9, now)
     thumpEnvelope.gain.exponentialRampToValueAtTime(0.0001, now + THUMP_RELEASE)
-    thump.connect(thumpEnvelope).connect(master)
+    thump.connect(thumpEnvelope).connect(effects)
     thump.start(now)
     thump.stop(now + THUMP_RELEASE + 0.02)
   }
@@ -163,10 +213,21 @@ export function createMatchAudio(): MatchAudio | null {
     setMuted: (muted) => {
       master.gain.setTargetAtTime(muted ? 0 : 1, context.currentTime, 0.05)
     },
+    setLevels: (ambienceVolume, effectsVolume) => {
+      ambience.setVolume(ambienceVolume)
+      effects.gain.setTargetAtTime(
+        effectsVolume * effectsVolume,
+        context.currentTime,
+        LEVEL_RAMP,
+      )
+    },
     cheer,
     kick,
+    whistle,
+    ooh,
+    tension: (active) => ambience.setTension(active),
     dispose: () => {
-      stopAmbience()
+      ambience.stop()
       void context.close()
     },
   }

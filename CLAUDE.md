@@ -104,7 +104,7 @@ Native `<select>` gibi işletim sistemi tarafından çizilen kontroller tema tok
 ## Durum ve kalıcılık
 
 - `PredictionProvider` + `predictionReducer`; eylemler discriminated union.
-- Dört `localStorage` anahtarı, hepsi `ucl:` önekli ve her okuma/yazma `try/catch` içinde
+- Beş `localStorage` anahtarı, hepsi `ucl:` önekli ve her okuma/yazma `try/catch` içinde
   (özel sekmede `localStorage` fırlatabilir):
 
   | Anahtar | Nerede | İçerik |
@@ -113,6 +113,7 @@ Native `<select>` gibi işletim sistemi tarafından çizilen kontroller tema tok
   | `ucl:favourite-team` | `hooks/useFavouriteTeam.ts` | takip edilen kulüp id'si |
   | `ucl:locale` | `i18n/locale.ts` | kullanıcının seçtiği dil |
   | `ucl:match-audio-muted` | `features/match-live/useMatchAudio.ts` | ses tercihi |
+  | `ucl:settings` | `state/settingsStorage.ts` | gol tekrarı aç/kapa, tribün ve efekt ses seviyeleri |
 - `source: 'manual'` olan skorlar kullanıcının kendi girdisidir; simülasyon bunları **asla** ezmez.
 - `ENGINE_VERSION` değiştiğinde `predictionStorage.ts` saklı veriyi göç ettirir: simüle edilmiş
   skorlar ve nakavt sonuçları atılır, elle girilenler korunur. Motorun çıktı dağılımını değiştiren

@@ -51,6 +51,12 @@ export function linear(progress: number): number {
   return progress
 }
 
+const FRICTION = 3.4
+
+export function easeOutStrong(progress: number): number {
+  return (1 - Math.exp(-FRICTION * progress)) / (1 - Math.exp(-FRICTION))
+}
+
 export function arch(progress: number): number {
   return Math.sin(saturate(progress) * Math.PI)
 }

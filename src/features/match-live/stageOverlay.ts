@@ -1,5 +1,5 @@
 import { BANNER_TONE, PITCH_PALETTE } from './pitchPalette'
-import { easeOutBack, saturate } from './geometry'
+import { clamp, easeOutBack, saturate } from './geometry'
 import type { BannerTone } from './pitchPalette'
 import type { Camera } from './pitchCamera'
 import type { Point, Size } from './geometry'
@@ -58,7 +58,13 @@ export function drawMinimap(
 
   context.fillStyle = PITCH_PALETTE.ball
   context.beginPath()
-  context.arc(x + ball.x * width, y + ball.y * height, Math.max(1.5, height * 0.045), 0, Math.PI * 2)
+  context.arc(
+    x + clamp(ball.x, 0, 1) * width,
+    y + clamp(ball.y, 0, 1) * height,
+    Math.max(1.5, height * 0.045),
+    0,
+    Math.PI * 2,
+  )
   context.fill()
   context.globalAlpha = 1
 }

@@ -3,6 +3,7 @@ import { SiteHeader } from './components/SiteHeader'
 import { StarballBackdrop } from './components/StarballBackdrop'
 import { LeagueDashboard } from './features/dashboard/LeagueDashboard'
 import { KnockoutStageView } from './features/knockout/KnockoutStageView'
+import { SettingsView } from './features/settings/SettingsView'
 import { TeamPicker } from './features/team-picker/TeamPicker'
 import { TeamDashboard } from './features/team-summary/TeamDashboard'
 import { PredictionProvider } from './state/PredictionProvider'
@@ -19,7 +20,8 @@ export default function App() {
   const { route, navigate } = useHashRoute()
 
   const mustPickTeam = team === null
-  const isPicking = mustPickTeam || route === 'picker'
+  const isSettings = route === 'settings'
+  const isPicking = !isSettings && (mustPickTeam || route === 'picker')
   const isTeamPanel = !isPicking && route === 'team'
   const isKnockout = !isPicking && route === 'knockout'
 
@@ -42,7 +44,9 @@ export default function App() {
           {(mustPickTeam || route === 'league') && <DrawIntro hasFavouriteTeam={!mustPickTeam} />}
 
           <main className="mx-auto max-w-5xl px-5 py-12">
-            {isPicking ? (
+            {isSettings ? (
+              <SettingsView />
+            ) : isPicking ? (
               <TeamPicker
                 currentTeam={team}
                 onConfirm={confirmTeam}

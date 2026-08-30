@@ -11,6 +11,7 @@ export const layout: Messages['layout'] = {
   navKnockout: 'Eliminazione',
   navTeam: 'Il mio club',
   languageGroup: 'Selezione della lingua',
+  navSettings: 'Impostazioni',
   drawEyebrow: (date, venue) => `${date} · sorteggio di ${venue}`,
   leaguePhase: 'Fase campionato',
   drawSummary: (teams, matches) =>

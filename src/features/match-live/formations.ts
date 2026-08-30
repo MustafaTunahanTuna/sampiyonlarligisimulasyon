@@ -96,7 +96,3 @@ export function movingShape(side: Side, motion: ShapeMotion): Point[] {
     })
   })
 }
-
-export function goalMouth(side: Side): Point {
-  return { x: side === 'home' ? 0.985 : 0.015, y: CENTRE_LINE }
-}

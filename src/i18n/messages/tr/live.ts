@@ -26,6 +26,7 @@ export const live = {
   commentaryTitle: 'Maç anlatımı',
   noEvents: 'Henüz kayda değer bir an yok.',
   pitchLabel: 'Pozisyonun saha üzerinde canlandırması',
+  replayLabel: 'TEKRAR',
   idleHeadline: 'Maç sürüyor, pozisyon bekleniyor.',
   scoreLabel: (home: number, away: number) => `Skor ${home} ${away}`,
   summaryTitle: 'Maç özeti',
@@ -54,6 +55,7 @@ export const live = {
     yellowCard: 'SARI KART',
     redCard: 'KIRMIZI KART',
     post: 'DİREK',
+    save: 'KURTARIŞ',
   },
   commentary: {
     KICK_OFF: () => 'Maç başladı.',

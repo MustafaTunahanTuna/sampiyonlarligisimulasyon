@@ -1,6 +1,5 @@
 import { BrandLogo } from './BrandLogo'
 import { ClubCrest } from './ClubCrest'
-import { LocaleSwitch } from './LocaleSwitch'
 import { useTranslation } from '../i18n/useTranslation'
 import { drawPool } from '../domain/drawPool'
 import { MATCHDAY_NUMBERS, completedMatchdayCount } from '../domain/matchdays'
@@ -76,9 +75,32 @@ export function SiteHeader({ route, favouriteTeam, onNavigate }: SiteHeaderProps
           </nav>
         )}
 
-        <div className={`shrink-0 ${favouriteTeam === null ? '' : 'ml-1'}`}>
-          <LocaleSwitch />
-        </div>
+        <button
+          type="button"
+          onClick={() => onNavigate('settings')}
+          aria-current={route === 'settings' ? 'page' : undefined}
+          aria-label={t.layout.navSettings}
+          title={t.layout.navSettings}
+          className={`shrink-0 rounded-pill p-2 transition-colors ${
+            route === 'settings'
+              ? 'bg-accent/15 text-accent ring-1 ring-accent/45'
+              : 'text-muted hover:bg-surface hover:text-fg'
+          } ${favouriteTeam === null ? '' : 'ml-1'}`}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="size-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="3.2" />
+            <path d="M19.2 12a7.2 7.2 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7.3 7.3 0 0 0-2-1.2L14.3 3h-4l-.4 2.6a7.3 7.3 0 0 0-2 1.2l-2.4-1-2 3.5 2 1.5a7.2 7.2 0 0 0 0 2.4l-2 1.5 2 3.5 2.4-1a7.3 7.3 0 0 0 2 1.2l.4 2.6h4l.4-2.6a7.3 7.3 0 0 0 2-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z" />
+          </svg>
+        </button>
       </div>
     </header>
   )

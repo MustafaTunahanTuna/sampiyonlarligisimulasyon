@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-export type Route = 'league' | 'team' | 'picker' | 'knockout'
+export type Route = 'league' | 'team' | 'picker' | 'knockout' | 'settings'
 
 const ROUTE_HASH: Record<Route, string> = {
   league: '#/',
   team: '#/takimim',
   picker: '#/takim-sec',
   knockout: '#/nakavt',
+  settings: '#/ayarlar',
 }
 
 function currentRoute(): Route {
@@ -15,6 +16,7 @@ function currentRoute(): Route {
   if (hash.startsWith(ROUTE_HASH.team)) return 'team'
   if (hash.startsWith(ROUTE_HASH.picker)) return 'picker'
   if (hash.startsWith(ROUTE_HASH.knockout)) return 'knockout'
+  if (hash.startsWith(ROUTE_HASH.settings)) return 'settings'
   return 'league'
 }
 

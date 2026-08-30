@@ -66,6 +66,23 @@ function paintVignette(context: CanvasRenderingContext2D, size: Size) {
   context.fillRect(0, 0, size.width, size.height)
 }
 
+export function drawApron(context: CanvasRenderingContext2D, size: Size) {
+  context.fillStyle = PITCH_PALETTE.apron
+  context.fillRect(0, 0, size.width, size.height)
+  const shade = context.createRadialGradient(
+    size.width / 2,
+    size.height / 2,
+    size.height * 0.4,
+    size.width / 2,
+    size.height / 2,
+    size.width * 0.72,
+  )
+  shade.addColorStop(0, 'rgba(0, 0, 0, 0)')
+  shade.addColorStop(1, PITCH_PALETTE.apronShade)
+  context.fillStyle = shade
+  context.fillRect(0, 0, size.width, size.height)
+}
+
 export function drawTurf(context: CanvasRenderingContext2D, size: Size) {
   paintStripes(context, size)
   paintSheen(context, size)
